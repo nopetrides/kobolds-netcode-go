@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9e3d47c6781528f44bda5adf2cd62cda
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285638
+  packageName: Ragdoll Animator 2
+  packageVersion: 1.0.3.7
+  assetPath: Assets/FImpossible Creations/Shared Tools/Editor Tools/FDebug_PerformanceTest.cs
+  uploadId: 760943

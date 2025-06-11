@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: b85346c73a9658f4bafe36656fc9ff43
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285638
+  packageName: Ragdoll Animator 2
+  packageVersion: 1.0.3.7
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Ragdoll Animator 2/Core/Ragdoll
+    Animator Features/Core/RagdollAnimatorFeatureCollisions.cs
+  uploadId: 760943

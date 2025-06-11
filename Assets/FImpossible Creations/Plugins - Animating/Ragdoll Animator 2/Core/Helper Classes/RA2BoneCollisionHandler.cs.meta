@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 5ca36605b9c2f4841802da4c427fc4b3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: ba073998cd677394c9f6c6d2fec160b7, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285638
+  packageName: Ragdoll Animator 2
+  packageVersion: 1.0.3.7
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Ragdoll Animator 2/Core/Helper
+    Classes/RA2BoneCollisionHandler.cs
+  uploadId: 760943

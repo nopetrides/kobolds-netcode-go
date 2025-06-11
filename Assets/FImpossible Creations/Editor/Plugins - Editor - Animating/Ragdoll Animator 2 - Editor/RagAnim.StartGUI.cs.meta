@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 0133c0f4377f7ca40b22f47223637061
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285638
+  packageName: Ragdoll Animator 2
+  packageVersion: 1.0.3.7
+  assetPath: Assets/FImpossible Creations/Editor/Plugins - Editor - Animating/Ragdoll
+    Animator 2 - Editor/RagAnim.StartGUI.cs
+  uploadId: 760943

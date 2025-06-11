@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 15c3a13bb4b237c4fa3fe4a31e137025
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285638
+  packageName: Ragdoll Animator 2
+  packageVersion: 1.0.3.7
+  assetPath: Assets/FImpossible Creations/Editor/Plugins - Editor - Animating/Ragdoll
+    Animator 2 - Editor/Ragdoll Handler Editor/RAHE.Construct.Colliders.cs
+  uploadId: 760943
