@@ -10,7 +10,7 @@ namespace Kobolds.Net
 	///     Handles state synchronization and authority-based component management.
 	/// </summary>
 	[RequireComponent(typeof(NetworkObject))]
-	public class KoboldNetworkController : NetworkBehaviour
+	public partial class KoboldNetworkController : NetworkBehaviour
 	{
 		[Header("State Management")]
 		[SerializeField] private KoboldStateManager StateManager;
@@ -39,6 +39,7 @@ namespace Kobolds.Net
 		///     Gets the current network state.
 		/// </summary>
 		public KoboldNetworkState CurrentNetworkState => _networkState.Value;
+
 		public KoboldCameraController CurrentCameraController => CameraController;
 
 		private void Awake()
@@ -137,6 +138,9 @@ namespace Kobolds.Net
 			currentState.State = newState;
 			_networkState.Value = currentState;
 
+			// Send RPC for immediate state propagation
+			NotifyStateChangeRpc(newState);
+
 			Debug.Log($"[{name}] Local state changed to: {newState}");
 		}
 
@@ -150,7 +154,44 @@ namespace Kobolds.Net
 			{
 				StateManager.SetState(newState.State);
 				Debug.Log($"[{name}] Remote state changed to: {newState.State}");
+
+				// Apply the ragdoll state change
+				ApplyRemoteRagdollState(newState.State);
 			}
+
+			// Handle grab state changes
+			HandleGrabStateChange(previousState, newState);
+
+			// Handle latch state changes
+			HandleLatchStateChange(previousState, newState);
+		}
+
+		/// <summary>
+		///     Handles changes in grabbed object state.
+		/// </summary>
+		private void HandleGrabStateChange(KoboldNetworkState previousState, KoboldNetworkState newState)
+		{
+			// Object was grabbed
+			if (!previousState.GrabbedObject.TryGet(out _) && newState.GrabbedObject.TryGet(out var grabbedObj))
+				Debug.Log($"[{name}] Remote player grabbed object: {grabbedObj.name}");
+			// Visual feedback for grabbed object could be added here
+			// Object was released
+			else if (previousState.GrabbedObject.TryGet(out _) && !newState.GrabbedObject.TryGet(out _))
+				Debug.Log($"[{name}] Remote player released object");
+		}
+
+		/// <summary>
+		///     Handles changes in latch state.
+		/// </summary>
+		private void HandleLatchStateChange(KoboldNetworkState previousState, KoboldNetworkState newState)
+		{
+			// Started latching
+			if (!previousState.LatchTarget.TryGet(out _) && newState.LatchTarget.TryGet(out var latchTarget))
+				Debug.Log($"[{name}] Remote player latched to: {latchTarget.name}");
+			// Apply latch visual state if needed
+			// Stopped latching
+			else if (previousState.LatchTarget.TryGet(out _) && !newState.LatchTarget.TryGet(out _))
+				Debug.Log($"[{name}] Remote player unlatched");
 		}
 
 		/// <summary>

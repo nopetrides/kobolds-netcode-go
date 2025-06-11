@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8262904334106445971}
   - component: {fileID: 7882925929584570587}
   - component: {fileID: 666735334738078867}
+  - component: {fileID: 7577361452531840509}
   m_Layer: 0
   m_Name: KoboldNetRagdoll
   m_TagString: Untagged
@@ -148,6 +149,10 @@ MonoBehaviour:
   LeftHandBone: {fileID: 6869410007263197964}
   RightHandBone: {fileID: 6755193184454163706}
   CameraTrackingObject: {fileID: 4975526964688346221}
+  _ragdollAnimator: {fileID: 8262904334106445971}
+  _animationController: {fileID: 6521160702986863658}
+  _koboldGrabber: {fileID: 4912367855471861610}
+  _koboldLatcher: {fileID: 1269118372126713034}
 --- !u!114 &8262904334106445971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3014,6 +3019,21 @@ MonoBehaviour:
   _sendRate: 15
   _interpolate: 1
   _interpolationSpeed: 10
+--- !u!114 &7577361452531840509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598266197054209020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 773ef28efb6c6324b9a481aa8451afc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoboldNetworkEventListener
+  ShowTopMostFoldoutHeaderGroup: 1
+  _networkController: {fileID: 1550229587333698507}
+  _gameplayEvents: {fileID: 7087172249865850643}
 --- !u!1001 &6539451454409061088
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3030,6 +3050,10 @@ PrefabInstance:
       propertyPath: MainRigidbody
       value: 
       objectReference: {fileID: 7882925929584570587}
+    - target: {fileID: 73258268746615698, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+      propertyPath: GameplayEvents
+      value: 
+      objectReference: {fileID: 7087172249865850643}
     - target: {fileID: 73258268746615698, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
       propertyPath: GroundMask.m_Bits
       value: 10305
@@ -3214,6 +3238,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.123731405
       objectReference: {fileID: 0}
+    - target: {fileID: 2228420875974356362, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+      propertyPath: _gameplayEvents
+      value: 
+      objectReference: {fileID: 7087172249865850643}
     - target: {fileID: 2228420875974356362, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
       propertyPath: characterAnimator
       value: 
@@ -3803,6 +3831,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2510681358187479047}
     - target: {fileID: 5430246158117000746, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+      propertyPath: GameplayEvents
+      value: 
+      objectReference: {fileID: 7087172249865850643}
+    - target: {fileID: 5430246158117000746, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
       propertyPath: RagdollAnimator
       value: 
       objectReference: {fileID: 8262904334106445971}
@@ -4103,6 +4135,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4925504081294414680, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1639005649986965827}
+    - targetCorrespondingSourceObject: {fileID: 4925504081294414680, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7087172249865850643}
   m_SourcePrefab: {fileID: 100100000, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
 --- !u!114 &22533368929329322 stripped
 MonoBehaviour:
@@ -4125,6 +4160,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6071864017076110849, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
   m_PrefabInstance: {fileID: 6539451454409061088}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1269118372126713034 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5430246158117000746, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+  m_PrefabInstance: {fileID: 6539451454409061088}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205122997444731320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 144175050fa1b6b4a8469cca95ad935d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1535425670587761372 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5732556692236857404, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
@@ -4194,6 +4240,19 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+--- !u!114 &7087172249865850643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205122997444731320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01bb002a80f653149b681a4b69445cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KoboldGameplayEvents
+  _networkObject: {fileID: 8301867929510566189}
 --- !u!114 &2510681358187479047 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8653516153559413479, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
@@ -4240,6 +4299,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2008548609015969966, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
   m_PrefabInstance: {fileID: 6539451454409061088}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4912367855471861610 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2228420875974356362, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+  m_PrefabInstance: {fileID: 6539451454409061088}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2205122997444731320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7366cb968146a9a48b7f78a65b79a130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &4975526964688346221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2291297685608001165, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}

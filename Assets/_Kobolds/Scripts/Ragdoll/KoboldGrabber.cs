@@ -10,6 +10,7 @@ namespace Kobolds
 		
 		[SerializeField] private KoboldInputs Inputs;
 		[SerializeField] private KoboldStateManager StateManager;
+		[SerializeField] private KoboldGameplayEvents _gameplayEvents;
 		[SerializeField] private KoboldLatcher Latcher;
 
 		[Header("Grip Anim Params")]
@@ -26,6 +27,7 @@ namespace Kobolds
 		[SerializeField] private GripMagnetPoint JawGrip;
 
 		private bool _jawModeActive;
+		
 
 		private void Update()
 		{
@@ -39,7 +41,11 @@ namespace Kobolds
 
 			if (!_jawModeActive || JawGrip.HasTargetAttached) return;
 
-			if (JawGrip.TryAttachNearby()) Animator.SetBool(GripJawAnimParam, true);
+			if (JawGrip.TryAttachNearby())
+			{
+				Animator.SetBool(GripJawAnimParam, true);
+				_gameplayEvents?.NotifyGrab(JawGrip.CurrentTarget.GetObject(), GripType.Jaw);
+			}
 		}
 
 		private void GripRightCheck(bool value)
@@ -54,10 +60,15 @@ namespace Kobolds
 			{
 				RightGrip.ReleaseGrip();
 				Animator.SetBool(GripRAnimParam, false);
+				_gameplayEvents?.NotifyRelease(GripType.RightHand);
 			}
 			else if (RightGrip.TryAttachNearby())
 			{
 				Animator.SetBool(GripRAnimParam, true);
+				
+				// ADD THIS LINE (you'll need to expose CurrentTarget on GripMagnetPoint):
+				if (RightGrip.CurrentTarget != null)
+					_gameplayEvents?.NotifyGrab(RightGrip.CurrentTarget.GetObject(), GripType.RightHand);
 			}
 
 			Inputs.GripR = false;
@@ -73,10 +84,15 @@ namespace Kobolds
 			{
 				LeftGrip.ReleaseGrip();
 				Animator.SetBool(GripLAnimParam, false);
+				_gameplayEvents?.NotifyRelease(GripType.LeftHand);
+				
 			}
 			else if (LeftGrip.TryAttachNearby())
 			{
 				Animator.SetBool(GripLAnimParam, true);
+				
+				if (LeftGrip.CurrentTarget != null)
+					_gameplayEvents?.NotifyGrab(LeftGrip.CurrentTarget.GetObject(), GripType.LeftHand);
 			}
 			
 			Inputs.GripL = false;
@@ -93,7 +109,10 @@ namespace Kobolds
 
 			if (!_jawModeActive)
 				if (JawGrip.HasTargetAttached)
+				{
 					JawGrip.ReleaseGrip();
+					_gameplayEvents?.NotifyRelease(GripType.Jaw);
+				}
 			
 			Inputs.GripJaw = false;
 		}

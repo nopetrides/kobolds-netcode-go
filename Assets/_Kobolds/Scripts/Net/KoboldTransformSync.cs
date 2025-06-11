@@ -1,7 +1,7 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobold.Net
+namespace Kobolds.Net
 {
 	/// <summary>
 	///     Synchronizes key bone transforms for Kobold characters.
@@ -20,21 +20,18 @@ namespace Kobold.Net
 
 		[SerializeField] private bool _interpolate = true;
 		[SerializeField] private float _interpolationSpeed = 10f;
-		
-		// Network variables for each bone's local position and rotation
-		private readonly NetworkVariable<Vector3> _mouthLocalPos = new();
-		private readonly NetworkVariable<Quaternion> _mouthLocalRot = new();
 
 		private readonly NetworkVariable<Vector3> _leftHandLocalPos = new();
 		private readonly NetworkVariable<Quaternion> _leftHandLocalRot = new();
 
+		// Network variables for each bone's local position and rotation
+		private readonly NetworkVariable<Vector3> _mouthLocalPos = new();
+		private readonly NetworkVariable<Quaternion> _mouthLocalRot = new();
+
+		private float _nextSendTime;
 
 		private readonly NetworkVariable<Vector3> _rightHandLocalPos = new();
 		private readonly NetworkVariable<Quaternion> _rightHandLocalRot = new();
-		
-		private float _nextSendTime;
-
-		
 		private Vector3 _targetLeftHandPos;
 		private Quaternion _targetLeftHandRot;
 

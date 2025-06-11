@@ -29,6 +29,8 @@ namespace Kobolds
 		public RagdollHandler RagdollHandler => Ragdoll.Handler;
 		public bool HasTargetAttached => _currentTarget != null;
 		
+		public IGrippable CurrentTarget => _currentTarget;
+		
 		public bool TryAttachNearby()
 		{
 			int hits = Physics.OverlapSphereNonAlloc(transform.position, GripRadius, _overlapBuffer, GrippableLayers);

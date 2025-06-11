@@ -12,6 +12,7 @@ namespace Kobolds.Cam
 	{
 		[Header("Camera Configuration")]
 		[SerializeField] private Camera _mainCamera;
+
 		[SerializeField] private CinemachineCamera _thirdPersonCamera;
 		[SerializeField] private CinemachineCamera _aimingCamera;
 		[SerializeField] private Transform _placeholderFollowTarget;
@@ -23,7 +24,7 @@ namespace Kobolds.Cam
 		///     Gets the singleton instance of the camera manager.
 		/// </summary>
 		public static KoboldCameraManager Instance { get; private set; }
-		
+
 		public Camera Cam => _mainCamera;
 
 		private void Awake()
@@ -111,19 +112,17 @@ namespace Kobolds.Cam
 			}
 
 			// Get input reference for aim detection
-			KoboldCameraController cameraController = kobold.CurrentCameraController;
+			var cameraController = kobold.CurrentCameraController;
 
 			// Assign camera target to the Kobold's camera controller
-			if (cameraController != null && _mainCamera != null) 
+			if (cameraController != null && _mainCamera != null)
 				cameraController.SetCamera(_mainCamera, kobold.GetCameraFollowTarget());
 			else
 				Debug.LogError("No camera controller or main camera!");
 
 			if (_thirdPersonCamera.Follow == _placeholderFollowTarget ||
 				_aimingCamera.Follow == _placeholderFollowTarget)
-			{
 				Debug.LogError("Camera follow targets were not reassigned!");
-			}
 
 			Debug.Log($"[{name}] Cameras assigned to local Kobold: {kobold.name}");
 		}

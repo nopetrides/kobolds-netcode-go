@@ -12,6 +12,7 @@ namespace Kobolds
 	public class UnburyController : MonoBehaviour
 	{
 		[SerializeField] private KoboldStateManager StateManager;
+		[SerializeField] private KoboldGameplayEvents GameplayEvents;
 		
 		/// <summary>
 		/// Reference to the RagdollAnimator2 component used for handling procedural
@@ -219,6 +220,8 @@ namespace Kobolds
 				randomBone.GameRigidbody.AddForce(force, ForceMode.Impulse);
 			}
 
+			GameplayEvents?.NotifyUnburyProgress(progress);
+			
 			// If done, transition
 			if (progress >= 1f)
 			{
@@ -227,6 +230,7 @@ namespace Kobolds
 			}
 			
 			Ragdoll.User_UpdateRigidbodyParametersForAllBones();
+			
 		}
 
 		/// <summary>
@@ -259,6 +263,9 @@ namespace Kobolds
 			{
 				StateManager.OnUnburyComplete();
 			}
+			
+			
+			GameplayEvents?.NotifyUnburyComplete();
 
 			if (MovementController) MovementController.enabled = true;
 

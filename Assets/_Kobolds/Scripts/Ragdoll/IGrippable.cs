@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Kobolds
 {
 	public interface IGrippable
@@ -17,5 +19,7 @@ namespace Kobolds
 		/// Returns a user-facing string prompt for UI display (e.g. "Press F to Bite").
 		/// </summary>
 		string GetInteractionPrompt();
+
+		public GameObject GetObject();
 	}
 }

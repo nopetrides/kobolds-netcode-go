@@ -58,7 +58,12 @@ namespace Kobolds
 		{
 			return Prompt;
 		}
-		
+
+		public GameObject GetObject()
+		{
+			return gameObject;
+		}
+
 		public static Transform FindAnimatorBoneForDummy(RagdollHandler handler, Transform dummy)
 		{
 			foreach (var chain in handler.Chains)

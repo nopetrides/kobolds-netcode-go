@@ -10,6 +10,7 @@ namespace Kobolds
 		[Header("References")]
 		[SerializeField] private KoboldStateManager StateManager;
 
+		[SerializeField] private KoboldGameplayEvents GameplayEvents;
 		[SerializeField] private GripMagnetPoint JawMagnet;
 		[SerializeField] private RagdollAnimator2 RagdollAnimator;
 
@@ -59,7 +60,7 @@ namespace Kobolds
 
 			if (!_isGripToggled && _latch.IsLatched)
 			{
-				_latch.Detach(RagdollAnimator, AnimationController, StateManager);
+				_latch.Detach(RagdollAnimator, AnimationController, StateManager, GameplayEvents);
 				_currentTarget = null;
 			}
 		}
@@ -94,7 +95,7 @@ namespace Kobolds
 				else
 					continue; // skip this collider, no safe point
 
-				_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager);
+				_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents);
 
 				_currentTarget = col;
 				return;
@@ -105,6 +106,7 @@ namespace Kobolds
 		[Serializable]
 		private class LatchInfo
 		{
+			private KoboldGameplayEvents _gameplayEvents;
 			private RagdollBoneProcessor _bone;
 			private Vector3 _localPos;
 			private Quaternion _localRot;
@@ -117,7 +119,7 @@ namespace Kobolds
 
 			public void Latch(
 				RagdollBoneProcessor bone, Collider target, Vector3 worldPos,
-				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager)
+				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager, KoboldGameplayEvents events)
 			{
 				_bone = bone;
 				Target = target;
@@ -138,6 +140,8 @@ namespace Kobolds
 				// Fully limp body and disable stand mode
 				animator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
 				animator.User_FadeMusclesPowerMultiplicator(0.05f, 0.05f);
+				
+				events.NotifyLatch(target, _localPos, _localRot);
 			}
 
 			public void UpdateLatch()
@@ -148,7 +152,7 @@ namespace Kobolds
 				_rb.rotation = Target.transform.rotation * _localRot;
 			}
 
-			public void Detach(RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager)
+			public void Detach(RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager, KoboldGameplayEvents events)
 			{
 				if (_rb != null)
 					_rb.isKinematic = false;
@@ -166,6 +170,8 @@ namespace Kobolds
 				var autoGetUp = animator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 				if (autoGetUp != null)
 					autoGetUp.Enabled = true;
+				
+				events.NotifyDetach();
 			}
 		}
 	}
