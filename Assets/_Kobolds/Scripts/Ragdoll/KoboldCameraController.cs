@@ -11,12 +11,8 @@ namespace Kobolds
 		private const float Threshold = 0.01f;
 		[SerializeField] private PlayerInput PlayerInput;
 		[SerializeField] private KoboldInputs Inputs;
-		[SerializeField] private GameObject Cam;
 
 		[Header("Cinemachine")]
-		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-		[SerializeField] private GameObject CinemachineCameraTarget;
-
 		[Tooltip("How far in degrees can you move the camera up")]
 		[SerializeField] private float TopClamp = 70.0f;
 
@@ -28,14 +24,24 @@ namespace Kobolds
 
 		[Tooltip("For locking the camera position on all axis")]
 		[SerializeField] private bool LockCameraPosition;
-
+		
+		private Camera _mainCamera;
+		private Transform _cinemachineCameraTarget;
+		
 		// cinemachine
 		private float _cinemachineTargetPitch;
 		private float _cinemachineTargetYaw;
-
-		private void Start()
+		
+		/// <summary>
+		/// Sets the camera this controller should manage.
+		/// </summary>
+		public void SetCamera(Camera cam, Transform target)
 		{
-			_cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+			_mainCamera = cam;
+			Debug.Log($"[{name}] Camera assigned: {cam?.name ?? "null"}");
+			_cinemachineCameraTarget = target;
+			_cinemachineTargetYaw = _cinemachineCameraTarget.rotation.eulerAngles.y;
+			enabled = true;
 		}
 
 		private bool IsCurrentDeviceMouse
@@ -49,9 +55,16 @@ namespace Kobolds
 #endif
 			}
 		}
+		
 
 		private void LateUpdate()
 		{
+			if (!_mainCamera)
+			{
+				enabled = false;
+				return;
+			}
+			
 			CameraRotation();
 		}
 
@@ -72,7 +85,7 @@ namespace Kobolds
 			_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
 			// Cinemachine will follow this target
-			CinemachineCameraTarget.transform.rotation = Quaternion.Euler(
+			_cinemachineCameraTarget.rotation = Quaternion.Euler(
 				_cinemachineTargetPitch + CameraAngleOverride,
 				_cinemachineTargetYaw, 0.0f);
 		}

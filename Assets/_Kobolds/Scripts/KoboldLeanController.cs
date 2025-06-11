@@ -114,9 +114,6 @@ namespace Kobolds
 		[Range(0, 1f)]
 		[SerializeField] private float DirectBlendMax;
 
-		[Tooltip("How fast the character rotates towards the camera's aim direction")]
-		[SerializeField] private float AimRotationSpeed = 360;
-
 		[Header("Bones")]
 		[Tooltip("List of important joints from hips to head.")]
 		[SerializeField] private List<Transform> Joints;
