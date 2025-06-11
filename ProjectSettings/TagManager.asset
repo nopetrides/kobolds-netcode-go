@@ -17,10 +17,10 @@ TagManager:
   - Pickupable
   - PlayerInteract
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Ragdolls
+  - Grip
+  - Latch
   - 
   - 
   - 
