@@ -1,4 +1,3 @@
-using System;
 using FIMSpace.FProceduralAnimation;
 using UnityEngine;
 

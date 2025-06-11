@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1499607153087855347, guid: e54d55fa193a2495ea1270535da81837, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 1313703358
+      value: 3727937782
       objectReference: {fileID: 0}
     - target: {fileID: 1499607153087855347, guid: e54d55fa193a2495ea1270535da81837, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
@@ -59,6 +59,10 @@ PrefabInstance:
     - target: {fileID: 4843296344903462454, guid: e54d55fa193a2495ea1270535da81837, type: 3}
       propertyPath: m_Name
       value: Pot_NetworkObjectSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 4843296344903462454, guid: e54d55fa193a2495ea1270535da81837, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8817259292813230997, guid: e54d55fa193a2495ea1270535da81837, type: 3}
       propertyPath: m_NetworkObjectToSpawn

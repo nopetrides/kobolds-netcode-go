@@ -88,6 +88,10 @@ PrefabInstance:
       propertyPath: m_Collider
       value: 
       objectReference: {fileID: 4959042433798655250}
+    - target: {fileID: 1110772888546809875, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 2004954010814667909, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: rubblePrefab
       value: 
@@ -119,6 +123,10 @@ PrefabInstance:
     - target: {fileID: 5622352566631732085, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: m_Name
       value: Chest_CarryableObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 5622352566631732085, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5622352566631732085, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: m_TagString
@@ -164,6 +172,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -1.745
       objectReference: {fileID: 0}
+    - target: {fileID: 6648216130696299213, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 6968734486713430189, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.366
@@ -203,6 +215,10 @@ PrefabInstance:
     - target: {fileID: 6968734486713430189, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -4.520996
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480444494992682542, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8778270557094879703, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: m_Mass
@@ -294,6 +310,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5408972833776088523}
     m_Modifications:
+    - target: {fileID: 4298815724333225399, guid: ebaaeb79be9154a6e94c32f10cba267c, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 5034372825761329519, guid: ebaaeb79be9154a6e94c32f10cba267c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -337,6 +357,14 @@ PrefabInstance:
     - target: {fileID: 5662854069590584277, guid: ebaaeb79be9154a6e94c32f10cba267c, type: 3}
       propertyPath: m_Name
       value: Chest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5662854069590584277, guid: ebaaeb79be9154a6e94c32f10cba267c, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8500405113978660099, guid: ebaaeb79be9154a6e94c32f10cba267c, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5728043166860680682, guid: ebaaeb79be9154a6e94c32f10cba267c, type: 3}

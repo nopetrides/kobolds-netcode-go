@@ -9,7 +9,6 @@ namespace Kobolds
 	/// <summary>
 	/// Controls the unburying process, handles struggle timing, and provides the percentage completion of the struggle.
 	/// </summary>
-	[RequireComponent(typeof(RagdollAnimator2))]
 	public class UnburyController : MonoBehaviour
 	{
 		[SerializeField] private KoboldStateManager StateManager;
@@ -244,16 +243,16 @@ namespace Kobolds
 				Debug.Log("Unbury failed: no ground detected under hips. Forcing fallback get-up.");
 				
 				// Use current transform position to avoid hanging
-				hit.point = transform.position;
+				hit.point = MainRigidbody.transform.position;
 			}
 
-			transform.position = hit.point;
-			transform.rotation = Ragdoll.User_GetMappedRotationHipsToLegsMiddle();
+			MainRigidbody.transform.position = hit.point;
+			MainRigidbody.transform.rotation = Ragdoll.User_GetMappedRotationHipsToLegsMiddle();
 
 			if (MainRigidbody)
 			{
-				MainRigidbody.position = transform.position;
-				MainRigidbody.rotation = transform.rotation;
+				MainRigidbody.position = MainRigidbody.transform.position;
+				MainRigidbody.rotation = MainRigidbody.transform.rotation;
 			}
 			
 			if (StateManager != null)

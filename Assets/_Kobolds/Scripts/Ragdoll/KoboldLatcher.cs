@@ -9,20 +9,24 @@ namespace Kobolds
 	{
 		[Header("References")]
 		[SerializeField] private KoboldStateManager StateManager;
+
 		[SerializeField] private GripMagnetPoint JawMagnet;
 		[SerializeField] private RagdollAnimator2 RagdollAnimator;
-		[FormerlySerializedAs("Animator")] [SerializeField] private Animator AnimationController;
+
+		[FormerlySerializedAs("Animator")] [SerializeField]
+		private Animator AnimationController;
+
 		[SerializeField] private string GripJawAnimParam = "Grip_Jaw";
 
 		[Header("Latch Settings")]
 		[SerializeField] private LayerMask LatchableLayers;
-		[SerializeField] private float LatchRadius = 0.2f;
 
-		private bool _isGripToggled;
+		[SerializeField] private float LatchRadius = 0.2f;
 		private readonly LatchInfo _latch = new();
 		private readonly Collider[] _overlapBuffer = new Collider[6];
 		private Collider _currentTarget;
 
+		private bool _isGripToggled;
 
 		private void Update()
 		{
@@ -35,6 +39,17 @@ namespace Kobolds
 		private void FixedUpdate()
 		{
 			_latch.UpdateLatch();
+		}
+
+		private void OnDrawGizmosSelected()
+		{
+			if (!_latch.IsLatched) return;
+
+			Gizmos.color = Color.green;
+			Gizmos.DrawSphere(_latch.WorldAttachPosition, 0.05f);
+
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawWireSphere(JawMagnet.transform.position, LatchRadius);
 		}
 
 		public void ToggleJawGrip()
@@ -58,70 +73,54 @@ namespace Kobolds
 			if (bone == null || bone.rigidbody == null || _currentTarget != null)
 				return;
 
-			Vector3 origin = bone.rigidbody.position;
-			int hits = Physics.OverlapSphereNonAlloc(origin, LatchRadius, _overlapBuffer, LatchableLayers);
+			var origin = bone.rigidbody.position;
+			var hits = Physics.OverlapSphereNonAlloc(origin, LatchRadius, _overlapBuffer, LatchableLayers);
 
-			for (int i = 0; i < hits; i++)
+			for (var i = 0; i < hits; i++)
 			{
-				Collider col = _overlapBuffer[i];
+				var col = _overlapBuffer[i];
 
 				// Optional: skip self or previous target if needed
 				if (col.attachedRigidbody == bone.rigidbody || col == _currentTarget) continue;
 
 				Vector3 attachPos;
 
-				Vector3 dir = (col.bounds.center - origin).normalized;
-				if (col.Raycast(new Ray(origin, dir), out RaycastHit rayHit, LatchRadius * 2f))
-				{
+				var dir = (col.bounds.center - origin).normalized;
+				if (col.Raycast(new Ray(origin, dir), out var rayHit, LatchRadius * 2f))
 					attachPos = rayHit.point;
-				}
-				else if (col is BoxCollider or SphereCollider or CapsuleCollider || (col is MeshCollider mesh && mesh.convex))
-				{
+				else if (col is BoxCollider or SphereCollider or CapsuleCollider ||
+						(col is MeshCollider mesh && mesh.convex))
 					attachPos = col.ClosestPoint(origin); // safe
-				}
 				else
-				{
 					continue; // skip this collider, no safe point
-				}
 
 				_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager);
-				
+
 				_currentTarget = col;
 				return;
 			}
-		}
-		
-		private void OnDrawGizmosSelected()
-		{
-			if (!_latch.IsLatched) return;
-
-			Gizmos.color = Color.green;
-			Gizmos.DrawSphere(_latch.WorldAttachPosition, 0.05f);
-
-			Gizmos.color = Color.yellow;
-			Gizmos.DrawWireSphere(JawMagnet.transform.position, LatchRadius);
 		}
 
 
 		[Serializable]
 		private class LatchInfo
 		{
-			public Collider Target => _target;
-			public Vector3 WorldAttachPosition => _target ? _target.transform.TransformPoint(_localPos) : Vector3.zero;
-			
 			private RagdollBoneProcessor _bone;
 			private Vector3 _localPos;
 			private Quaternion _localRot;
 			private Rigidbody _rb;
-			private Collider _target;
+			public Collider Target { get; private set; }
+
+			public Vector3 WorldAttachPosition => Target ? Target.transform.TransformPoint(_localPos) : Vector3.zero;
 
 			public bool IsLatched { get; private set; }
 
-			public void Latch(RagdollBoneProcessor bone, Collider target, Vector3 worldPos, 
+			public void Latch(
+				RagdollBoneProcessor bone, Collider target, Vector3 worldPos,
 				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager)
 			{
 				_bone = bone;
-				_target = target;
+				Target = target;
 				_rb = bone.rigidbody;
 
 				_localPos = target.transform.InverseTransformPoint(worldPos);
@@ -143,10 +142,10 @@ namespace Kobolds
 
 			public void UpdateLatch()
 			{
-				if (!IsLatched || _target == null || _rb == null) return;
+				if (!IsLatched || Target == null || _rb == null) return;
 
-				_rb.position = _target.transform.TransformPoint(_localPos);
-				_rb.rotation = _target.transform.rotation * _localRot;
+				_rb.position = Target.transform.TransformPoint(_localPos);
+				_rb.rotation = Target.transform.rotation * _localRot;
 			}
 
 			public void Detach(RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager)
@@ -160,7 +159,7 @@ namespace Kobolds
 
 				_bone = null;
 				_rb = null;
-				_target = null;
+				Target = null;
 				IsLatched = false;
 				animationController.enabled = true;
 				stateManager.SetState(KoboldState.Active);

@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Kobolds.Net
 {
 	/// <summary>
-        /// Container for Kobold's networked state data.
-        /// Efficiently packs state information for network transmission.
-        /// </summary>
+	/// Container for Kobold's networked state data.
+	/// Efficiently packs state information for network transmission.
+	/// </summary>
 	public struct KoboldNetworkState : INetworkSerializable
 	{
 		/// <summary>
