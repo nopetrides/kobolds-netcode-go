@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ddd88e056e24c3c48b51ed29b49c7366
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: ad6a2117917c08b4ebdd97e45fab986e, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 128322
+  packageName: Spinal Animator
+  packageVersion: 2.0.2
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Spine Animator/Utilities/SpineAnimator_FixIKControlledBones.cs
+  uploadId: 739527

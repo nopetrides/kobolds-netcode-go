@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: b53ab50739659654ca8155ecfea59a3a
+timeCreated: 1543091521
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 128322
+  packageName: Spinal Animator
+  packageVersion: 2.0.2
+  assetPath: Assets/FImpossible Creations/Shared Tools/Editor/Property Drawers/FPD_TabDrawer.cs
+  uploadId: 739527

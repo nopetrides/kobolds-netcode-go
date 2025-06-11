@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: c7db8e333025d0346965ea16c34504ad
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 198472
+  packageName: Leaning Animator
+  packageVersion: 1.0.3.1
+  assetPath: Assets/FImpossible Creations/Editor/Plugins - Editor - Animating/Leaning
+    Animator/LeaningAnimator.Editor.cs
+  uploadId: 744984

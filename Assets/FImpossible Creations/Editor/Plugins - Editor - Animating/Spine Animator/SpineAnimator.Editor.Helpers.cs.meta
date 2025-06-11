@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 66321bb5e65c917489ed47eeb187b627
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 128322
+  packageName: Spinal Animator
+  packageVersion: 2.0.2
+  assetPath: Assets/FImpossible Creations/Editor/Plugins - Editor - Animating/Spine
+    Animator/SpineAnimator.Editor.Helpers.cs
+  uploadId: 739527

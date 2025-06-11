@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8a69c5fe54494f94c8631b14d5d242a1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 128322
+  packageName: Spinal Animator
+  packageVersion: 2.0.2
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Spine Animator/Code/SubClasses/SpineAnimator.Class.SpineBone.cs
+  uploadId: 739527

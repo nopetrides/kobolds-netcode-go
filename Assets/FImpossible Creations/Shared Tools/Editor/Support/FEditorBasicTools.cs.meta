@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 5cfc4f005cbc6af40895abd8ac996ba2
+timeCreated: 1531406488
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 128322
+  packageName: Spinal Animator
+  packageVersion: 2.0.2
+  assetPath: Assets/FImpossible Creations/Shared Tools/Editor/Support/FEditorBasicTools.cs
+  uploadId: 739527

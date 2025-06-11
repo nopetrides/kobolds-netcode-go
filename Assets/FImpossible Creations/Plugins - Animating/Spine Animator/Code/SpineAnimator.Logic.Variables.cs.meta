@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d2ba309a62cdeb34486e89d303b6c6c1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 128322
+  packageName: Spinal Animator
+  packageVersion: 2.0.2
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Spine Animator/Code/SpineAnimator.Logic.Variables.cs
+  uploadId: 739527
