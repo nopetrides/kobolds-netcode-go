@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Bootstrap.unity
+    path: Assets/SocialHub/Scenes/Bootstrap.unity
     guid: 7534441b329644ec98e40c12ec5e3575
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/SocialHub/Scenes/MainMenu.unity
     guid: 00dfb9d65b7674d4cae5dfd318611cbe
   - enabled: 1
-    path: Assets/Scenes/HubScene_TownMarket.unity
+    path: Assets/SocialHub/Scenes/HubScene_TownMarket.unity
     guid: ae62e5a72be626748a06596073ba9b0a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7, type: 2}
