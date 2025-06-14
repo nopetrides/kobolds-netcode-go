@@ -488,17 +488,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 443266163646854082, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
-      propertyPath: TargetRagdoll
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 598266197054209020, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
       propertyPath: m_Name
       value: KoboldNetRagdoll
       objectReference: {fileID: 0}
-    - target: {fileID: 3714712806689596387, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
-      propertyPath: Ragdoll
-      value: 
+    - target: {fileID: 1576475170828675588, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 998536044
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611645042361850731, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1193578810
       objectReference: {fileID: 0}
     - target: {fileID: 6098410889513405131, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -540,13 +540,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6144181576867136625, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
-      propertyPath: Ragdoll
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8007154949491694642, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
-      propertyPath: Ragdoll
-      value: 
+    - target: {fileID: 6345719680944259605, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3048469438
       objectReference: {fileID: 0}
     - target: {fileID: 8301867929510566189, guid: ea2cb93616e94b049b5cdfed136eab4f, type: 3}
       propertyPath: GlobalObjectIdHash

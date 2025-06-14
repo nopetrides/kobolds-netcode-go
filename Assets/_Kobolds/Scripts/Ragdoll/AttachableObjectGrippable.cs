@@ -1,5 +1,7 @@
 using UnityEngine;
 using FIMSpace.FProceduralAnimation;
+using Unity.Netcode;
+using Kobolds.Net;
 
 namespace Kobolds
 {
@@ -10,10 +12,14 @@ namespace Kobolds
 
 		private RA2AttachableObject _attachableObject;
 		private RagdollHandler _lastHandlerAttachedTo;
+		private NetworkObject _networkObject;
+		private Transform _originalParent;
 
 		private void Awake()
 		{
 			_attachableObject = GetComponent<RA2AttachableObject>();
+			_networkObject = GetComponent<NetworkObject>();
+			_originalParent = transform.parent;
 		}
 
 		public bool TryAttach(GripMagnetPoint magnet)
@@ -25,33 +31,91 @@ namespace Kobolds
 				return false;
 			}
 
+			// Handle network ownership if this is a NetworkObject
+			if (_networkObject != null)
+			{
+				var koboldNetwork = magnet.GetComponentInParent<KoboldNetworkController>();
+				if (koboldNetwork != null && koboldNetwork.IsOwner)
+				{
+					// Request ownership if we don't have it
+					if (!_networkObject.HasAuthority)
+					{
+						if (_networkObject.IsOwnershipTransferable)
+						{
+							_networkObject.ChangeOwnership(koboldNetwork.OwnerClientId);
+						}
+						else if (_networkObject.IsOwnershipRequestRequired)
+						{
+							_networkObject.RequestOwnership();
+						}
+					}
+					
+					// Set ownership status to prevent others from taking it
+					_networkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.RequestRequired, clearAndSet: true);
+				}
+			}
+
 			var animatorBone = magnet.transform;
-			//var animatorBone = FindAnimatorBoneForDummy(handler, magnet.transform);
 			if (animatorBone == null)
 			{
 				Debug.LogError($"[AttachableObjectGrippable] Failed to map dummy bone '{magnet.transform.name}' to animator bone!", this);
 				return false;
 			}
 
-			handler.WearAttachable(_attachableObject, animatorBone);
-			_lastHandlerAttachedTo = handler;
+			// IMPORTANT: Don't use WearAttachable for NetworkObjects!
+			// It will try to parent the object which causes the error
+			if (_networkObject != null)
+			{
+				// For networked objects, we need to handle attachment differently
+				// Store attachment info but don't actually parent
+				_lastHandlerAttachedTo = handler;
+				
+				// Disable physics while attached
+				var rb = GetComponent<Rigidbody>();
+				if (rb != null)
+				{
+					rb.isKinematic = true;
+					rb.linearVelocity = Vector3.zero;
+					rb.angularVelocity = Vector3.zero;
+				}
+				
+				// The KoboldGrabber will fire the event which triggers the network sync
+				// KoboldNetworkEventListener handles the position updates in LateUpdate
+			}
+			else
+			{
+				// Non-networked objects can use the normal attachment system
+				handler.WearAttachable(_attachableObject, animatorBone);
+				_lastHandlerAttachedTo = handler;
+			}
+			
 			return true;
 		}
 
 		public void Detach(GripMagnetPoint magnet)
 		{
-			if (_lastHandlerAttachedTo != null)
+			if (_networkObject != null)
 			{
+				// Make it transferable again
+				_networkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.Distributable, clearAndSet: true);
+				_networkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.Transferable);
+				
+				// Re-enable physics
+				var rb = GetComponent<Rigidbody>();
+				if (rb != null)
+				{
+					rb.isKinematic = false;
+					// Apply small impulse
+					rb.linearVelocity = magnet.transform.forward * 1f;
+				}
+			}
+			else if (_lastHandlerAttachedTo != null)
+			{
+				// Non-networked objects use normal detach
 				_lastHandlerAttachedTo.UnwearAttachable(_attachableObject);
-				_lastHandlerAttachedTo = null;
 			}
-
-			// Optionally apply small physics impulse or reset transform
-			var rb = _attachableObject.GetComponent<Rigidbody>();
-			if (rb != null && rb.linearVelocity.magnitude < 0.1f)
-			{
-				rb.linearVelocity = magnet.transform.forward * 1f;
-			}
+			
+			_lastHandlerAttachedTo = null;
 		}
 
 		public string GetInteractionPrompt()
@@ -78,6 +142,5 @@ namespace Kobolds
 			Debug.LogWarning($"[Grip] Could not find animator bone for dummy transform: {dummy.name}");
 			return null;
 		}
-
 	}
 }

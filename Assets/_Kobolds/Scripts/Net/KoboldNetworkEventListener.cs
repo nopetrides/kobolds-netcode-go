@@ -12,6 +12,19 @@ namespace Kobolds.Net
 	{
 		[SerializeField] private KoboldNetworkController _networkController;
 		[SerializeField] private KoboldGameplayEvents _gameplayEvents;
+		
+		// Track grabbed objects for position updates
+		private NetworkObject _currentLeftHandObject;
+		private NetworkObject _currentRightHandObject;
+		private NetworkObject _currentJawObject;
+		
+		// Local offsets for position sync
+		private Vector3 _leftHandOffset;
+		private Quaternion _leftHandRotOffset;
+		private Vector3 _rightHandOffset;
+		private Quaternion _rightHandRotOffset;
+		private Vector3 _jawOffset;
+		private Quaternion _jawRotOffset;
 
 		private void Awake()
 		{
@@ -34,6 +47,25 @@ namespace Kobolds.Net
 			if (IsOwner) UnsubscribeFromEvents();
 
 			base.OnNetworkDespawn();
+		}
+		
+		private void LateUpdate()
+		{
+			if (!IsOwner) return;
+			
+			// Update positions of grabbed NetworkObjects
+			UpdateGrabbedObjectPosition(_currentLeftHandObject, _networkController.GetHandBone(true), _leftHandOffset, _leftHandRotOffset);
+			UpdateGrabbedObjectPosition(_currentRightHandObject, _networkController.GetHandBone(false), _rightHandOffset, _rightHandRotOffset);
+			UpdateGrabbedObjectPosition(_currentJawObject, _networkController.GetMouthBone(), _jawOffset, _jawRotOffset);
+		}
+		
+		private void UpdateGrabbedObjectPosition(NetworkObject grabbedObject, Transform gripPoint, Vector3 localOffset, Quaternion localRotOffset)
+		{
+			if (grabbedObject == null || gripPoint == null) return;
+			
+			// Update position without parenting
+			grabbedObject.transform.position = gripPoint.TransformPoint(localOffset);
+			grabbedObject.transform.rotation = gripPoint.rotation * localRotOffset;
 		}
 
 		private void SubscribeToEvents()
@@ -60,10 +92,44 @@ namespace Kobolds.Net
 
 		private void HandleObjectGrabbed(GameObject grabbedObject, GripType gripType)
 		{
+			Debug.Log($"<color=yellow>[HandleObjectGrabbed] {grabbedObject.name}</color>");
 			// Convert GameObject to NetworkObject reference
 			var networkObject = grabbedObject.GetComponent<NetworkObject>();
 			if (networkObject != null)
 			{
+				// Store reference and calculate offset
+				Transform gripPoint = null;
+				switch (gripType)
+				{
+					case GripType.LeftHand:
+						_currentLeftHandObject = networkObject;
+						gripPoint = _networkController.GetHandBone(true);
+						if (gripPoint != null)
+						{
+							_leftHandOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
+							_leftHandRotOffset = Quaternion.Inverse(gripPoint.rotation) * grabbedObject.transform.rotation;
+						}
+						break;
+					case GripType.RightHand:
+						_currentRightHandObject = networkObject;
+						gripPoint = _networkController.GetHandBone(false);
+						if (gripPoint != null)
+						{
+							_rightHandOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
+							_rightHandRotOffset = Quaternion.Inverse(gripPoint.rotation) * grabbedObject.transform.rotation;
+						}
+						break;
+					case GripType.Jaw:
+						_currentJawObject = networkObject;
+						gripPoint = _networkController.GetMouthBone();
+						if (gripPoint != null)
+						{
+							_jawOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
+							_jawRotOffset = Quaternion.Inverse(gripPoint.rotation) * grabbedObject.transform.rotation;
+						}
+						break;
+				}
+				
 				_networkController.OnGrabObjectRpc(networkObject, gripType);
 				_networkController.SetGrabbedObject(networkObject);
 			}
@@ -75,6 +141,20 @@ namespace Kobolds.Net
 
 		private void HandleObjectReleased(GripType gripType)
 		{
+			// Clear reference
+			switch (gripType)
+			{
+				case GripType.LeftHand:
+					_currentLeftHandObject = null;
+					break;
+				case GripType.RightHand:
+					_currentRightHandObject = null;
+					break;
+				case GripType.Jaw:
+					_currentJawObject = null;
+					break;
+			}
+			
 			_networkController.OnReleaseObjectRpc(gripType);
 			_networkController.SetGrabbedObject(null);
 		}

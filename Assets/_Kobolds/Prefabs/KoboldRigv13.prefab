@@ -1628,10 +1628,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4925504081294414680}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 5
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -4547,7 +4547,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52ce1bf5d5ebb1745902ebc4213c0050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AimCamera: {fileID: 0}
   Aiming: 0
 --- !u!114 &6525928656619344458
 MonoBehaviour:
@@ -4595,6 +4594,7 @@ MonoBehaviour:
   Look: {x: 0, y: 0}
   Jump: 0
   Sprint: 0
+  Walk: 0
   Aim: 0
   Fire: 0
   GripR: 0
@@ -4615,7 +4615,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2c593230016111478e8fe38ddd9a9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Camera: {fileID: 0}
+  Inputs: {fileID: 0}
+  _networkController: {fileID: 0}
   Rigb: {fileID: 5175123059626757943}
   MovementSpeed: 4
   RotateToSpeed: 0.75
@@ -4687,6 +4688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StateManager: {fileID: 8653516153559413479}
+  GameplayEvents: {fileID: 0}
   Ragdoll: {fileID: 2757906756096797617}
   MainRigidbody: {fileID: 5175123059626757943}
   MovementController: {fileID: 4209389921519996671}
@@ -4747,6 +4749,7 @@ MonoBehaviour:
   characterAnimator: {fileID: 2757906756096797617}
   Inputs: {fileID: 4760339598987504690}
   StateManager: {fileID: 8653516153559413479}
+  _gameplayEvents: {fileID: 0}
   Latcher: {fileID: 5430246158117000746}
   Animator: {fileID: 53794055702869706}
   GripLAnimParam: Grip_L
@@ -4767,8 +4770,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 144175050fa1b6b4a8469cca95ad935d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StateManager: {fileID: 0}
+  GameplayEvents: {fileID: 0}
   JawMagnet: {fileID: 3882082486221549266}
-  Animator: {fileID: 53794055702869706}
+  RagdollAnimator: {fileID: 0}
+  AnimationController: {fileID: 53794055702869706}
   GripJawAnimParam: Grip_Jaw
   LatchableLayers:
     serializedVersion: 2
