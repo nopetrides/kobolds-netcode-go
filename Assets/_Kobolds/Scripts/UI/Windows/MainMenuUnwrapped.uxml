@@ -1,0 +1,17 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Kobolds/Scripts/UI/Documents/KoboldDefaultTheme.uss?fileID=7433441132597879392&amp;guid=278ee5504e524289813b1f72f4a989be&amp;type=3#KoboldDefaultTheme" />
+    <Kobold.UI.Components.KoboldVisualElement name="main-menu-window" class="kobold-window" style="flex-grow: 1;">
+        <Kobold.UI.Components.KoboldVisualElement name="window-content" class="window-content" style="flex-grow: 0;">
+            <Kobold.UI.Components.KoboldLabelElement name="game-title" text="GO BOLD! KOBOLDS!" class="kobold-title animate-in" style="top: auto; -unity-text-align: upper-center; height: 75px; width: 308px; color: rgb(255, 255, 255); white-space: normal;" />
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-large" />
+            <Kobold.UI.Components.KoboldVisualElement name="menu-buttons" class="menu-buttons-container">
+                <Kobold.UI.Components.KoboldButtonElement name="social-hub-button" text="Social Hub" animation-delay="0.1" class="primary animate-in" />
+                <Kobold.UI.Components.KoboldButtonElement name="quick-mission-button" text="Quick Mission" animation-delay="0.15" class="animate-in" />
+                <Kobold.UI.Components.KoboldButtonElement name="settings-button" text="Settings" animation-delay="0.2" class="animate-in" />
+                <Kobold.UI.Components.KoboldButtonElement name="quit-button" text="Quit" animation-delay="0.25" class="danger animate-in" />
+            </Kobold.UI.Components.KoboldVisualElement>
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-large" />
+            <Kobold.UI.Components.KoboldLabelElement name="version-label" text="Version 0.0.1" class="version-text animate-in" style="opacity: 0.5;" />
+        </Kobold.UI.Components.KoboldVisualElement>
+    </Kobold.UI.Components.KoboldVisualElement>
+</ui:UXML>

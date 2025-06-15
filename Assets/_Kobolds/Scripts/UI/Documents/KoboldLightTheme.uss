@@ -1,0 +1,77 @@
+﻿/* ========================================
+   Kobold UI Theme - Light Theme
+   ======================================== */
+
+/* Override root variables for light theme */
+:root {
+    /* Primary Palette */
+    --kobold-primary: #2196F3;
+    --kobold-primary-hover: #1976D2;
+    --kobold-primary-pressed: #1565C0;
+
+    /* Secondary Palette */
+    --kobold-secondary: #607D8B;
+    --kobold-secondary-hover: #546E7A;
+    --kobold-secondary-pressed: #455A64;
+
+    /* Accent Colors */
+    --kobold-accent: #FF5722;
+    --kobold-success: #4CAF50;
+    --kobold-warning: #FF9800;
+    --kobold-danger: #F44336;
+    --kobold-info: #00BCD4;
+
+    /* Background Colors */
+    --kobold-background: #FAFAFA;
+    --kobold-panel-background: #FFFFFF;
+    --kobold-container-background: rgba(0, 0, 0, 0.02);
+    --kobold-overlay-background: rgba(0, 0, 0, 0.3);
+
+    /* Text Colors */
+    --kobold-text-primary: #212121;
+    --kobold-text-secondary: #757575;
+    --kobold-text-tertiary: #9E9E9E;
+    --kobold-text-disabled: #BDBDBD;
+
+    /* Border Colors */
+    --kobold-border-color: #E0E0E0;
+    --kobold-border-hover: #BDBDBD;
+    --kobold-border-focus: var(--kobold-primary);
+
+    /* Input Colors */
+    --kobold-input-background: #F5F5F5;
+    --kobold-input-border: #E0E0E0;
+    --kobold-input-focus-shadow: rgba(33, 150, 243, 0.2);
+
+    /* Button Colors */
+    --kobold-button-background: #F5F5F5;
+    --kobold-button-border: #E0E0E0;
+    --kobold-button-hover-overlay: rgba(0, 0, 0, 0.04);
+    --kobold-button-press-overlay: rgba(0, 0, 0, 0.08);
+}
+
+/* Light theme specific adjustments */
+.window-content {
+    /* UI Toolkit doesn't support box-shadow, using borders for depth */
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.kobold-button .button-label {
+    color: var(--kobold-text-primary);
+}
+
+/* Primary button text should be white */
+.kobold-button.primary .button-label {
+    color: #FFFFFF;
+}
+
+/* Danger button text should be white */
+.kobold-button.danger .button-label {
+    color: #FFFFFF;
+}
+
+/* Success button text should be white */
+.kobold-button.success .button-label {
+    color: #FFFFFF;
+}

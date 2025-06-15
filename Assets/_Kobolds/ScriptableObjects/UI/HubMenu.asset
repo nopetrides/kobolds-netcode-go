@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb22431f7a6c4cdba4adc30851dc855a, type: 3}
+  m_Name: HubMenu
+  m_EditorClassIdentifier: Assembly-CSharp::Kobold.UI.Configuration.UIWindowDefinition
+  menuType: 2
+  windowName: Social Hub
+  uxmlAsset: {fileID: 9197481963319205126, guid: 5ee8ca74263a41e093d48ed635fb1ec5, type: 3}
+  presenterType: 2
+  isDefaultWindow: 0
+  animationDuration: 1
+  animationType: 1

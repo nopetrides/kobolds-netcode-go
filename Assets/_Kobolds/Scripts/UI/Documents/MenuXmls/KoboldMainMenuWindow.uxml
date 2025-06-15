@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Kobolds/Scripts/UI/Documents/KoboldDefaultTheme.uss?fileID=7433441132597879392&amp;guid=278ee5504e524289813b1f72f4a989be&amp;type=3#KoboldDefaultTheme" />
+    <Kobold.UI.Components.KoboldVisualElement name="main-menu-window" enabled="true" focusable="false" class="kobold-window" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); -unity-background-image-tint-color: rgba(0, 0, 0, 0);">
+        <Kobold.UI.Components.KoboldVisualElement name="window-content" class="window-content" style="flex-grow: 0;">
+            <Kobold.UI.Components.KoboldVisualElement class="label-wrapper">
+                <ui:Label text="GO BOLD! KOBOLDS!" class="game-title" style="color: rgb(255, 255, 255); font-size: 44px;" />
+            </Kobold.UI.Components.KoboldVisualElement>
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-large" />
+            <Kobold.UI.Components.KoboldVisualElement name="menu-buttons" class="menu-buttons-container">
+                <Kobold.UI.Components.KoboldVisualElement class="button-wrapper">
+                    <ui:Button name="social-hub-button" text="Social Hub" class="menu-button primary" />
+                </Kobold.UI.Components.KoboldVisualElement>
+                <Kobold.UI.Components.KoboldVisualElement class="button-wrapper">
+                    <ui:Button name="quick-mission-button" text="Quick Mission" class="menu-button" />
+                </Kobold.UI.Components.KoboldVisualElement>
+                <Kobold.UI.Components.KoboldVisualElement class="button-wrapper">
+                    <ui:Button name="settings-button" text="Settings" class="menu-button" />
+                </Kobold.UI.Components.KoboldVisualElement>
+                <Kobold.UI.Components.KoboldVisualElement class="button-wrapper">
+                    <ui:Button name="quit-button" text="Quit" class="menu-button danger" />
+                </Kobold.UI.Components.KoboldVisualElement>
+            </Kobold.UI.Components.KoboldVisualElement>
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-large" />
+            <Kobold.UI.Components.KoboldVisualElement class="label-wrapper">
+                <ui:Label name="version-label" text="Version 0.0.1" class="version-text animate-in" style="color: rgb(255, 255, 255);" />
+            </Kobold.UI.Components.KoboldVisualElement>
+        </Kobold.UI.Components.KoboldVisualElement>
+    </Kobold.UI.Components.KoboldVisualElement>
+</ui:UXML>

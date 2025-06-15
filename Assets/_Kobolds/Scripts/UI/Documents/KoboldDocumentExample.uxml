@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:kobold="Kobold.UI.Components">
+    <!-- Main Container -->
+    <ui:VisualElement name="main-container" class="kobold-window">
+
+        <!-- Window Content -->
+        <ui:VisualElement class="window-content">
+
+            <!-- Title -->
+            <ui:Label text="KOBOLDS" class="kobold-title" />
+
+            <!-- Spacer -->
+            <ui:VisualElement class="kobold-spacer-large" />
+
+            <!-- Custom Kobold Button Components (Unity 6 syntax) -->
+            <kobold:KoboldButtonElement
+                    name="social-hub-button"
+                    text="Social Hub"
+                    class="primary"
+                    animation-delay="0.1" />
+
+            <kobold:KoboldButtonElement
+                    name="quick-mission-button"
+                    text="Quick Mission"
+                    animation-delay="0.15" />
+
+            <kobold:KoboldButtonElement
+                    name="settings-button"
+                    text="Settings"
+                    animation-delay="0.2" />
+
+            <kobold:KoboldButtonElement
+                    name="quit-button"
+                    text="Quit"
+                    class="danger"
+                    animation-delay="0.25" />
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

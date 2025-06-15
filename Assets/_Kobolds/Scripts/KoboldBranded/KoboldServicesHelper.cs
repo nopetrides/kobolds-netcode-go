@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Kobolds;
 using Kobold.GameManagement;
 using Kobold.Vivox;
 using Unity.Netcode;
@@ -31,12 +32,6 @@ namespace Kobold.Services
 		[SerializeField] private int _socialHubMaxPlayers = 64;
 
 		[SerializeField] private int _missionMaxPlayers = 8;
-
-		[Header("Scene Configuration")]
-		[SerializeField] private string _mainMenuScene = "MainMenu";
-
-		[SerializeField] private string _socialHubScene = "HubScene_TownMarket";
-		[SerializeField] private string _missionLobbyScene = "MissionLobby";
 
 		// Cancellation for cleanup
 		private CancellationTokenSource _cancellationTokenSource;
@@ -141,7 +136,8 @@ namespace Kobold.Services
 				}
 
 				// Only load main menu if we're not already in a scene
-				if (SceneManager.GetActiveScene().name == "KoboldBoot") KoboldEventHandler.LoadMainMenuScene(_mainMenuScene);
+				if (SceneManager.GetActiveScene().name == "KoboldBoot") 
+					KoboldEventHandler.LoadMainMenuScene(nameof(SceneNames.KoboldMainMenu));
 			}
 			catch (Exception ex)
 			{
@@ -264,7 +260,7 @@ namespace Kobold.Services
 			{
 				LeaveMissionSession();
 				// Load social hub scene
-				KoboldEventHandler.LoadInGameScene(_socialHubScene);
+				KoboldEventHandler.LoadInGameScene(nameof(SceneNames.KoboldHub));
 			}
 		}
 

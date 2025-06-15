@@ -43,7 +43,7 @@ namespace Kobold.GameManagement
 			}
 
 			// Ensure we only have one boot initializer
-			if (FindObjectsOfType<KoboldBootInitializer>().Length > 1)
+			if (FindObjectsByType<KoboldBootInitializer>(FindObjectsSortMode.None).Length > 1)
 			{
 				Debug.LogError("[KoboldBootInitializer] Multiple boot initializers found! Only one should exist.");
 				Destroy(gameObject);
@@ -245,7 +245,7 @@ namespace Kobold.GameManagement
 				SceneManager.sceneLoaded += OnMainMenuLoaded;
 
 				// Load the main menu scene
-				SceneManager.LoadScene(_mainMenuSceneName);
+				//SceneManager.LoadScene(_mainMenuSceneName);
 			}
 			catch (Exception ex)
 			{

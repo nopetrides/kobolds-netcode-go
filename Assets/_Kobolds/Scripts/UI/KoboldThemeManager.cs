@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Kobold.GameManagement;
+using Kobold.UI.Components;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,17 +15,17 @@ namespace Kobold.UI.Theming
 		private static bool _applicationIsQuitting;
 
 		[Header("Theme Configuration")]
-		[SerializeField] private UITheme[] _availableThemes;
+		[SerializeField] private KoboldUITheme[] _availableThemes;
 
-		[SerializeField] private UITheme _defaultTheme;
+		[SerializeField] private KoboldUITheme _defaultTheme;
 		[SerializeField] private string _savedThemeKey = "KoboldSelectedTheme";
 
 		[Header("Runtime")]
-		[SerializeField] private UITheme _currentTheme;
+		[SerializeField] private KoboldUITheme _currentTheme;
 
 		// Thread safety
 		private readonly object _documentLock = new();
-		private readonly Dictionary<VisualElement, UITheme> _elementThemeOverrides = new();
+		private readonly Dictionary<VisualElement, KoboldUITheme> _elementThemeOverrides = new();
 
 		// Registered UI Documents
 		private readonly List<UIDocument> _registeredDocuments = new();
@@ -53,8 +54,8 @@ namespace Kobold.UI.Theming
 			}
 		}
 
-		public UITheme CurrentTheme => _currentTheme;
-		public IReadOnlyList<UITheme> AvailableThemes => _availableThemes;
+		public KoboldUITheme CurrentTheme => _currentTheme;
+		public IReadOnlyList<KoboldUITheme> AvailableThemes => _availableThemes;
 
 		private void Awake()
 		{
@@ -72,6 +73,9 @@ namespace Kobold.UI.Theming
 
 			DontDestroyOnLoad(gameObject);
 			LoadSavedTheme();
+			
+			// Apply the loaded theme to any existing documents
+			ApplyThemeToAllDocuments();
 		}
 
 		private void OnEnable()
@@ -111,7 +115,7 @@ namespace Kobold.UI.Theming
 		}
 
 		// Events
-		public static event Action<UITheme> OnThemeChanged;
+		public static event Action<KoboldUITheme> OnThemeChanged;
 
 		private bool ValidateConfiguration()
 		{
@@ -164,6 +168,8 @@ namespace Kobold.UI.Theming
 				UISoundType.Click => _currentTheme.uiClickSound,
 				UISoundType.Hover => _currentTheme.uiHoverSound,
 				UISoundType.Error => _currentTheme.uiErrorSound,
+				UISoundType.Success => _currentTheme.uiSuccessSound,
+				UISoundType.Back => _currentTheme.uiBackSound,
 				_ => null
 			};
 
@@ -179,7 +185,7 @@ namespace Kobold.UI.Theming
 
 #region Theme Management
 
-		public void SetTheme(UITheme newTheme)
+		public void SetTheme(KoboldUITheme newTheme)
 		{
 			if (newTheme == null)
 			{
@@ -219,6 +225,35 @@ namespace Kobold.UI.Theming
 			else
 				Debug.LogWarning($"[KoboldThemeManager] Theme '{themeName}' not found!");
 		}
+		
+		public void SetThemeByIndex(int index)
+		{
+			if (index < 0 || index >= _availableThemes.Length)
+			{
+				Debug.LogError($"[KoboldThemeManager] Theme index {index} out of range!");
+				return;
+			}
+			
+			SetTheme(_availableThemes[index]);
+		}
+		
+		public int GetCurrentThemeIndex()
+		{
+			if (_currentTheme == null) return 0;
+			
+			for (int i = 0; i < _availableThemes.Length; i++)
+			{
+				if (_availableThemes[i] == _currentTheme)
+					return i;
+			}
+			
+			return 0;
+		}
+		
+		public List<string> GetThemeNames()
+		{
+			return _availableThemes?.Select(t => t != null ? t.themeName : "Unknown").ToList() ?? new List<string>();
+		}
 
 #endregion
 
@@ -249,7 +284,7 @@ namespace Kobold.UI.Theming
 			}
 		}
 
-		public void RegisterVisualElement(VisualElement element, UITheme overrideTheme = null)
+		public void RegisterVisualElement(VisualElement element, KoboldUITheme overrideTheme = null)
 		{
 			if (element == null) return;
 
@@ -320,7 +355,7 @@ namespace Kobold.UI.Theming
 			}
 		}
 
-		private void ApplyThemeToElement(VisualElement element, UITheme theme)
+		private void ApplyThemeToElement(VisualElement element, KoboldUITheme theme)
 		{
 			if (element == null || theme == null) return;
 
@@ -407,12 +442,5 @@ namespace Kobold.UI.Theming
 #endif
 
 #endregion
-	}
-
-	public enum UISoundType
-	{
-		Click,
-		Hover,
-		Error
 	}
 }

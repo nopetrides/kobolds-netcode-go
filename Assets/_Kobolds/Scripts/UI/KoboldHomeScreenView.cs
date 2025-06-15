@@ -1,5 +1,6 @@
 ﻿using System;
 using Kobold.GameManagement;
+using Kobold.UI.Components;
 using Kobold.UI.Theming;
 using UnityEngine;
 using UnityEngine.UIElements;

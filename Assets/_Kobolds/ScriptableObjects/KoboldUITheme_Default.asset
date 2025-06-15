@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: KoboldUITheme_Default
   m_EditorClassIdentifier: Assembly-CSharp::Kobold.UI.Theming.UITheme
   themeName: Default
-  themeDescription: 
+  themeDescription: The Default look
   themePreviewImage: {fileID: 0}
   mainStyleSheet: {fileID: 7433441132597879392, guid: 278ee5504e524289813b1f72f4a989be, type: 3}
   additionalStyleSheets: []
@@ -33,3 +33,5 @@ MonoBehaviour:
   uiClickSound: {fileID: 8300000, guid: 47d638bab461ccb4fa1dcb75d296f93a, type: 3}
   uiHoverSound: {fileID: 8300000, guid: 02526936df3e4f7408081fc9ab239313, type: 3}
   uiErrorSound: {fileID: 8300000, guid: 670a699d2dce2c44aa70febe6d4b2dab, type: 3}
+  uiSuccessSound: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  uiBackSound: {fileID: 8300000, guid: 47d638bab461ccb4fa1dcb75d296f93a, type: 3}

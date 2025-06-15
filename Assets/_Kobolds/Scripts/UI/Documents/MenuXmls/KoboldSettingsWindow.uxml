@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Kobolds/Scripts/UI/Documents/KoboldDefaultTheme.uss?fileID=7433441132597879392&amp;guid=278ee5504e524289813b1f72f4a989be&amp;type=3#KoboldDefaultTheme" />
+    <Kobold.UI.Components.KoboldVisualElement name="settings-window" class="kobold-window">
+        <ui:ScrollView name="settings-scroll" class="window-content">
+            <ui:Button name="back-button" text="← Back" animation-delay="0.05" class="back-button animate-in" />
+            <ui:Label  name="window-title" text="Settings" animation-delay="0.1" class="kobold-title animate-in" />
+            <Kobold.UI.Components.KoboldVisualElement name="audio-section" animation-delay="0.15" class="kobold-container outlined animate-in">
+                <ui:Slider text="Audio" class="kobold-subtitle" />
+                <ui:Slider name="master-volume-slider" label="Master Volume" min-value="0" max-value="100" value="100" show-value="true" value-format="{0:0}%" animation-delay="0.2" />
+                <ui:Slider name="music-volume-slider" label="Music Volume" min-value="0" max-value="100" value="80" show-value="true" value-format="{0:0}%" animation-delay="0.25" />
+                <ui:Slider name="sfx-volume-slider" label="SFX Volume" min-value="0" max-value="100" value="100" show-value="true" value-format="{0:0}%" animation-delay="0.3" />
+                <ui:Slider name="footsteps-volume-slider" label="Footsteps Volume" min-value="0" max-value="100" value="70" show-value="true" value-format="{0:0}%" animation-delay="0.35" />
+            </Kobold.UI.Components.KoboldVisualElement>
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-medium" />
+            <Kobold.UI.Components.KoboldVisualElement name="video-section" animation-delay="0.4" class="kobold-container outlined animate-in">
+                <ui:Label  text="Video" class="kobold-subtitle" />
+                <ui:GenericDropdownMenu name="fullscreen-dropdown" label="Screen Mode" choices="Windowed,Fullscreen,Borderless Window" index="0" animation-delay="0.45" />
+                <ui:GenericDropdownMenu name="resolution-dropdown" label="Resolution" choices="1920x1080,1280x720,1600x900" index="0" animation-delay="0.5" />
+                <ui:GenericDropdownMenu name="quality-dropdown" label="Graphics Quality" choices="Low,Medium,High,Ultra" index="2" animation-delay="0.55" />
+            </Kobold.UI.Components.KoboldVisualElement>
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-medium" />
+            <Kobold.UI.Components.KoboldVisualElement name="theme-section" animation-delay="0.6" class="kobold-container outlined animate-in">
+                <ui:Label text="UI Theme" class="kobold-subtitle" />
+                <ui:GenericDropdownMenu name="theme-dropdown" label="Select Theme" choices="Loading..." index="0" animation-delay="0.65" />
+            </Kobold.UI.Components.KoboldVisualElement>
+            <Kobold.UI.Components.KoboldVisualElement class="kobold-spacer-large" />
+            <Kobold.UI.Components.KoboldVisualElement name="button-row" class="button-row">
+                <ui:Button name="reset-button" text="Reset to Defaults" animation-delay="0.7" class="animate-in" />
+                <Kobold.UI.Components.KoboldVisualElement style="width: 20px;" />
+                <ui:Button name="apply-button" text="Apply Settings" animation-delay="0.75" class="primary animate-in" />
+            </Kobold.UI.Components.KoboldVisualElement>
+        </ui:ScrollView>
+    </Kobold.UI.Components.KoboldVisualElement>
+</ui:UXML>
