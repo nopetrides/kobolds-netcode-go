@@ -18,6 +18,7 @@ namespace Kobolds
 		public bool GripR;
 		public bool GripL;
 		public bool GripJaw;
+		public bool Escape;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -78,9 +79,14 @@ namespace Kobolds
 		{
 			GripJawInput(value.isPressed);
 		}
+
+		public void OnEscape(InputValue value)
+		{
+			EscapeInput(value.isPressed);
+		}
+		
 #endif
-
-
+		
 		private void MoveInput(Vector2 newMoveDirection)
 		{
 			Move = newMoveDirection;
@@ -129,6 +135,11 @@ namespace Kobolds
 		private void GripJawInput(bool newFireState)
 		{
 			GripJaw = newFireState;
+		}
+		
+		private void EscapeInput(bool newEscapeState)
+		{
+			Escape = newEscapeState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)

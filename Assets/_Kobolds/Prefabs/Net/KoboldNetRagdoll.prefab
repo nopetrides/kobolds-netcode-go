@@ -4107,6 +4107,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.32318088
       objectReference: {fileID: 0}
+    - target: {fileID: 6525928656619344458, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+      propertyPath: m_Actions
+      value: 
+      objectReference: {fileID: -944628639613478452, guid: 1fe16d883027d84498be09e9158c8313, type: 3}
     - target: {fileID: 6694038211626811682, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
       propertyPath: TargetRagdoll
       value: 

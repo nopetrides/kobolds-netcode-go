@@ -1,3 +1,4 @@
+using Kobold.Input;
 using Kobolds.Cam;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,6 +11,12 @@ namespace Kobolds
 
 		private void Update()
 		{
+			if (KoboldInputSystemManager.Instance == null ||
+				KoboldInputSystemManager.Instance.IsInUIMode)
+			{
+				return;
+			}
+
 			var cameraManager = KoboldCameraManager.Instance;
 			if (cameraManager != null && Aiming)
 				cameraManager.SetCameraMode(CameraMode.Aiming);

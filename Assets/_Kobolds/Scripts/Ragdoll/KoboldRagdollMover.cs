@@ -1,7 +1,9 @@
 using System;
 using FIMSpace;
+using Kobold.Input;
 using Kobolds.Cam;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Kobolds
 {
@@ -110,6 +112,7 @@ namespace Kobolds
 
 		protected virtual void Update()
 		{
+			if (KoboldInputSystemManager.Instance.IsInUIMode) return;
 			if (!Rigb) return;
 			
 			// Safety check

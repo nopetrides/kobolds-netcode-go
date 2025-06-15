@@ -1,3 +1,4 @@
+using Kobold.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -70,6 +71,12 @@ namespace Kobolds
 
 		private void CameraRotation()
 		{
+			if (KoboldInputSystemManager.Instance == null ||
+				KoboldInputSystemManager.Instance.IsInUIMode)
+			{
+				return;
+			}
+			
 			// if there is an input and camera position is not fixed
 			if (Inputs.Look.sqrMagnitude >= Threshold && !LockCameraPosition)
 			{

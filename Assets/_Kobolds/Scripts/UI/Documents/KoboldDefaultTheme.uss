@@ -1,0 +1,119 @@
+﻿/* Root styling */
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #2C3E50;
+    --accent-color: #E74C3C;
+    --background-color: #1A1A1A;
+    --panel-color: #2D2D2D;
+    --text-color: #FFFFFF;
+    --text-secondary: #B0B0B0;
+    --border-color: #404040;
+    --hover-color: #5AA3F0;
+    --disabled-color: #666666;
+}
+
+.main-container {
+    flex: 1;
+    background-color: var(--background-color);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Panels */
+.menu-panel {
+    background-color: var(--panel-color);
+    border-radius: 10px;
+    padding: 40px;
+    min-width: 400px;
+    border-width: 1px;
+    border-color: var(--border-color);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Title */
+.game-title {
+    font-size: 48px;
+    color: var(--primary-color);
+    -unity-font-style: bold;
+    margin-bottom: 40px;
+    -unity-text-align: middle-center;
+    letter-spacing: 2px;
+}
+
+/* Buttons */
+.menu-button {
+    margin: 10px 0;
+    padding: 15px 30px;
+    font-size: 18px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: var(--border-color);
+    transition-duration: 0.2s;
+}
+
+.menu-button:hover {
+    background-color: var(--hover-color);
+    border-color: var(--primary-color);
+    scale: 1.02;
+}
+
+.menu-button:active {
+    scale: 0.98;
+}
+
+.menu-button:disabled {
+    background-color: var(--disabled-color);
+    color: var(--text-secondary);
+}
+
+.menu-button.primary {
+    background-color: var(--primary-color);
+}
+
+.menu-button.danger {
+    background-color: var(--accent-color);
+}
+
+/* Input fields */
+.text-input {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: var(--border-color);
+}
+
+.text-input:focus {
+    border-color: var(--primary-color);
+}
+
+/* Labels */
+.input-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* Section headers */
+.section-header {
+    font-size: 24px;
+    color: var(--text-color);
+    margin: 20px 0;
+    -unity-text-align: middle-center;
+}
+
+/* Back button */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+}

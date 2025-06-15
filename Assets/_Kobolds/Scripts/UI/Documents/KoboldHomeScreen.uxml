@@ -1,0 +1,35 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="main-container" class="main-container">
+        
+        <!-- Main Menu Panel -->
+        <ui:VisualElement name="main-panel" class="menu-panel">
+            <ui:Label text="KOBOLDS" class="game-title" />
+            <ui:Button name="social-hub-button" text="Social Hub" class="menu-button primary" />
+            <ui:Button name="quick-mission-button" text="Quick Mission" class="menu-button" />
+            <ui:Button name="settings-button" text="Settings" class="menu-button" />
+            <ui:Button name="quit-button" text="Quit" class="menu-button danger" />
+        </ui:VisualElement>
+        
+        <!-- Social Hub Panel -->
+        <ui:VisualElement name="social-hub-panel" class="menu-panel hidden">
+            <ui:Button name="back-from-hub-button" text="← Back" class="back-button menu-button" />
+            <ui:Label text="Join Social Hub" class="section-header" />
+            
+            <ui:Label text="Player Name" class="input-label" />
+            <ui:TextField name="player-name-field" class="text-input" />
+            
+            <ui:Label text="Session Name" class="input-label" />
+            <ui:TextField name="session-name-field" class="text-input" />
+            
+            <ui:Button name="join-hub-button" text="Join Hub" class="menu-button primary" />
+        </ui:VisualElement>
+        
+        <!-- Settings Panel -->
+        <ui:VisualElement name="settings-panel" class="menu-panel hidden">
+            <ui:Button name="back-from-settings-button" text="← Back" class="back-button menu-button" />
+            <ui:Label text="Settings" class="section-header" />
+            <!-- Theme selector and audio settings would go here -->
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>
