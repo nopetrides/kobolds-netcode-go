@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/_Kobolds/Scenes/KoboldMainMenu.unity
     guid: c74aa1643b58fc14a85a793e6de2a752
   - enabled: 1
+    path: Assets/_Kobolds/Scenes/KoboldHub.unity
+    guid: 1ba8eb28e49676e4f8a762aa3581e4a9
+  - enabled: 1
     path: Assets/SocialHub/Scenes/HubScene_TownMarket.unity
     guid: ae62e5a72be626748a06596073ba9b0a
   - enabled: 1
