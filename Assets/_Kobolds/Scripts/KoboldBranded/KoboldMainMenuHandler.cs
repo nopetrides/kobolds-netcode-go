@@ -25,21 +25,42 @@ namespace Kobold.GameManagement
 
 		private void OnConnectToSessionCompleted(Task task, string sessionName)
 		{
-			if (task.IsCompletedSuccessfully)
-				// Default behavior - assume social hub
-				KoboldEventHandler.LoadInGameScene();
+			try
+			{
+				if (task.IsCompletedSuccessfully)
+					// Default behavior - assume social hub
+					KoboldEventHandler.LoadInGameScene("");
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(e);
+			}
 		}
 
 		private void OnSocialHubConnectionCompleted(Task task, string sessionName)
 		{
-			if (task.IsCompletedSuccessfully) KoboldEventHandler.LoadInGameScene();
+			try
+			{
+				if (task.IsCompletedSuccessfully) KoboldEventHandler.LoadInGameScene("");
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(e);
+			}
 		}
 
 		private void OnMissionConnectionCompleted(Task task, string sessionName)
 		{
-			if (task.IsCompletedSuccessfully)
-				// Load mission scene or mission lobby
-				KoboldEventHandler.LoadMissionScene("MissionLobby");
+			try
+			{
+				if (task.IsCompletedSuccessfully)
+					// Load mission scene or mission lobby
+					KoboldEventHandler.LoadMissionScene("MissionLobby");
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError(e);
+			}
 		}
 	}
 }

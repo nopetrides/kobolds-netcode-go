@@ -150,14 +150,14 @@ namespace Kobold.GameManagement
 
 #region Scene Loading
 
-		public static void LoadMainMenuScene()
+		public static void LoadMainMenuScene(string name)
 		{
-			SceneManager.LoadScene("MainMenu");
+			SceneManager.LoadScene(name);
 		}
 
-		public static void LoadInGameScene()
+		public static void LoadInGameScene(string name)
 		{
-			SceneManager.LoadScene("HubScene_TownMarket");
+			SceneManager.LoadScene(name);
 		}
 
 		public static void LoadMissionScene(string missionSceneName)
