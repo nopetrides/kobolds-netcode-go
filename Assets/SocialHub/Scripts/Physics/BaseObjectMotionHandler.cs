@@ -9,7 +9,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 {
     class BaseObjectMotionHandler : NetworkTransform, ICollisionHandler, IContactEventHandlerWithInfo
     {
-        protected bool m_IsPooled = true;
+        protected bool MIsPooled = true;
 
         [SerializeField]
         CollisionType m_CollisionType;
@@ -21,7 +21,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
         internal ushort CollisionDamage => m_CollisionDamage;
 
-        protected CollisionMessageInfo m_CollisionMessage = new CollisionMessageInfo();
+        protected CollisionMessageInfo MCollisionMessage = new CollisionMessageInfo();
 
         protected Rigidbody Rigidbody { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         [SerializeField]
         List<Collider> m_Colliders;
 
-        static int s_CollisionId = 0;
+        static int _sCollisionId = 0;
 
         protected ulong LastEventId { get; private set; }
 
@@ -137,8 +137,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
         protected virtual void Start()
         {
-            m_CollisionMessage.Damage = m_CollisionDamage;
-            m_CollisionMessage.SetFlag(true, (uint)m_CollisionType);
+            MCollisionMessage.Damage = m_CollisionDamage;
+            MCollisionMessage.SetFlag(true, (uint)m_CollisionType);
         }
 
         /// <summary>
@@ -194,12 +194,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             if (!HasAuthority)
             {
                 LogMessage($"[HandleCollisionRpc][Not Owner][Routing Collision][{name}] Routing to Client-{OwnerClientId}");
-                SendCollisionMessage(m_CollisionMessage);
+                SendCollisionMessage(MCollisionMessage);
                 return;
             }
 
-            m_CollisionMessage.SourceOwner = rpcParams.Receive.SenderClientId;
-            m_CollisionMessage.TargetOwner = OwnerClientId;
+            MCollisionMessage.SourceOwner = rpcParams.Receive.SenderClientId;
+            MCollisionMessage.TargetOwner = OwnerClientId;
             HandleCollision(collisionMessage);
         }
 
@@ -285,17 +285,17 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
             if (OnPrepareCollisionMessage(averagedCollisionNormal, collidingBodyBaseObject))
             {
-                s_CollisionId++;
-                m_CollisionMessage.CollisionId = s_CollisionId;
-                m_CollisionMessage.Time = Time.realtimeSinceStartup;
-                m_CollisionMessage.Source = OwnerClientId;
-                m_CollisionMessage.SourceId = NetworkObjectId;
-                m_CollisionMessage.Destination = collidingBodyBaseObject.OwnerClientId;
-                m_CollisionMessage.DestinationNetworkObjId = collidingBodyBaseObject.NetworkObjectId;
-                m_CollisionMessage.DestinationBehaviourId = collidingBodyBaseObject.NetworkBehaviourId;
+                _sCollisionId++;
+                MCollisionMessage.CollisionId = _sCollisionId;
+                MCollisionMessage.Time = Time.realtimeSinceStartup;
+                MCollisionMessage.Source = OwnerClientId;
+                MCollisionMessage.SourceId = NetworkObjectId;
+                MCollisionMessage.Destination = collidingBodyBaseObject.OwnerClientId;
+                MCollisionMessage.DestinationNetworkObjId = collidingBodyBaseObject.NetworkObjectId;
+                MCollisionMessage.DestinationBehaviourId = collidingBodyBaseObject.NetworkBehaviourId;
 
                 // Otherwise, send the collision message to the owner of the object
-                collidingBodyBaseObject.SendCollisionMessage(m_CollisionMessage);
+                collidingBodyBaseObject.SendCollisionMessage(MCollisionMessage);
             }
         }
 

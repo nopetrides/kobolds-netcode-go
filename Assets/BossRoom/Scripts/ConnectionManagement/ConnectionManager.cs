@@ -55,11 +55,11 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     public class ConnectionManager : MonoBehaviour
     {
-        ConnectionState m_CurrentState;
+        ConnectionState _mCurrentState;
 
         [Inject]
-        NetworkManager m_NetworkManager;
-        public NetworkManager NetworkManager => m_NetworkManager;
+        NetworkManager _mNetworkManager;
+        public NetworkManager NetworkManager => _mNetworkManager;
 
         [SerializeField]
         int m_NbReconnectAttempts = 2;
@@ -67,16 +67,16 @@ namespace Unity.BossRoom.ConnectionManagement
         public int NbReconnectAttempts => m_NbReconnectAttempts;
 
         [Inject]
-        IObjectResolver m_Resolver;
+        IObjectResolver _mResolver;
 
         public int MaxConnectedPlayers = 8;
 
-        internal readonly OfflineState m_Offline = new OfflineState();
-        internal readonly ClientConnectingState m_ClientConnecting = new ClientConnectingState();
-        internal readonly ClientConnectedState m_ClientConnected = new ClientConnectedState();
-        internal readonly ClientReconnectingState m_ClientReconnecting = new ClientReconnectingState();
-        internal readonly StartingHostState m_StartingHost = new StartingHostState();
-        internal readonly HostingState m_Hosting = new HostingState();
+        internal readonly OfflineState MOffline = new OfflineState();
+        internal readonly ClientConnectingState MClientConnecting = new ClientConnectingState();
+        internal readonly ClientConnectedState MClientConnected = new ClientConnectedState();
+        internal readonly ClientReconnectingState MClientReconnecting = new ClientReconnectingState();
+        internal readonly StartingHostState MStartingHost = new StartingHostState();
+        internal readonly HostingState MHosting = new HostingState();
 
         void Awake()
         {
@@ -85,13 +85,13 @@ namespace Unity.BossRoom.ConnectionManagement
 
         void Start()
         {
-            List<ConnectionState> states = new() { m_Offline, m_ClientConnecting, m_ClientConnected, m_ClientReconnecting, m_StartingHost, m_Hosting };
+            List<ConnectionState> states = new() { MOffline, MClientConnecting, MClientConnected, MClientReconnecting, MStartingHost, MHosting };
             foreach (var connectionState in states)
             {
-                m_Resolver.Inject(connectionState);
+                _mResolver.Inject(connectionState);
             }
 
-            m_CurrentState = m_Offline;
+            _mCurrentState = MOffline;
 
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
@@ -113,71 +113,71 @@ namespace Unity.BossRoom.ConnectionManagement
 
         internal void ChangeState(ConnectionState nextState)
         {
-            Debug.Log($"{name}: Changed connection state from {m_CurrentState.GetType().Name} to {nextState.GetType().Name}.");
+            Debug.Log($"{name}: Changed connection state from {_mCurrentState.GetType().Name} to {nextState.GetType().Name}.");
 
-            if (m_CurrentState != null)
+            if (_mCurrentState != null)
             {
-                m_CurrentState.Exit();
+                _mCurrentState.Exit();
             }
-            m_CurrentState = nextState;
-            m_CurrentState.Enter();
+            _mCurrentState = nextState;
+            _mCurrentState.Enter();
         }
 
         void OnClientDisconnectCallback(ulong clientId)
         {
-            m_CurrentState.OnClientDisconnect(clientId);
+            _mCurrentState.OnClientDisconnect(clientId);
         }
 
         void OnClientConnectedCallback(ulong clientId)
         {
-            m_CurrentState.OnClientConnected(clientId);
+            _mCurrentState.OnClientConnected(clientId);
         }
 
         void OnServerStarted()
         {
-            m_CurrentState.OnServerStarted();
+            _mCurrentState.OnServerStarted();
         }
 
         void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
-            m_CurrentState.ApprovalCheck(request, response);
+            _mCurrentState.ApprovalCheck(request, response);
         }
 
         void OnTransportFailure()
         {
-            m_CurrentState.OnTransportFailure();
+            _mCurrentState.OnTransportFailure();
         }
 
         void OnServerStopped(bool _) // we don't need this parameter as the ConnectionState already carries the relevant information
         {
-            m_CurrentState.OnServerStopped();
+            _mCurrentState.OnServerStopped();
         }
 
         // Note: MultiplayerSDK refactoring
         public void StartClientLobby(string sessionCode, string playerName)
         {
-            m_CurrentState.StartClientLobby(sessionCode, playerName);
+            _mCurrentState.StartClientLobby(sessionCode, playerName);
         }
 
         public void StartClientIp(string playerName, string ipaddress, int port)
         {
-            m_CurrentState.StartClientIP(playerName, ipaddress, port);
+            _mCurrentState.StartClientIP(playerName, ipaddress, port);
         }
 
         // Note: MultiplayerSDK refactoring
         public void StartHostLobby(string sessionCode, string playerName)
         {
-            m_CurrentState.StartHostLobby(sessionCode, playerName);
+            _mCurrentState.StartHostLobby(sessionCode, playerName);
         }
 
         public void StartHostIp(string playerName, string ipaddress, int port)
         {
-            m_CurrentState.StartHostIP(playerName, ipaddress, port);
+            _mCurrentState.StartHostIP(playerName, ipaddress, port);
         }
 
         public void RequestShutdown()
         {
-            m_CurrentState.OnUserRequestedShutdown();
+            _mCurrentState.OnUserRequestedShutdown();
         }
     }
 }

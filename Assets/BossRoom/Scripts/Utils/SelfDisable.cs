@@ -9,11 +9,11 @@ namespace Unity.BossRoom.Utils
     {
         [SerializeField]
         float m_DisabledDelay;
-        float m_DisableTimestamp;
+        float _mDisableTimestamp;
 
         void Update()
         {
-            if (Time.time >= m_DisableTimestamp)
+            if (Time.time >= _mDisableTimestamp)
             {
                 gameObject.SetActive(false);
             }
@@ -21,7 +21,7 @@ namespace Unity.BossRoom.Utils
 
         void OnEnable()
         {
-            m_DisableTimestamp = Time.time + m_DisabledDelay;
+            _mDisableTimestamp = Time.time + m_DisabledDelay;
         }
     }
 }

@@ -12,12 +12,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
 {
     class VivoxManager : MonoBehaviour
     {
-        const int k_AudibleDistance = 20;
-        const int k_ConventionalDistance = 1;
-        const float k_AudioFadeByDistance = 1f;
+        const int KAudibleDistance = 20;
+        const int KConventionalDistance = 1;
+        const float KAudioFadeByDistance = 1f;
 
-        string m_TextChannelName;
-        string m_VoiceChannelName;
+        string _mTextChannelName;
+        string _mVoiceChannelName;
 
 #if UNITY_STANDALONE_OSX || UNITY_IOS
         bool m_MicPermissionChecked;
@@ -63,8 +63,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
                 await Task.Yield();
             }
 #endif
-            m_TextChannelName = sessionName + "_text";
-            m_VoiceChannelName = sessionName + "_voice";
+            _mTextChannelName = sessionName + "_text";
+            _mVoiceChannelName = sessionName + "_voice";
             await VivoxService.Instance.InitializeAsync();
             var loginOptions = new LoginOptions()
             {
@@ -81,17 +81,17 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
 
         async Task JoinChannels()
         {
-            var positionalChannelProperties = new Channel3DProperties(k_AudibleDistance, k_ConventionalDistance, k_AudioFadeByDistance, AudioFadeModel.InverseByDistance);
+            var positionalChannelProperties = new Channel3DProperties(KAudibleDistance, KConventionalDistance, KAudioFadeByDistance, AudioFadeModel.InverseByDistance);
             BindChannelEvents(true);
-            await VivoxService.Instance.JoinPositionalChannelAsync(m_VoiceChannelName, ChatCapability.AudioOnly, positionalChannelProperties);
-            await VivoxService.Instance.JoinGroupChannelAsync(m_TextChannelName, ChatCapability.TextOnly);
+            await VivoxService.Instance.JoinPositionalChannelAsync(_mVoiceChannelName, ChatCapability.AudioOnly, positionalChannelProperties);
+            await VivoxService.Instance.JoinGroupChannelAsync(_mTextChannelName, ChatCapability.TextOnly);
         }
 
         void OnParticipantLeftChannel(VivoxParticipant vivoxParticipant)
         {
             var channelOptions = new ChannelOptions();
             // UI only needs to react to VoiceChannel participants.
-            if (vivoxParticipant.ChannelName != m_VoiceChannelName)
+            if (vivoxParticipant.ChannelName != _mVoiceChannelName)
                 return;
 
             GameplayEventHandler.ParticipantLeftVoiceChat(vivoxParticipant);
@@ -100,7 +100,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
         void OnParticipantAddedToChannel(VivoxParticipant vivoxParticipant)
         {
             // UI only needs to react to VoiceChannel participants.
-            if (vivoxParticipant.ChannelName != m_VoiceChannelName)
+            if (vivoxParticipant.ChannelName != _mVoiceChannelName)
                 return;
 
             GameplayEventHandler.ParticipantJoinedVoiceChat(vivoxParticipant);
@@ -108,19 +108,19 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
 
         void OnChannelJoined(string channelName)
         {
-            if (channelName == m_TextChannelName)
-                GameplayEventHandler.SetTextChatReady(true, m_TextChannelName);
+            if (channelName == _mTextChannelName)
+                GameplayEventHandler.SetTextChatReady(true, _mTextChannelName);
         }
 
         async void LogoutVivox()
         {
-            GameplayEventHandler.SetTextChatReady(false, m_TextChannelName);
+            GameplayEventHandler.SetTextChatReady(false, _mTextChannelName);
             await VivoxService.Instance.LogoutAsync();
         }
 
         async void SendVivoxMessage(string message)
         {
-            await VivoxService.Instance.SendChannelTextMessageAsync(m_TextChannelName, message);
+            await VivoxService.Instance.SendChannelTextMessageAsync(_mTextChannelName, message);
         }
 
         void OnMessageReceived(VivoxMessage vivoxMessage)
@@ -131,7 +131,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
 
         internal void SetPlayer3DPosition(GameObject avatar)
         {
-            VivoxService.Instance.Set3DPosition(avatar, m_VoiceChannelName, false);
+            VivoxService.Instance.Set3DPosition(avatar, _mVoiceChannelName, false);
         }
 
         void BindGlobalEvents(bool doBind)

@@ -15,12 +15,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         // cached grounded check
         internal bool Grounded { get; private set; }
 
-        RaycastHit[] m_RaycastHits = new RaycastHit[1];
-        Ray m_Ray;
+        RaycastHit[] _mRaycastHits = new RaycastHit[1];
+        Ray _mRay;
 
-        Vector3 m_Movement;
-        bool m_Jump;
-        bool m_Sprint;
+        Vector3 _mMovement;
+        bool _mJump;
+        bool _mSprint;
 
         internal event Action PlayerJumped;
 
@@ -46,20 +46,20 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         bool IsGrounded()
         {
             // Perform a raycast to check if the character is grounded
-            m_Ray.origin = m_Rigidbody.worldCenterOfMass;
-            m_Ray.direction = Vector3.down;
-            return UnityEngine.Physics.RaycastNonAlloc(m_Ray, m_RaycastHits, m_PhysicsPlayerControllerSettings.GroundCheckDistance) > 0;
+            _mRay.origin = m_Rigidbody.worldCenterOfMass;
+            _mRay.direction = Vector3.down;
+            return UnityEngine.Physics.RaycastNonAlloc(_mRay, _mRaycastHits, m_PhysicsPlayerControllerSettings.GroundCheckDistance) > 0;
         }
 
         void ApplyMovement()
         {
-            if (Mathf.Approximately(m_Movement.magnitude, 0f))
+            if (Mathf.Approximately(_mMovement.magnitude, 0f))
             {
                 return;
             }
 
             var velocity = m_Rigidbody.linearVelocity;
-            var desiredVelocity = m_Movement * (m_Sprint ? m_PhysicsPlayerControllerSettings.SprintSpeed : m_PhysicsPlayerControllerSettings.WalkSpeed);
+            var desiredVelocity = _mMovement * (_mSprint ? m_PhysicsPlayerControllerSettings.SprintSpeed : m_PhysicsPlayerControllerSettings.WalkSpeed);
             var targetVelocity = new Vector3(desiredVelocity.x, velocity.y, desiredVelocity.z);
             var velocityChange = targetVelocity - velocity;
 
@@ -77,22 +77,22 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             }
 
             // maybe add magnitude check?
-            var targetAngle = Mathf.Atan2(m_Movement.x, m_Movement.z) * Mathf.Rad2Deg;
+            var targetAngle = Mathf.Atan2(_mMovement.x, _mMovement.z) * Mathf.Rad2Deg;
             var targetRotation = Quaternion.Euler(0, targetAngle, 0);
             var smoothRotation = Quaternion.Lerp(m_Rigidbody.rotation, targetRotation, Time.fixedDeltaTime * m_PhysicsPlayerControllerSettings.RotationSpeed);
             m_Rigidbody.MoveRotation(smoothRotation);
 
-            m_Movement = Vector3.zero;
+            _mMovement = Vector3.zero;
         }
 
         void ApplyJump()
         {
-            if (m_Jump && Grounded)
+            if (_mJump && Grounded)
             {
                 m_Rigidbody.AddForce(Vector3.up * m_PhysicsPlayerControllerSettings.JumpImpusle, ForceMode.Impulse);
                 PlayerJumped?.Invoke();
             }
-            m_Jump = false;
+            _mJump = false;
         }
 
         void ApplyDrag()
@@ -115,20 +115,20 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
         public void SetMovement(Vector3 movement)
         {
-            m_Movement = movement;
+            _mMovement = movement;
         }
 
         public void SetJump(bool jump)
         {
             if (jump)
             {
-                m_Jump = true;
+                _mJump = true;
             }
         }
 
         public void SetSprint(bool sprint)
         {
-            m_Sprint = sprint;
+            _mSprint = sprint;
         }
     }
 }

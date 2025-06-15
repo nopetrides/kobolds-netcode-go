@@ -11,21 +11,21 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
     {
         [SerializeField]
         CinemachineCamera m_FreeLookVCamera;
-        const float k_MouseLookMultiplier = 15f;
-        const float k_GamepadLookMultiplier = 100f;
-        const float k_VerticalScaling = 0.01f;
+        const float KMouseLookMultiplier = 15f;
+        const float KGamepadLookMultiplier = 100f;
+        const float KVerticalScaling = 0.01f;
 
-        Transform m_FollowTransform;
-        bool m_CameraMovementLock;
-        bool m_IsRotatePressed;
-        CinemachineOrbitalFollow m_OrbitalFollow;
+        Transform _mFollowTransform;
+        bool _mCameraMovementLock;
+        bool _mIsRotatePressed;
+        CinemachineOrbitalFollow _mOrbitalFollow;
 
         void Awake()
         {
             GameInput.Actions.Player.Rotate.started += OnRotateStarted;
             GameInput.Actions.Player.Rotate.canceled += OnRotateCanceled;
 
-            m_OrbitalFollow = m_FreeLookVCamera.GetComponent<CinemachineOrbitalFollow>();
+            _mOrbitalFollow = m_FreeLookVCamera.GetComponent<CinemachineOrbitalFollow>();
             m_FreeLookVCamera.Follow = null;
         }
 
@@ -39,13 +39,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
 
         internal void SetTransform(Transform newTransform)
         {
-            m_FollowTransform = newTransform;
+            _mFollowTransform = newTransform;
             SetupProtagonistVirtualCamera();
         }
 
         void OnRotateStarted(InputAction.CallbackContext _)
         {
-            m_IsRotatePressed = true;
+            _mIsRotatePressed = true;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
@@ -54,16 +54,16 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
 
         void OnRotateCanceled(InputAction.CallbackContext _)
         {
-            m_IsRotatePressed = false;
+            _mIsRotatePressed = false;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
 
         IEnumerator DisableMouseControlForFrame()
         {
-            m_CameraMovementLock = true;
+            _mCameraMovementLock = true;
             yield return new WaitForEndOfFrame();
-            m_CameraMovementLock = false;
+            _mCameraMovementLock = false;
         }
 
         void Update()
@@ -90,41 +90,41 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
 
         void HandleRotateMouse()
         {
-            if (m_CameraMovementLock || !m_IsRotatePressed)
+            if (_mCameraMovementLock || !_mIsRotatePressed)
             {
                 return;
             }
 
             var cameraMovement = GameInput.Actions.Player.Look.ReadValue<Vector2>();
-            var deviceScaling = k_MouseLookMultiplier * Time.deltaTime;
-            m_OrbitalFollow.HorizontalAxis.Value += cameraMovement.x * deviceScaling;
-            m_OrbitalFollow.VerticalAxis.Value += cameraMovement.y * deviceScaling * k_VerticalScaling;
+            var deviceScaling = KMouseLookMultiplier * Time.deltaTime;
+            _mOrbitalFollow.HorizontalAxis.Value += cameraMovement.x * deviceScaling;
+            _mOrbitalFollow.VerticalAxis.Value += cameraMovement.y * deviceScaling * KVerticalScaling;
         }
 
         void HandleRotateTouchscreen()
         {
             var cameraMovement = GameInput.Actions.Player.Look.ReadValue<Vector2>();
-            var deviceScaling = k_MouseLookMultiplier * Time.deltaTime;
-            m_OrbitalFollow.HorizontalAxis.Value += cameraMovement.x * deviceScaling;
-            m_OrbitalFollow.VerticalAxis.Value += cameraMovement.y * deviceScaling * k_VerticalScaling;
+            var deviceScaling = KMouseLookMultiplier * Time.deltaTime;
+            _mOrbitalFollow.HorizontalAxis.Value += cameraMovement.x * deviceScaling;
+            _mOrbitalFollow.VerticalAxis.Value += cameraMovement.y * deviceScaling * KVerticalScaling;
         }
 
         void HandleRotateGamepad()
         {
             var cameraMovement = GameInput.Actions.Player.Look.ReadValue<Vector2>();
-            var deviceScaling = k_GamepadLookMultiplier * Time.deltaTime;
-            m_OrbitalFollow.HorizontalAxis.Value += cameraMovement.x * deviceScaling;
-            m_OrbitalFollow.VerticalAxis.Value += cameraMovement.y * deviceScaling * k_VerticalScaling;
+            var deviceScaling = KGamepadLookMultiplier * Time.deltaTime;
+            _mOrbitalFollow.HorizontalAxis.Value += cameraMovement.x * deviceScaling;
+            _mOrbitalFollow.VerticalAxis.Value += cameraMovement.y * deviceScaling * KVerticalScaling;
         }
 
         void SetupProtagonistVirtualCamera()
         {
-            if (m_FollowTransform == null)
+            if (_mFollowTransform == null)
             {
                 return;
             }
 
-            m_FreeLookVCamera.Follow = m_FollowTransform;
+            m_FreeLookVCamera.Follow = _mFollowTransform;
             CinemachineCore.ResetCameraState(); // snap to new position
         }
     }

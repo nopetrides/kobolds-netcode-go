@@ -11,7 +11,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         [RequireComponent(typeof(UIDocument))]
         class MainUIController : UIView
         {
-            UIDocument m_UIDocument;
+            UIDocument _mUIDocument;
 
             /// <summary>
             /// Home view: Main menu items
@@ -19,14 +19,14 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
             [SerializeField]
             HomeScreenView m_HomeView;
 
-            UIView m_CurrentView;
+            UIView _mCurrentView;
 
             void OnEnable()
             {
-                m_UIDocument = GetComponent<UIDocument>();
-                Initialize(m_UIDocument.rootVisualElement);
+                _mUIDocument = GetComponent<UIDocument>();
+                Initialize(_mUIDocument.rootVisualElement);
 
-                m_HomeView.Initialize(m_Root.Q<VisualElement>("HomeScreen"));
+                m_HomeView.Initialize(MRoot.Q<VisualElement>("HomeScreen"));
                 RegisterEvents();
                 DisplayChildView(m_HomeView);
             }

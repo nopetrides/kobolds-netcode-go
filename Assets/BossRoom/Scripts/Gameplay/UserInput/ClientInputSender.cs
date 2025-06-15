@@ -17,27 +17,27 @@ namespace Unity.BossRoom.Gameplay.UserInput
     [RequireComponent(typeof(ServerCharacter))]
     public class ClientInputSender : NetworkBehaviour
     {
-        const float k_MouseInputRaycastDistance = 100f;
+        const float KMouseInputRaycastDistance = 100f;
 
         //The movement input rate is capped at 40ms (or 25 fps). This provides a nice balance between responsiveness and
         //upstream network conservation. This matters when holding down your mouse button to move.
-        const float k_MoveSendRateSeconds = 0.04f; //25 fps.
+        const float KMoveSendRateSeconds = 0.04f; //25 fps.
 
-        const float k_TargetMoveTimeout = 0.45f;  //prevent moves for this long after targeting someone (helps prevent walking to the guy you clicked).
+        const float KTargetMoveTimeout = 0.45f;  //prevent moves for this long after targeting someone (helps prevent walking to the guy you clicked).
 
-        float m_LastSentMove;
+        float _mLastSentMove;
 
         // Cache raycast hit array so that we can use non alloc raycasts
-        readonly RaycastHit[] k_CachedHit = new RaycastHit[4];
+        readonly RaycastHit[] _kCachedHit = new RaycastHit[4];
 
         // This is basically a constant but layer masks cannot be created in the constructor, that's why it's assigned int Awake.
-        LayerMask m_GroundLayerMask;
+        LayerMask _mGroundLayerMask;
 
-        LayerMask m_ActionLayerMask;
+        LayerMask _mActionLayerMask;
 
-        const float k_MaxNavMeshDistance = 1f;
+        const float KMaxNavMeshDistance = 1f;
 
-        RaycastHitComparer m_RaycastHitComparer;
+        RaycastHitComparer _mRaycastHitComparer;
 
         [SerializeField]
         ServerCharacter m_ServerCharacter;
@@ -85,18 +85,18 @@ namespace Unity.BossRoom.Gameplay.UserInput
         /// List of ActionRequests that have been received since the last FixedUpdate ran. This is a static array, to avoid allocs, and
         /// because we don't really want to let this list grow indefinitely.
         /// </summary>
-        readonly ActionRequest[] m_ActionRequests = new ActionRequest[5];
+        readonly ActionRequest[] _mActionRequests = new ActionRequest[5];
 
         /// <summary>
         /// Number of ActionRequests that have been queued since the last FixedUpdate.
         /// </summary>
-        int m_ActionRequestCount;
+        int _mActionRequestCount;
 
-        BaseActionInput m_CurrentSkillInput;
+        BaseActionInput _mCurrentSkillInput;
 
-        bool m_MoveRequest;
+        bool _mMoveRequest;
 
-        Camera m_MainCamera;
+        Camera _mMainCamera;
 
         public event Action<Vector3> ClientMoveEvent;
 
@@ -108,19 +108,19 @@ namespace Unity.BossRoom.Gameplay.UserInput
         [SerializeField]
         PhysicsWrapper m_PhysicsWrapper;
 
-        public ActionState actionState1 { get; private set; }
+        public ActionState ActionState1 { get; private set; }
 
-        public ActionState actionState2 { get; private set; }
+        public ActionState ActionState2 { get; private set; }
 
-        public ActionState actionState3 { get; private set; }
+        public ActionState ActionState3 { get; private set; }
 
-        public System.Action action1ModifiedCallback;
+        public System.Action Action1ModifiedCallback;
 
-        ServerCharacter m_TargetServerCharacter;
+        ServerCharacter _mTargetServerCharacter;
 
         void Awake()
         {
-            m_MainCamera = Camera.main;
+            _mMainCamera = Camera.main;
         }
 
         public override void OnNetworkSpawn()
@@ -138,23 +138,23 @@ namespace Unity.BossRoom.Gameplay.UserInput
             if (CharacterClass.Skill1 &&
                 GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill1.ActionID, out var action1))
             {
-                actionState1 = new ActionState() { actionID = action1.ActionID, selectable = true };
+                ActionState1 = new ActionState() { ActionID = action1.ActionID, Selectable = true };
             }
             if (CharacterClass.Skill2 &&
                 GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill2.ActionID, out var action2))
             {
-                actionState2 = new ActionState() { actionID = action2.ActionID, selectable = true };
+                ActionState2 = new ActionState() { ActionID = action2.ActionID, Selectable = true };
             }
             if (CharacterClass.Skill3 &&
                 GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill3.ActionID, out var action3))
             {
-                actionState3 = new ActionState() { actionID = action3.ActionID, selectable = true };
+                ActionState3 = new ActionState() { ActionID = action3.ActionID, Selectable = true };
             }
 
-            m_GroundLayerMask = LayerMask.GetMask(new[] { "Ground" });
-            m_ActionLayerMask = LayerMask.GetMask(new[] { "PCs", "NPCs", "Ground" });
+            _mGroundLayerMask = LayerMask.GetMask(new[] { "Ground" });
+            _mActionLayerMask = LayerMask.GetMask(new[] { "PCs", "NPCs", "Ground" });
 
-            m_RaycastHitComparer = new RaycastHitComparer();
+            _mRaycastHitComparer = new RaycastHitComparer();
         }
 
         public override void OnNetworkDespawn()
@@ -165,25 +165,25 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 m_ServerCharacter.HeldNetworkObject.OnValueChanged -= OnHeldNetworkObjectChanged;
             }
 
-            if (m_TargetServerCharacter)
+            if (_mTargetServerCharacter)
             {
-                m_TargetServerCharacter.NetLifeState.LifeState.OnValueChanged -= OnTargetLifeStateChanged;
+                _mTargetServerCharacter.NetLifeState.LifeState.OnValueChanged -= OnTargetLifeStateChanged;
             }
         }
 
         void OnTargetChanged(ulong previousValue, ulong newValue)
         {
-            if (m_TargetServerCharacter)
+            if (_mTargetServerCharacter)
             {
-                m_TargetServerCharacter.NetLifeState.LifeState.OnValueChanged -= OnTargetLifeStateChanged;
+                _mTargetServerCharacter.NetLifeState.LifeState.OnValueChanged -= OnTargetLifeStateChanged;
             }
 
-            m_TargetServerCharacter = null;
+            _mTargetServerCharacter = null;
 
             if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(newValue, out var selection) &&
-                selection.TryGetComponent(out m_TargetServerCharacter))
+                selection.TryGetComponent(out _mTargetServerCharacter))
             {
-                m_TargetServerCharacter.NetLifeState.LifeState.OnValueChanged += OnTargetLifeStateChanged;
+                _mTargetServerCharacter.NetLifeState.LifeState.OnValueChanged += OnTargetLifeStateChanged;
             }
 
             UpdateAction1();
@@ -201,7 +201,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
 
         void FinishSkill()
         {
-            m_CurrentSkillInput = null;
+            _mCurrentSkillInput = null;
         }
 
         void SendInput(ActionRequestData action)
@@ -213,64 +213,64 @@ namespace Unity.BossRoom.Gameplay.UserInput
         void FixedUpdate()
         {
             //play all ActionRequests, in FIFO order.
-            for (int i = 0; i < m_ActionRequestCount; ++i)
+            for (int i = 0; i < _mActionRequestCount; ++i)
             {
-                if (m_CurrentSkillInput != null)
+                if (_mCurrentSkillInput != null)
                 {
                     //actions requested while input is active are discarded, except for "Release" requests, which go through.
-                    if (IsReleaseStyle(m_ActionRequests[i].TriggerStyle))
+                    if (IsReleaseStyle(_mActionRequests[i].TriggerStyle))
                     {
-                        m_CurrentSkillInput.OnReleaseKey();
+                        _mCurrentSkillInput.OnReleaseKey();
                     }
                 }
-                else if (!IsReleaseStyle(m_ActionRequests[i].TriggerStyle))
+                else if (!IsReleaseStyle(_mActionRequests[i].TriggerStyle))
                 {
-                    var actionPrototype = GameDataSource.Instance.GetActionPrototypeByID(m_ActionRequests[i].RequestedActionID);
+                    var actionPrototype = GameDataSource.Instance.GetActionPrototypeByID(_mActionRequests[i].RequestedActionID);
                     if (actionPrototype.Config.ActionInput != null)
                     {
                         var skillPlayer = Instantiate(actionPrototype.Config.ActionInput);
                         skillPlayer.Initiate(m_ServerCharacter, m_PhysicsWrapper.Transform.position, actionPrototype.ActionID, SendInput, FinishSkill);
-                        m_CurrentSkillInput = skillPlayer;
+                        _mCurrentSkillInput = skillPlayer;
                     }
                     else
                     {
-                        PerformSkill(actionPrototype.ActionID, m_ActionRequests[i].TriggerStyle, m_ActionRequests[i].TargetId);
+                        PerformSkill(actionPrototype.ActionID, _mActionRequests[i].TriggerStyle, _mActionRequests[i].TargetId);
                     }
                 }
             }
 
-            m_ActionRequestCount = 0;
+            _mActionRequestCount = 0;
 
             if (EventSystem.current.currentSelectedGameObject != null)
             {
                 return;
             }
 
-            if (m_MoveRequest)
+            if (_mMoveRequest)
             {
-                m_MoveRequest = false;
-                if ((Time.time - m_LastSentMove) > k_MoveSendRateSeconds)
+                _mMoveRequest = false;
+                if ((Time.time - _mLastSentMove) > KMoveSendRateSeconds)
                 {
-                    m_LastSentMove = Time.time;
-                    var ray = m_MainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+                    _mLastSentMove = Time.time;
+                    var ray = _mMainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
 
                     var groundHits = Physics.RaycastNonAlloc(ray,
-                        k_CachedHit,
-                        k_MouseInputRaycastDistance,
-                        m_GroundLayerMask);
+                        _kCachedHit,
+                        KMouseInputRaycastDistance,
+                        _mGroundLayerMask);
 
                     if (groundHits > 0)
                     {
                         if (groundHits > 1)
                         {
                             // sort hits by distance
-                            Array.Sort(k_CachedHit, 0, groundHits, m_RaycastHitComparer);
+                            Array.Sort(_kCachedHit, 0, groundHits, _mRaycastHitComparer);
                         }
 
                         // verify point is indeed on navmesh surface
-                        if (NavMesh.SamplePosition(k_CachedHit[0].point,
+                        if (NavMesh.SamplePosition(_kCachedHit[0].point,
                                 out var hit,
-                                k_MaxNavMeshDistance,
+                                KMaxNavMeshDistance,
                                 NavMesh.AllAreas))
                         {
                             m_ServerCharacter.ServerSendCharacterInputRpc(hit.position);
@@ -308,27 +308,27 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 int numHits = 0;
                 if (triggerStyle == SkillTriggerStyle.MouseClick)
                 {
-                    var ray = m_MainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
-                    numHits = Physics.RaycastNonAlloc(ray, k_CachedHit, k_MouseInputRaycastDistance, m_ActionLayerMask);
+                    var ray = _mMainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+                    numHits = Physics.RaycastNonAlloc(ray, _kCachedHit, KMouseInputRaycastDistance, _mActionLayerMask);
                 }
 
                 int networkedHitIndex = -1;
                 for (int i = 0; i < numHits; i++)
                 {
-                    if (k_CachedHit[i].transform.GetComponentInParent<NetworkObject>())
+                    if (_kCachedHit[i].transform.GetComponentInParent<NetworkObject>())
                     {
                         networkedHitIndex = i;
                         break;
                     }
                 }
 
-                hitTransform = networkedHitIndex >= 0 ? k_CachedHit[networkedHitIndex].transform : null;
+                hitTransform = networkedHitIndex >= 0 ? _kCachedHit[networkedHitIndex].transform : null;
             }
 
             if (GetActionRequestForTarget(hitTransform, actionID, triggerStyle, out ActionRequestData playerAction))
             {
                 //Don't trigger our move logic for a while. This protects us from moving just because we clicked on them to target them.
-                m_LastSentMove = Time.time + k_TargetMoveTimeout;
+                _mLastSentMove = Time.time + KTargetMoveTimeout;
 
                 SendInput(playerAction);
             }
@@ -339,7 +339,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 // in the desired direction. For others, like mage's bolts, this will fire a "miss" projectile at the spot clicked on.)
 
                 var data = new ActionRequestData();
-                PopulateSkillRequest(k_CachedHit[0].point, actionID, ref data);
+                PopulateSkillRequest(_kCachedHit[0].point, actionID, ref data);
 
                 SendInput(data);
             }
@@ -462,12 +462,12 @@ namespace Unity.BossRoom.Gameplay.UserInput
             Assert.IsNotNull(GameDataSource.Instance.GetActionPrototypeByID(actionID),
                 $"Action with actionID {actionID} must be contained in the Action prototypes of GameDataSource!");
 
-            if (m_ActionRequestCount < m_ActionRequests.Length)
+            if (_mActionRequestCount < _mActionRequests.Length)
             {
-                m_ActionRequests[m_ActionRequestCount].RequestedActionID = actionID;
-                m_ActionRequests[m_ActionRequestCount].TriggerStyle = triggerStyle;
-                m_ActionRequests[m_ActionRequestCount].TargetId = targetId;
-                m_ActionRequestCount++;
+                _mActionRequests[_mActionRequestCount].RequestedActionID = actionID;
+                _mActionRequests[_mActionRequestCount].TriggerStyle = triggerStyle;
+                _mActionRequests[_mActionRequestCount].TargetId = targetId;
+                _mActionRequestCount++;
             }
         }
 
@@ -475,27 +475,27 @@ namespace Unity.BossRoom.Gameplay.UserInput
         {
             if (Input.GetKeyDown(KeyCode.Alpha1) && CharacterClass.Skill1)
             {
-                RequestAction(actionState1.actionID, SkillTriggerStyle.Keyboard);
+                RequestAction(ActionState1.ActionID, SkillTriggerStyle.Keyboard);
             }
             else if (Input.GetKeyUp(KeyCode.Alpha1) && CharacterClass.Skill1)
             {
-                RequestAction(actionState1.actionID, SkillTriggerStyle.KeyboardRelease);
+                RequestAction(ActionState1.ActionID, SkillTriggerStyle.KeyboardRelease);
             }
             if (Input.GetKeyDown(KeyCode.Alpha2) && CharacterClass.Skill2)
             {
-                RequestAction(actionState2.actionID, SkillTriggerStyle.Keyboard);
+                RequestAction(ActionState2.ActionID, SkillTriggerStyle.Keyboard);
             }
             else if (Input.GetKeyUp(KeyCode.Alpha2) && CharacterClass.Skill2)
             {
-                RequestAction(actionState2.actionID, SkillTriggerStyle.KeyboardRelease);
+                RequestAction(ActionState2.ActionID, SkillTriggerStyle.KeyboardRelease);
             }
             if (Input.GetKeyDown(KeyCode.Alpha3) && CharacterClass.Skill3)
             {
-                RequestAction(actionState3.actionID, SkillTriggerStyle.Keyboard);
+                RequestAction(ActionState3.ActionID, SkillTriggerStyle.Keyboard);
             }
             else if (Input.GetKeyUp(KeyCode.Alpha3) && CharacterClass.Skill3)
             {
-                RequestAction(actionState3.actionID, SkillTriggerStyle.KeyboardRelease);
+                RequestAction(ActionState3.ActionID, SkillTriggerStyle.KeyboardRelease);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha5))
@@ -515,7 +515,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 RequestAction(GameDataSource.Instance.Emote4ActionPrototype.ActionID, SkillTriggerStyle.Keyboard);
             }
 
-            if (!EventSystem.current.IsPointerOverGameObject() && m_CurrentSkillInput == null)
+            if (!EventSystem.current.IsPointerOverGameObject() && _mCurrentSkillInput == null)
             {
                 //IsPointerOverGameObject() is a simple way to determine if the mouse is over a UI element. If it is, we don't perform mouse input logic,
                 //to model the button "blocking" mouse clicks from falling through and interacting with the world.
@@ -531,7 +531,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 }
                 else if (Input.GetMouseButton(0))
                 {
-                    m_MoveRequest = true;
+                    _mMoveRequest = true;
                 }
             }
         }
@@ -550,7 +550,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             {
                 // show drop!
 
-                actionState1.actionID = GameDataSource.Instance.DropActionPrototype.ActionID;
+                ActionState1.ActionID = GameDataSource.Instance.DropActionPrototype.ActionID;
             }
             else if ((m_ServerCharacter.TargetId.Value != 0
                     && selection != null
@@ -559,7 +559,7 @@ namespace Unity.BossRoom.Gameplay.UserInput
             {
                 // special case: targeting a pickup-able item or holding a pickup object
 
-                actionState1.actionID = GameDataSource.Instance.PickUpActionPrototype.ActionID;
+                ActionState1.ActionID = GameDataSource.Instance.PickUpActionPrototype.ActionID;
             }
             else if (m_ServerCharacter.TargetId.Value != 0
                 && selection != null
@@ -571,29 +571,29 @@ namespace Unity.BossRoom.Gameplay.UserInput
                 // we have another player selected! In that case we want to reflect that our basic Action is a Revive, not an attack!
                 // But we need to know if the player is alive... if so, the button should be disabled (for better player communication)
 
-                actionState1.actionID = GameDataSource.Instance.ReviveActionPrototype.ActionID;
+                ActionState1.ActionID = GameDataSource.Instance.ReviveActionPrototype.ActionID;
                 isSelectable = charState.NetLifeState.LifeState.Value != LifeState.Alive;
             }
             else
             {
-                actionState1.SetActionState(CharacterClass.Skill1.ActionID);
+                ActionState1.SetActionState(CharacterClass.Skill1.ActionID);
             }
 
-            actionState1.selectable = isSelectable;
+            ActionState1.Selectable = isSelectable;
 
-            action1ModifiedCallback?.Invoke();
+            Action1ModifiedCallback?.Invoke();
         }
 
         public class ActionState
         {
-            public ActionID actionID { get; internal set; }
+            public ActionID ActionID { get; internal set; }
 
-            public bool selectable { get; internal set; }
+            public bool Selectable { get; internal set; }
 
             internal void SetActionState(ActionID newActionID, bool isSelectable = true)
             {
-                actionID = newActionID;
-                selectable = isSelectable;
+                ActionID = newActionID;
+                Selectable = isSelectable;
             }
         }
     }

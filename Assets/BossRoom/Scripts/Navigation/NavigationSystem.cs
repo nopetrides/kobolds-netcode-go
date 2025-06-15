@@ -19,25 +19,25 @@ namespace Unity.BossRoom.Navigation
         /// <summary>
         /// Whether all paths need to be recalculated in the next fixed update.
         /// </summary>
-        private bool m_NavMeshChanged;
+        private bool _mNavMeshChanged;
 
         public void OnDynamicObstacleDisabled()
         {
-            m_NavMeshChanged = true;
+            _mNavMeshChanged = true;
         }
 
         public void OnDynamicObstacleEnabled()
         {
-            m_NavMeshChanged = true;
+            _mNavMeshChanged = true;
         }
 
         private void FixedUpdate()
         {
             // This is done in fixed update to make sure that only one expensive global recalculation happens per fixed update.
-            if (m_NavMeshChanged)
+            if (_mNavMeshChanged)
             {
                 OnNavigationMeshChanged.Invoke();
-                m_NavMeshChanged = false;
+                _mNavMeshChanged = false;
             }
         }
 

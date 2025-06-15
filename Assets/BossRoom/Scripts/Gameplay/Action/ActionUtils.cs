@@ -8,31 +8,31 @@ namespace Unity.BossRoom.Gameplay.Actions
     public static class ActionUtils
     {
         //cache Physics Cast hits, to minimize allocs.
-        static RaycastHit[] s_Hits = new RaycastHit[4];
+        static RaycastHit[] _sHits = new RaycastHit[4];
         // cache layer IDs (after first use). -1 is a sentinel value meaning "uninitialized"
-        static int s_PCLayer = -1;
-        static int s_NpcLayer = -1;
-        static int s_EnvironmentLayer = -1;
+        static int _sPCLayer = -1;
+        static int _sNpcLayer = -1;
+        static int _sEnvironmentLayer = -1;
 
         /// <summary>
         /// When doing line-of-sight checks we assume the characters' "eyes" are at this height above their transform
         /// </summary>
-        static readonly Vector3 k_CharacterEyelineOffset = new Vector3(0, 1, 0);
+        static readonly Vector3 KCharacterEyelineOffset = new Vector3(0, 1, 0);
 
         /// <summary>
         /// When teleporting to a destination, this is how far away from the destination spot to arrive
         /// </summary>
-        const float k_CloseDistanceOffset = 1;
+        const float KCloseDistanceOffset = 1;
 
         /// <summary>
         /// When checking if a teleport-destination is "too close" to the starting spot, anything less than this is too close
         /// </summary>
-        const float k_VeryCloseTeleportRange = k_CloseDistanceOffset + 1;
+        const float KVeryCloseTeleportRange = KCloseDistanceOffset + 1;
 
         /// <summary>
         /// Does a melee foe hit detect.
         /// </summary>
-        /// <param name="isNPC">true if the attacker is an NPC (and therefore should hit PCs). False for the reverse.</param>
+        /// <param name="isNpc">true if the attacker is an NPC (and therefore should hit PCs). False for the reverse.</param>
         /// <param name="attacker">The collider of the attacking GameObject.</param>
         /// <param name="range">The range in meters to check for foes.</param>
         /// <param name="results">Place an uninitialized RayCastHit[] ref in here. It will be set to the results array. </param>
@@ -41,9 +41,9 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// the next similar query.
         /// </remarks>
         /// <returns>Total number of foes encountered. </returns>
-        public static int DetectMeleeFoe(bool isNPC, Collider attacker, float range, out RaycastHit[] results)
+        public static int DetectMeleeFoe(bool isNpc, Collider attacker, float range, out RaycastHit[] results)
         {
-            return DetectNearbyEntities(isNPC, !isNPC, attacker, range, out results);
+            return DetectNearbyEntities(isNpc, !isNpc, attacker, range, out results);
         }
 
         /// <summary>
@@ -61,21 +61,21 @@ namespace Unity.BossRoom.Gameplay.Actions
 
             var myBounds = attacker.bounds;
 
-            if (s_PCLayer == -1)
-                s_PCLayer = LayerMask.NameToLayer("PCs");
-            if (s_NpcLayer == -1)
-                s_NpcLayer = LayerMask.NameToLayer("NPCs");
+            if (_sPCLayer == -1)
+                _sPCLayer = LayerMask.NameToLayer("PCs");
+            if (_sNpcLayer == -1)
+                _sNpcLayer = LayerMask.NameToLayer("NPCs");
 
             int mask = 0;
             if (wantPcs)
-                mask |= (1 << s_PCLayer);
+                mask |= (1 << _sPCLayer);
             if (wantNpcs)
-                mask |= (1 << s_NpcLayer);
+                mask |= (1 << _sNpcLayer);
 
             int numResults = Physics.BoxCastNonAlloc(attacker.transform.position, myBounds.extents,
-                attacker.transform.forward, s_Hits, Quaternion.identity, range, mask);
+                attacker.transform.forward, _sHits, Quaternion.identity, range, mask);
 
-            results = s_Hits;
+            results = _sHits;
             return numResults;
         }
 
@@ -111,19 +111,19 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// <returns>true if no obstructions, false if there is a Ground-layer object in the way</returns>
         public static bool HasLineOfSight(Vector3 character1Pos, Vector3 character2Pos, out Vector3 missPos)
         {
-            if (s_EnvironmentLayer == -1)
+            if (_sEnvironmentLayer == -1)
             {
-                s_EnvironmentLayer = LayerMask.NameToLayer("Environment");
+                _sEnvironmentLayer = LayerMask.NameToLayer("Environment");
             }
 
-            int mask = 1 << s_EnvironmentLayer;
+            int mask = 1 << _sEnvironmentLayer;
 
-            character1Pos += k_CharacterEyelineOffset;
-            character2Pos += k_CharacterEyelineOffset;
+            character1Pos += KCharacterEyelineOffset;
+            character2Pos += KCharacterEyelineOffset;
             var rayDirection = character2Pos - character1Pos;
             var distance = rayDirection.magnitude;
 
-            var numHits = Physics.RaycastNonAlloc(new Ray(character1Pos, rayDirection), s_Hits, distance, mask);
+            var numHits = Physics.RaycastNonAlloc(new Ray(character1Pos, rayDirection), _sHits, distance, mask);
             if (numHits == 0)
             {
                 missPos = character2Pos;
@@ -131,7 +131,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             }
             else
             {
-                missPos = s_Hits[0].point;
+                missPos = _sHits[0].point;
                 return false;
             }
         }
@@ -179,7 +179,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             if (distanceToUseIfVeryClose != -1)
             {
                 // make sure our stopping point is a meaningful distance away!
-                if (destinationSpot == Vector3.zero || Vector3.Distance(characterTransform.position, destinationSpot) <= k_VeryCloseTeleportRange)
+                if (destinationSpot == Vector3.zero || Vector3.Distance(characterTransform.position, destinationSpot) <= KVeryCloseTeleportRange)
                 {
                     // we don't have a meaningful stopping spot. Find a new one based on the character's current direction
                     destinationSpot = characterTransform.position + characterTransform.forward * distanceToUseIfVeryClose;
@@ -206,7 +206,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             }
 
             // now get a spot "near" the end point
-            destinationSpot = Vector3.MoveTowards(destinationSpot, characterTransform.position, k_CloseDistanceOffset);
+            destinationSpot = Vector3.MoveTowards(destinationSpot, characterTransform.position, KCloseDistanceOffset);
 
             return destinationSpot;
         }

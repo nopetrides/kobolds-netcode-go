@@ -10,10 +10,10 @@ using VContainer;
 
 namespace Unity.BossRoom.Gameplay.UI
 {
-    public class IPUIMediator : MonoBehaviour
+    public class IpuiMediator : MonoBehaviour
     {
-        public const string k_DefaultIP = "127.0.0.1";
-        public const int k_DefaultPort = 9998;
+        public const string KDefaultIP = "127.0.0.1";
+        public const int KDefaultPort = 9998;
 
         [SerializeField]
         CanvasGroup m_CanvasGroup;
@@ -37,18 +37,18 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         IPConnectionWindow m_IPConnectionWindow;
 
-        [Inject] NameGenerationData m_NameGenerationData;
-        [Inject] ConnectionManager m_ConnectionManager;
+        [Inject] NameGenerationData _mNameGenerationData;
+        [Inject] ConnectionManager _mConnectionManager;
 
         public IPHostingUI IPHostingUI => m_IPHostingUI;
 
-        ISubscriber<ConnectStatus> m_ConnectStatusSubscriber;
+        ISubscriber<ConnectStatus> _mConnectStatusSubscriber;
 
         [Inject]
         void InjectDependencies(ISubscriber<ConnectStatus> connectStatusSubscriber)
         {
-            m_ConnectStatusSubscriber = connectStatusSubscriber;
-            m_ConnectStatusSubscriber.Subscribe(OnConnectStatusMessage);
+            _mConnectStatusSubscriber = connectStatusSubscriber;
+            _mConnectStatusSubscriber.Subscribe(OnConnectStatusMessage);
         }
 
         void Awake()
@@ -59,15 +59,15 @@ namespace Unity.BossRoom.Gameplay.UI
         void Start()
         {
             // show create IP as default
-            ToggleCreateIPUI();
+            ToggleCreateIpui();
             RegenerateName();
         }
 
         void OnDestroy()
         {
-            if (m_ConnectStatusSubscriber != null)
+            if (_mConnectStatusSubscriber != null)
             {
-                m_ConnectStatusSubscriber.Unsubscribe(OnConnectStatusMessage);
+                _mConnectStatusSubscriber.Unsubscribe(OnConnectStatusMessage);
             }
         }
 
@@ -81,13 +81,13 @@ namespace Unity.BossRoom.Gameplay.UI
             int.TryParse(port, out var portNum);
             if (portNum <= 0)
             {
-                portNum = k_DefaultPort;
+                portNum = KDefaultPort;
             }
 
-            ip = string.IsNullOrEmpty(ip) ? k_DefaultIP : ip;
+            ip = string.IsNullOrEmpty(ip) ? KDefaultIP : ip;
 
             m_SignInSpinner.SetActive(true);
-            m_ConnectionManager.StartHostIp(m_PlayerNameLabel.text, ip, portNum);
+            _mConnectionManager.StartHostIp(m_PlayerNameLabel.text, ip, portNum);
         }
 
         public void JoinWithIP(string ip, string port)
@@ -95,14 +95,14 @@ namespace Unity.BossRoom.Gameplay.UI
             int.TryParse(port, out var portNum);
             if (portNum <= 0)
             {
-                portNum = k_DefaultPort;
+                portNum = KDefaultPort;
             }
 
-            ip = string.IsNullOrEmpty(ip) ? k_DefaultIP : ip;
+            ip = string.IsNullOrEmpty(ip) ? KDefaultIP : ip;
 
             m_SignInSpinner.SetActive(true);
 
-            m_ConnectionManager.StartClientIp(m_PlayerNameLabel.text, ip, portNum);
+            _mConnectionManager.StartClientIp(m_PlayerNameLabel.text, ip, portNum);
 
             m_IPConnectionWindow.ShowConnectingWindow();
         }
@@ -120,18 +120,18 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void RequestShutdown()
         {
-            if (m_ConnectionManager && m_ConnectionManager.NetworkManager)
+            if (_mConnectionManager && _mConnectionManager.NetworkManager)
             {
-                m_ConnectionManager.RequestShutdown();
+                _mConnectionManager.RequestShutdown();
             }
         }
 
         public void RegenerateName()
         {
-            m_PlayerNameLabel.text = m_NameGenerationData.GenerateName();
+            m_PlayerNameLabel.text = _mNameGenerationData.GenerateName();
         }
 
-        public void ToggleJoinIPUI()
+        public void ToggleJoinIpui()
         {
             m_IPJoiningUI.Show();
             m_IPHostingUI.Hide();
@@ -141,7 +141,7 @@ namespace Unity.BossRoom.Gameplay.UI
             m_HostTabButtonTabBlockerTinter.SetToColor(0);
         }
 
-        public void ToggleCreateIPUI()
+        public void ToggleCreateIpui()
         {
             m_IPJoiningUI.Hide();
             m_IPHostingUI.Show();

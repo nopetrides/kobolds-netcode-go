@@ -14,16 +14,16 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI.Tools
     [RequireComponent(typeof(RuntimeNetStatsMonitor))]
     class RuntimeStatsMonitorController : MonoBehaviour
     {
-        RuntimeNetStatsMonitor m_RuntimeNetStatsMonitor;
+        RuntimeNetStatsMonitor _mRuntimeNetStatsMonitor;
 
-        const string k_VisibilityLabelName = "toggle-visibility-label";
+        const string KVisibilityLabelName = "toggle-visibility-label";
 
         void Start()
         {
-            m_RuntimeNetStatsMonitor = GetComponent<RuntimeNetStatsMonitor>();
+            _mRuntimeNetStatsMonitor = GetComponent<RuntimeNetStatsMonitor>();
             var uiDocuments = FindObjectsByType<UIDocument>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-            if (m_RuntimeNetStatsMonitor.PanelSettingsOverride == null)
+            if (_mRuntimeNetStatsMonitor.PanelSettingsOverride == null)
             {
                 Debug.LogWarning("Assign PanelSettingsOverride to this MonoBehaviour!", this);
                 return;
@@ -31,7 +31,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI.Tools
 
             foreach (var uiDoc in uiDocuments)
             {
-                if (uiDoc.panelSettings == m_RuntimeNetStatsMonitor.PanelSettingsOverride)
+                if (uiDoc.panelSettings == _mRuntimeNetStatsMonitor.PanelSettingsOverride)
                 {
                     var rsnm = uiDoc.runtimePanel.visualTree.Q<VisualElement>(className: "rnsm-monitor");
                     if (rsnm == null)
@@ -40,7 +40,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI.Tools
                         return;
                     }
 
-                    if (rsnm.Q<VisualElement>(k_VisibilityLabelName) != null)
+                    if (rsnm.Q<VisualElement>(KVisibilityLabelName) != null)
                     {
                         // Label already exists, do not add another
                         break;
@@ -49,7 +49,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI.Tools
                     var inputText = InputSystemManager.IsMobile.Result ? "4-Finger Tap" : "M";
                     var label = new Label($"Toggle visibility with {inputText}")
                     {
-                        name = k_VisibilityLabelName,
+                        name = KVisibilityLabelName,
                         style =
                         {
                             backgroundColor = new StyleColor(Color.black),
@@ -70,7 +70,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI.Tools
 
         void OnToggleVisibility(InputAction.CallbackContext obj)
         {
-            m_RuntimeNetStatsMonitor.Visible = !m_RuntimeNetStatsMonitor.Visible;
+            _mRuntimeNetStatsMonitor.Visible = !_mRuntimeNetStatsMonitor.Visible;
         }
     }
 }

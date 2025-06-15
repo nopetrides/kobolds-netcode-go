@@ -13,25 +13,25 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
         [SerializeField]
         GameObject m_Prefab;
 
-        static Dictionary<GameObject, FXPrefabPool> m_FxPool = new Dictionary<GameObject, FXPrefabPool>();
+        static Dictionary<GameObject, FXPrefabPool> _mFxPool = new Dictionary<GameObject, FXPrefabPool>();
 
-        ObjectPool<GameObject> m_Pool;
+        ObjectPool<GameObject> _mPool;
 
         public static FXPrefabPool GetFxPool(GameObject prefab)
         {
-            if (!m_FxPool.ContainsKey(prefab))
+            if (!_mFxPool.ContainsKey(prefab))
             {
                 var instance = new GameObject($"{prefab.name}-FxPool");
                 var fxPool = instance.AddComponent<FXPrefabPool>();
                 fxPool.Initialize(prefab);
-                m_FxPool.Add(prefab, fxPool);
+                _mFxPool.Add(prefab, fxPool);
 
                 // Move the pool far above the players (i.e. out of sight)
                 instance.transform.position = Vector3.up * 5000;
                 DontDestroyOnLoad(instance);
             }
 
-            return m_FxPool[prefab];
+            return _mFxPool[prefab];
         }
 
         void Initialize(GameObject gameObject, int startCapacity = 10, int maxCapacity = 100)
@@ -73,7 +73,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
                 }
             }
 
-            m_Pool = new ObjectPool<GameObject>(createFunc: CreateFunc, actionOnGet: OnGet, actionOnRelease: OnRelease, actionOnDestroy: OnDestroyPoolObject,
+            _mPool = new ObjectPool<GameObject>(createFunc: CreateFunc, actionOnGet: OnGet, actionOnRelease: OnRelease, actionOnDestroy: OnDestroyPoolObject,
                 defaultCapacity: startCapacity, maxSize: maxCapacity);
         }
 
@@ -85,7 +85,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
 
         internal GameObject GetInstance()
         {
-            var objInstance = m_Pool.Get();
+            var objInstance = _mPool.Get();
             objInstance.transform.parent = null;
             OnGetInstance(objInstance);
             return objInstance;
@@ -95,7 +95,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
         {
             gameObject.transform.parent = null;
             OnReleaseInstance(gameObject);
-            m_Pool.Release(gameObject);
+            _mPool.Release(gameObject);
             gameObject.transform.parent = transform;
         }
     }

@@ -5,6 +5,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Animations;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -18,7 +19,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         [SerializeField]
         PositionConstraint m_PositionConstraint;
 
-        const float k_DropAnimationLength = 0.1f;
+        const float KDropAnimationLength = 0.1f;
 
         void Awake()
         {
@@ -54,7 +55,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 m_PositionConstraint.enabled = true;
 
                 // this NetworkObject has been dropped, move it slowly back to the ground
-                StartCoroutine(SmoothPositionLerpY(k_DropAnimationLength, 0));
+                StartCoroutine(SmoothPositionLerpY(KDropAnimationLength, 0));
             }
             else
             {

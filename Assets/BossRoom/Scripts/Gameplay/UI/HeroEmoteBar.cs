@@ -13,7 +13,7 @@ namespace Unity.BossRoom.Gameplay.UI
     /// </summary>
     public class HeroEmoteBar : MonoBehaviour
     {
-        ClientInputSender m_InputSender;
+        ClientInputSender _mInputSender;
 
         void Awake()
         {
@@ -28,19 +28,19 @@ namespace Unity.BossRoom.Gameplay.UI
                 Debug.LogError("ClientInputSender not found on ClientPlayerAvatar!", clientPlayerAvatar);
             }
 
-            if (m_InputSender != null)
+            if (_mInputSender != null)
             {
-                Debug.LogWarning($"Multiple ClientInputSenders in scene? Discarding sender belonging to {m_InputSender.gameObject.name} and adding it for {inputSender.gameObject.name} ");
+                Debug.LogWarning($"Multiple ClientInputSenders in scene? Discarding sender belonging to {_mInputSender.gameObject.name} and adding it for {inputSender.gameObject.name} ");
             }
 
-            m_InputSender = inputSender;
+            _mInputSender = inputSender;
 
             gameObject.SetActive(false);
         }
 
         void DeregisterInputSender()
         {
-            m_InputSender = null;
+            _mInputSender = null;
         }
 
         void OnDestroy()
@@ -51,14 +51,14 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void OnButtonClicked(int buttonIndex)
         {
-            if (m_InputSender != null)
+            if (_mInputSender != null)
             {
                 switch (buttonIndex)
                 {
-                    case 0: m_InputSender.RequestAction(GameDataSource.Instance.Emote1ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
-                    case 1: m_InputSender.RequestAction(GameDataSource.Instance.Emote2ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
-                    case 2: m_InputSender.RequestAction(GameDataSource.Instance.Emote3ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
-                    case 3: m_InputSender.RequestAction(GameDataSource.Instance.Emote4ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
+                    case 0: _mInputSender.RequestAction(GameDataSource.Instance.Emote1ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
+                    case 1: _mInputSender.RequestAction(GameDataSource.Instance.Emote2ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
+                    case 2: _mInputSender.RequestAction(GameDataSource.Instance.Emote3ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
+                    case 3: _mInputSender.RequestAction(GameDataSource.Instance.Emote4ActionPrototype.ActionID, SkillTriggerStyle.UI); break;
                 }
             }
 

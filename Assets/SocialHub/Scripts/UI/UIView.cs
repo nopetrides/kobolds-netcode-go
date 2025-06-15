@@ -11,10 +11,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         /// <summary>
         /// Root of the visual element that this view controls
         /// </summary>
-        protected VisualElement m_Root;
+        protected VisualElement MRoot;
 
         // Child reference to child view if any.
-        protected UIView m_ChildView;
+        protected UIView MChildView;
 
         /// <summary>
         /// Determines if the view is modal: Allowing parent windows to remain visable.
@@ -30,29 +30,29 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         {
             if (!targetUI.IsModal)
             {
-                m_ChildView?.Hide();
+                MChildView?.Hide();
             }
 
-            m_ChildView?.UnregisterEvents();
-            m_ChildView = targetUI;
-            m_ChildView.Show();
-            m_ChildView.RegisterEvents();
+            MChildView?.UnregisterEvents();
+            MChildView = targetUI;
+            MChildView.Show();
+            MChildView.RegisterEvents();
         }
 
         public virtual void Initialize(VisualElement root)
         {
-            m_Root = root;
+            MRoot = root;
         }
 
         void Show()
         {
-            m_Root.style.display = DisplayStyle.Flex;
+            MRoot.style.display = DisplayStyle.Flex;
             HandleOnShown();
         }
 
         void Hide()
         {
-            m_Root.style.display = DisplayStyle.None;
+            MRoot.style.display = DisplayStyle.None;
             HandleOnHidden();
         }
 

@@ -13,24 +13,24 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         [SerializeField]
         float m_MaxVelocity = 30;
 
-        List<RemoteForce> m_RemoteAppliedForce = new List<RemoteForce>();
+        List<RemoteForce> _mRemoteAppliedForce = new List<RemoteForce>();
 
-        protected NetworkVariable<bool> m_IsInitialized = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected readonly NetworkVariable<bool> MIsInitialized = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         /// <summary>
         /// All of the below values keep the physics objects synchronized between clients so when ownership changes the local Rigidbody can be configured to mirror
         /// the last known physics related states.
         /// </summary>
-        protected NetworkVariable<float> m_Mass = new NetworkVariable<float>(1.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        protected NetworkVariable<Vector3> m_AngularVelocity = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        protected NetworkVariable<Vector3> m_Velocity = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        protected NetworkVariable<Vector3> m_Torque = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        protected NetworkVariable<Vector3> m_Force = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected readonly NetworkVariable<float> MMass = new NetworkVariable<float>(1.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected readonly NetworkVariable<Vector3> MAngularVelocity = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected readonly NetworkVariable<Vector3> MVelocity = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected readonly NetworkVariable<Vector3> MTorque = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        protected readonly NetworkVariable<Vector3> MForce = new NetworkVariable<Vector3>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         protected override Vector3 OnGetObjectVelocity(bool getReference = false)
         {
             if (getReference)
             {
-                return m_Velocity.Value;
+                return MVelocity.Value;
             }
 
             return base.OnGetObjectVelocity(getReference);
@@ -38,7 +38,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
         protected override Vector3 OnGetObjectAngularVelocity()
         {
-            return m_AngularVelocity.Value;
+            return MAngularVelocity.Value;
         }
 
         protected void UpdateVelocity(Vector3 velocity, bool updateObjectVelocity = true)
@@ -50,7 +50,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
                     SetObjectVelocity(velocity);
                 }
 
-                m_Velocity.Value = velocity;
+                MVelocity.Value = velocity;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             if (HasAuthority)
             {
                 Rigidbody.angularVelocity = angularVelocity;
-                m_AngularVelocity.Value = angularVelocity;
+                MAngularVelocity.Value = angularVelocity;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             if (HasAuthority)
             {
                 Rigidbody.AddTorque(torque);
-                m_Torque.Value = torque;
+                MTorque.Value = torque;
             }
         }
 
@@ -77,7 +77,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             if (HasAuthority)
             {
                 Rigidbody.AddForce(impulseForce, ForceMode.Impulse);
-                m_Force.Value = impulseForce;
+                MForce.Value = impulseForce;
             }
         }
 
@@ -93,7 +93,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         protected override void OnAuthorityPushTransformState(ref NetworkTransformState networkTransformState)
         {
             // If we haven't already initialized for the first time or haven't initialized previous state values during spawn then exit early
-            if (!m_IsInitialized.Value)
+            if (!MIsInitialized.Value)
             {
                 return;
             }
@@ -146,7 +146,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             if (!BeenInitialized.Value)
 #endif
                 {
-                    m_IsInitialized.Value = true;
+                    MIsInitialized.Value = true;
                 }
 #if SESSION_STORE_ENABLED
             else
@@ -167,7 +167,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
             // If we are pooled and not shutting down, then reset the physics object for re-use later
             // ** Important to do this **
-            if (m_IsPooled)
+            if (MIsPooled)
             {
                 EnableColliders(false);
                 if (!Rigidbody.isKinematic)
@@ -177,12 +177,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
                     NetworkRigidbody.SetIsKinematic(true);
                 }
 
-                m_IsInitialized.Reset();
-                m_AngularVelocity.Reset();
-                m_Velocity.Reset();
-                m_Torque.Reset();
-                m_Force.Reset();
-                m_Mass.Reset();
+                MIsInitialized.Reset();
+                MAngularVelocity.Reset();
+                MVelocity.Reset();
+                MTorque.Reset();
+                MForce.Reset();
+                MMass.Reset();
             }
         }
 
@@ -195,15 +195,15 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             if (NetworkManager.LocalClientId == current)
             {
                 NetworkRigidbody.SetIsKinematic(false);
-                if (m_IsInitialized.Value)
+                if (MIsInitialized.Value)
                 {
                     Rigidbody.angularVelocity = Vector3.ClampMagnitude(GetObjectAngularVelocity(), m_MaxAngularVelocity);
                     SetObjectVelocity(Vector3.ClampMagnitude(GetObjectVelocity(true), m_MaxVelocity));
                 }
                 else
                 {
-                    Rigidbody.AddTorque(m_Torque.Value, ForceMode.Impulse);
-                    Rigidbody.AddForce(m_Force.Value, ForceMode.Impulse);
+                    Rigidbody.AddTorque(MTorque.Value, ForceMode.Impulse);
+                    Rigidbody.AddForce(MForce.Value, ForceMode.Impulse);
                 }
             }
             else
@@ -235,7 +235,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
                 AppliedForce = Vector3.zero,
             };
 
-            m_RemoteAppliedForce.Add(remoteForce);
+            _mRemoteAppliedForce.Add(remoteForce);
         }
 
         protected override void OnContactEvent(ulong eventId, Vector3 averagedCollisionNormal, Rigidbody collidingBody, Vector3 contactPoint, bool hasCollisionStay = false, Vector3 averagedCollisionStayNormal = default)
@@ -263,8 +263,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
 
             if (!Rigidbody.isKinematic && collidingBody.isKinematic && thisVelocity > 0.01f)
             {
-                m_CollisionMessage.CollisionForce = thisKineticForce;
-                m_CollisionMessage.SetFlag(true, (uint)CollisionCategoryFlags.CollisionForce);
+                MCollisionMessage.CollisionForce = thisKineticForce;
+                MCollisionMessage.SetFlag(true, (uint)CollisionCategoryFlags.CollisionForce);
                 if (m_DebugCollisions)
                 {
                     Debug.Log($"[{name}][SecondBody][Collision Stay: {hasCollisionStay}] Sending impulse thrust {MathUtils.GetVector3Values(thisKineticForce)} to {collidingBody.name}.", this);
@@ -278,8 +278,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             {
                 // our kinematic Rigidbody was hit by a non-kinematic physics-moving Rigidbody
 
-                collidingBodyPhys.m_CollisionMessage.CollisionForce = otherKineticForce;
-                collidingBodyPhys.m_CollisionMessage.SetFlag(true, (uint)CollisionCategoryFlags.CollisionForce);
+                collidingBodyPhys.MCollisionMessage.CollisionForce = otherKineticForce;
+                collidingBodyPhys.MCollisionMessage.SetFlag(true, (uint)CollisionCategoryFlags.CollisionForce);
                 collidingBodyPhys.EventCollision(averagedCollisionNormal, this);
                 if (m_DebugCollisions)
                 {
@@ -289,8 +289,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
             else if (!Rigidbody.isKinematic && !collidingBody.isKinematic && otherVelocity > 0.01f)
             {
                 // Both bodies are non-kinematic (i.e. local client has authority over both) so we create and process event collisions for both
-                m_CollisionMessage.CollisionForce = thisKineticForce;
-                m_CollisionMessage.SetFlag(true, (uint)CollisionCategoryFlags.CollisionForce);
+                MCollisionMessage.CollisionForce = thisKineticForce;
+                MCollisionMessage.SetFlag(true, (uint)CollisionCategoryFlags.CollisionForce);
 
                 // Send collision to owner of kinematic body
                 EventCollision(averagedCollisionNormal, collidingBodyPhys);
@@ -318,28 +318,28 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         /// </summary>
         void ProcessRemoteForces()
         {
-            if (m_RemoteAppliedForce.Count == 0)
+            if (_mRemoteAppliedForce.Count == 0)
             {
                 return;
             }
 
             var accumulativeForce = Vector3.zero;
-            for (int i = m_RemoteAppliedForce.Count - 1; i >= 0; i--)
+            for (int i = _mRemoteAppliedForce.Count - 1; i >= 0; i--)
             {
-                var remoteForce = m_RemoteAppliedForce[i];
+                var remoteForce = _mRemoteAppliedForce[i];
                 accumulativeForce += remoteForce.TargetForce;
                 if (MathUtils.Approximately(remoteForce.TargetForce, Vector3.zero))
                 {
-                    m_RemoteAppliedForce.RemoveAt(i);
+                    _mRemoteAppliedForce.RemoveAt(i);
                 }
                 else
                 {
-                    m_RemoteAppliedForce[i] = remoteForce;
+                    _mRemoteAppliedForce[i] = remoteForce;
                 }
             }
 
             ApplyCollisionForce(accumulativeForce);
-            m_RemoteAppliedForce.Clear();
+            _mRemoteAppliedForce.Clear();
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         /// <returns>log string</returns>
         protected override string OnLogCollision(ref BaseObjectMotionHandler objectHit)
         {
-            return $"[CF: {MathUtils.GetVector3Values(ref m_CollisionMessage.CollisionForce)}]-{base.OnLogCollision(ref objectHit)}";
+            return $"[CF: {MathUtils.GetVector3Values(ref MCollisionMessage.CollisionForce)}]-{base.OnLogCollision(ref objectHit)}";
         }
 
         /// <summary>

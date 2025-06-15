@@ -8,9 +8,9 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Chase Action")]
     public class ChaseAction : Action
     {
-        private NetworkObject m_Target;
+        private NetworkObject _mTarget;
 
-        Transform m_TargetTransform;
+        Transform _mTargetTransform;
 
         /// <summary>
         /// Called when the Action starts actually playing (which may be after it is created, because of queueing).
@@ -24,28 +24,28 @@ namespace Unity.BossRoom.Gameplay.Actions
                 return ActionConclusion.Stop;
             }
 
-            m_Target = NetworkManager.Singleton.SpawnManager.SpawnedObjects[m_Data.TargetIds[0]];
+            _mTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[MData.TargetIds[0]];
 
-            if (PhysicsWrapper.TryGetPhysicsWrapper(m_Data.TargetIds[0], out var physicsWrapper))
+            if (PhysicsWrapper.TryGetPhysicsWrapper(MData.TargetIds[0], out var physicsWrapper))
             {
-                m_TargetTransform = physicsWrapper.Transform;
+                _mTargetTransform = physicsWrapper.Transform;
             }
             else
             {
-                m_TargetTransform = m_Target.transform;
+                _mTargetTransform = _mTarget.transform;
             }
 
-            Vector3 currentTargetPos = m_TargetTransform.position;
+            Vector3 currentTargetPos = _mTargetTransform.position;
 
             if (StopIfDone(serverCharacter))
             {
-                serverCharacter.physicsWrapper.Transform.LookAt(currentTargetPos); //even if we didn't move, snap to face the target!
+                serverCharacter.PhysicsWrapper.Transform.LookAt(currentTargetPos); //even if we didn't move, snap to face the target!
                 return ActionConclusion.Stop;
             }
 
             if (!serverCharacter.Movement.IsPerformingForcedMovement())
             {
-                serverCharacter.Movement.FollowTransform(m_TargetTransform);
+                serverCharacter.Movement.FollowTransform(_mTargetTransform);
             }
             return ActionConclusion.Continue;
         }
@@ -53,8 +53,8 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void Reset()
         {
             base.Reset();
-            m_Target = null;
-            m_TargetTransform = null;
+            _mTarget = null;
+            _mTargetTransform = null;
         }
 
         /// <summary>
@@ -63,9 +63,9 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </summary>
         private bool HasValidTarget()
         {
-            return m_Data.TargetIds != null &&
-                   m_Data.TargetIds.Length > 0 &&
-                   NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(m_Data.TargetIds[0]);
+            return MData.TargetIds != null &&
+                   MData.TargetIds.Length > 0 &&
+                   NetworkManager.Singleton.SpawnManager.SpawnedObjects.ContainsKey(MData.TargetIds[0]);
         }
 
         /// <summary>
@@ -73,15 +73,15 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </summary>
         private bool StopIfDone(ServerCharacter parent)
         {
-            if (m_TargetTransform == null)
+            if (_mTargetTransform == null)
             {
                 //if the target disappeared on us, then just stop.
                 Cancel(parent);
                 return true;
             }
 
-            float distToTarget2 = (parent.physicsWrapper.Transform.position - m_TargetTransform.position).sqrMagnitude;
-            if ((m_Data.Amount * m_Data.Amount) > distToTarget2)
+            float distToTarget2 = (parent.PhysicsWrapper.Transform.position - _mTargetTransform.position).sqrMagnitude;
+            if ((MData.Amount * MData.Amount) > distToTarget2)
             {
                 //we made it! we're done.
                 Cancel(parent);
@@ -103,7 +103,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             // This way, if we get Knocked Back mid-chase, we pick right back up and continue the chase.
             if (!clientCharacter.Movement.IsPerformingForcedMovement())
             {
-                clientCharacter.Movement.FollowTransform(m_TargetTransform);
+                clientCharacter.Movement.FollowTransform(_mTargetTransform);
             }
 
             return ActionConclusion.Continue;

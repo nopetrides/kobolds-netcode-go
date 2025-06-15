@@ -20,7 +20,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
     [RequireComponent(typeof(ServerCharacter))]
     public class PlayerServerCharacter : NetworkBehaviour
     {
-        static List<ServerCharacter> s_ActivePlayers = new List<ServerCharacter>();
+        static List<ServerCharacter> _sActivePlayers = new List<ServerCharacter>();
 
         [SerializeField]
         ServerCharacter m_CachedServerCharacter;
@@ -29,7 +29,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         {
             if (IsServer)
             {
-                s_ActivePlayers.Add(m_CachedServerCharacter);
+                _sActivePlayers.Add(m_CachedServerCharacter);
             }
             else
             {
@@ -40,7 +40,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         void OnDisable()
         {
-            s_ActivePlayers.Remove(m_CachedServerCharacter);
+            _sActivePlayers.Remove(m_CachedServerCharacter);
         }
 
         public override void OnNetworkDespawn()
@@ -67,7 +67,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// </summary>
         public static List<ServerCharacter> GetPlayerServerCharacters()
         {
-            return s_ActivePlayers;
+            return _sActivePlayers;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// <returns>The ServerCharacter owned by the client, or null if no ServerCharacter is found</returns>
         public static ServerCharacter GetPlayerServerCharacter(ulong ownerClientId)
         {
-            foreach (var playerServerCharacter in s_ActivePlayers)
+            foreach (var playerServerCharacter in _sActivePlayers)
             {
                 if (playerServerCharacter.OwnerClientId == ownerClientId)
                 {

@@ -9,9 +9,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
         [SerializeField]
         NetworkObject m_NetworkObjectToSpawn;
 
-        NetworkVariable<bool> m_IsRespawning = new NetworkVariable<bool>();
+        NetworkVariable<bool> _mIsRespawning = new NetworkVariable<bool>();
 
-        NetworkVariable<int> m_TickToRespawn = new NetworkVariable<int>();
+        NetworkVariable<int> _mTickToRespawn = new NetworkVariable<int>();
 
         public override void OnNetworkSpawn()
         {
@@ -31,7 +31,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
             var spawnedNetworkObject = m_NetworkObjectToSpawn.InstantiateAndSpawn(NetworkManager, position: transform.position, rotation: transform.rotation);
             var spawnable = spawnedNetworkObject.GetComponent<ISpawnable>();
             spawnable.Init(this);
-            m_IsRespawning.Value = false;
+            _mIsRespawning.Value = false;
         }
 
         /// <summary>
@@ -41,20 +41,20 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
         [Rpc(SendTo.Authority)]
         public void RespawnRpc(int respawnTime)
         {
-            m_TickToRespawn.Value = respawnTime;
-            m_IsRespawning.Value = true;
+            _mTickToRespawn.Value = respawnTime;
+            _mIsRespawning.Value = true;
             StartCoroutine(WaitToRespawn());
         }
 
         IEnumerator WaitToRespawn()
         {
-            yield return new WaitUntil(() => NetworkManager.NetworkTickSystem.ServerTime.Tick > m_TickToRespawn.Value);
+            yield return new WaitUntil(() => NetworkManager.NetworkTickSystem.ServerTime.Tick > _mTickToRespawn.Value);
             Spawn();
         }
 
         protected override void OnOwnershipChanged(ulong previous, ulong current)
         {
-            if (HasAuthority && m_IsRespawning.Value)
+            if (HasAuthority && _mIsRespawning.Value)
             {
                 StartCoroutine(WaitToRespawn());
             }

@@ -23,22 +23,22 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Dash Attack Action")]
     public class DashAttackAction : Action
     {
-        private Vector3 m_TargetSpot;
+        private Vector3 _mTargetSpot;
 
-        private bool m_Dashed;
+        private bool _mDashed;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
             // remember the exact spot we'll stop.
-            m_TargetSpot = ActionUtils.GetDashDestination(serverCharacter.physicsWrapper.Transform, Data.Position, true, Config.Range, Config.Range);
+            _mTargetSpot = ActionUtils.GetDashDestination(serverCharacter.PhysicsWrapper.Transform, Data.Position, true, Config.Range, Config.Range);
 
             // snap to face our destination. This ensures the client visualization faces the right way while "pretending" to dash
-            serverCharacter.physicsWrapper.Transform.LookAt(m_TargetSpot);
+            serverCharacter.PhysicsWrapper.Transform.LookAt(_mTargetSpot);
 
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
 
             // tell clients to visualize this action
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
 
             return ActionConclusion.Continue;
         }
@@ -46,8 +46,8 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void Reset()
         {
             base.Reset();
-            m_TargetSpot = default;
-            m_Dashed = false;
+            _mTargetSpot = default;
+            _mDashed = false;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
@@ -60,11 +60,11 @@ namespace Unity.BossRoom.Gameplay.Actions
             // Anim2 contains the name of the end-loop-sequence trigger
             if (!string.IsNullOrEmpty(Config.Anim2))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
             }
 
             // we're done, time to teleport!
-            serverCharacter.Movement.Teleport(m_TargetSpot);
+            serverCharacter.Movement.Teleport(_mTargetSpot);
 
             // and then swing!
             PerformMeleeAttack(serverCharacter);
@@ -75,12 +75,12 @@ namespace Unity.BossRoom.Gameplay.Actions
             // OtherAnimatorVariable contains the name of the cancellation trigger
             if (!string.IsNullOrEmpty(Config.OtherAnimatorVariable))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.OtherAnimatorVariable);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.OtherAnimatorVariable);
             }
 
             // because the client-side visualization of the action moves the character visualization around,
             // we need to explicitly end the client-side visuals when we abort
-            serverCharacter.clientCharacter.ClientCancelActionsByPrototypeIDRpc(ActionID);
+            serverCharacter.ClientCharacter.ClientCancelActionsByPrototypeIDRpc(ActionID);
 
         }
 
@@ -97,19 +97,19 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             // perform a typical melee-hit. But note that we are using the Radius field for range, not the Range field!
             IDamageable foe = MeleeAction.GetIdealMeleeFoe(Config.IsFriendly ^ parent.IsNpc,
-                parent.physicsWrapper.DamageCollider,
+                parent.PhysicsWrapper.DamageCollider,
                                                             Config.Radius,
                                                             (Data.TargetIds != null && Data.TargetIds.Length > 0 ? Data.TargetIds[0] : 0));
 
             if (foe != null)
             {
-                foe.ReceiveHP(parent, -Config.Amount);
+                foe.ReceiveHp(parent, -Config.Amount);
             }
         }
 
         public override bool OnUpdateClient(ClientCharacter clientCharacter)
         {
-            if (m_Dashed) { return ActionConclusion.Stop; } // we're done!
+            if (_mDashed) { return ActionConclusion.Stop; } // we're done!
 
             return ActionConclusion.Continue;
         }

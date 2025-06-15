@@ -31,8 +31,8 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Melee Action")]
     public partial class MeleeAction : Action
     {
-        private bool m_ExecutionFired;
-        private ulong m_ProvisionalTarget;
+        private bool _mExecutionFired;
+        private ulong _mProvisionalTarget;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
@@ -40,39 +40,39 @@ namespace Unity.BossRoom.Gameplay.Actions
             IDamageable foe = DetectFoe(serverCharacter, target);
             if (foe != null)
             {
-                m_ProvisionalTarget = foe.NetworkObjectId;
+                _mProvisionalTarget = foe.NetworkObjectId;
                 Data.TargetIds = new ulong[] { foe.NetworkObjectId };
             }
 
             // snap to face the right direction
             if (Data.Direction != Vector3.zero)
             {
-                serverCharacter.physicsWrapper.Transform.forward = Data.Direction;
+                serverCharacter.PhysicsWrapper.Transform.forward = Data.Direction;
             }
 
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
             return true;
         }
 
         public override void Reset()
         {
             base.Reset();
-            m_ExecutionFired = false;
-            m_ProvisionalTarget = 0;
-            m_ImpactPlayed = false;
-            m_SpawnedGraphics = null;
+            _mExecutionFired = false;
+            _mProvisionalTarget = 0;
+            _mImpactPlayed = false;
+            _mSpawnedGraphics = null;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (!m_ExecutionFired && (Time.time - TimeStarted) >= Config.ExecTimeSeconds)
+            if (!_mExecutionFired && (Time.time - TimeStarted) >= Config.ExecTimeSeconds)
             {
-                m_ExecutionFired = true;
-                var foe = DetectFoe(clientCharacter, m_ProvisionalTarget);
+                _mExecutionFired = true;
+                var foe = DetectFoe(clientCharacter, _mProvisionalTarget);
                 if (foe != null)
                 {
-                    foe.ReceiveHP(clientCharacter, -Config.Amount);
+                    foe.ReceiveHp(clientCharacter, -Config.Amount);
                 }
             }
 
@@ -85,7 +85,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// <returns></returns>
         private IDamageable DetectFoe(ServerCharacter parent, ulong foeHint = 0)
         {
-            return GetIdealMeleeFoe(Config.IsFriendly ^ parent.IsNpc, parent.physicsWrapper.DamageCollider, Config.Range, foeHint);
+            return GetIdealMeleeFoe(Config.IsFriendly ^ parent.IsNpc, parent.PhysicsWrapper.DamageCollider, Config.Range, foeHint);
         }
 
         /// <summary>
@@ -93,15 +93,15 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// and then looks through the results to find an alive target, preferring the provided
         /// enemy.
         /// </summary>
-        /// <param name="isNPC">true if the attacker is an NPC (and therefore should hit PCs). False for the reverse.</param>
+        /// <param name="isNpc">true if the attacker is an NPC (and therefore should hit PCs). False for the reverse.</param>
         /// <param name="ourCollider">The collider of the attacking GameObject.</param>
         /// <param name="meleeRange">The range in meters to check for foes.</param>
         /// <param name="preferredTargetNetworkId">The NetworkObjectId of our preferred foe, or 0 if no preference</param>
         /// <returns>ideal target's IDamageable, or null if no valid target found</returns>
-        public static IDamageable GetIdealMeleeFoe(bool isNPC, Collider ourCollider, float meleeRange, ulong preferredTargetNetworkId)
+        public static IDamageable GetIdealMeleeFoe(bool isNpc, Collider ourCollider, float meleeRange, ulong preferredTargetNetworkId)
         {
             RaycastHit[] results;
-            int numResults = ActionUtils.DetectMeleeFoe(isNPC, ourCollider, meleeRange, out results);
+            int numResults = ActionUtils.DetectMeleeFoe(isNpc, ourCollider, meleeRange, out results);
 
             IDamageable foundFoe = null;
 

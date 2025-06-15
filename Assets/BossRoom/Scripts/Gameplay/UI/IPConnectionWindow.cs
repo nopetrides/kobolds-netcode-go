@@ -8,6 +8,7 @@ using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using VContainer;
 
+
 namespace Unity.BossRoom.Gameplay.UI
 {
     public class IPConnectionWindow : MonoBehaviour
@@ -18,15 +19,15 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         TextMeshProUGUI m_TitleText;
 
-        [Inject] IPUIMediator m_IPUIMediator;
+        [Inject] IpuiMediator _mIpuiMediator;
 
-        ISubscriber<ConnectStatus> m_ConnectStatusSubscriber;
+        ISubscriber<ConnectStatus> _mConnectStatusSubscriber;
 
         [Inject]
         void InjectDependencies(ISubscriber<ConnectStatus> connectStatusSubscriber)
         {
-            m_ConnectStatusSubscriber = connectStatusSubscriber;
-            m_ConnectStatusSubscriber.Subscribe(OnConnectStatusMessage);
+            _mConnectStatusSubscriber = connectStatusSubscriber;
+            _mConnectStatusSubscriber.Subscribe(OnConnectStatusMessage);
         }
 
         void Awake()
@@ -36,16 +37,16 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnDestroy()
         {
-            if (m_ConnectStatusSubscriber != null)
+            if (_mConnectStatusSubscriber != null)
             {
-                m_ConnectStatusSubscriber.Unsubscribe(OnConnectStatusMessage);
+                _mConnectStatusSubscriber.Unsubscribe(OnConnectStatusMessage);
             }
         }
 
         void OnConnectStatusMessage(ConnectStatus connectStatus)
         {
             CancelConnectionWindow();
-            m_IPUIMediator.DisableSignInSpinner();
+            _mIpuiMediator.DisableSignInSpinner();
         }
 
         void Show()
@@ -65,13 +66,13 @@ namespace Unity.BossRoom.Gameplay.UI
             void OnTimeElapsed()
             {
                 Hide();
-                m_IPUIMediator.DisableSignInSpinner();
+                _mIpuiMediator.DisableSignInSpinner();
             }
 
             var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
             var maxConnectAttempts = utp.MaxConnectAttempts;
             var connectTimeoutMS = utp.ConnectTimeoutMS;
-            StartCoroutine(DisplayUTPConnectionDuration(maxConnectAttempts, connectTimeoutMS, OnTimeElapsed));
+            StartCoroutine(DisplayUtpConnectionDuration(maxConnectAttempts, connectTimeoutMS, OnTimeElapsed));
 
             Show();
         }
@@ -82,7 +83,7 @@ namespace Unity.BossRoom.Gameplay.UI
             StopAllCoroutines();
         }
 
-        IEnumerator DisplayUTPConnectionDuration(int maxReconnectAttempts, int connectTimeoutMS, Action endAction)
+        IEnumerator DisplayUtpConnectionDuration(int maxReconnectAttempts, int connectTimeoutMS, Action endAction)
         {
             var connectionDuration = maxReconnectAttempts * connectTimeoutMS / 1000f;
 
@@ -103,7 +104,7 @@ namespace Unity.BossRoom.Gameplay.UI
         public void OnCancelJoinButtonPressed()
         {
             CancelConnectionWindow();
-            m_IPUIMediator.JoiningWindowCancelled();
+            _mIpuiMediator.JoiningWindowCancelled();
         }
     }
 }

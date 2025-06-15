@@ -5,6 +5,7 @@ using Unity.BossRoom.Gameplay.GameplayObjects.Character;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -68,35 +69,35 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         float m_SpawnCapIncreasePerPlayer = 1;
 
         // cache reference to our own transform
-        Transform m_Transform;
+        Transform _mTransform;
 
         // track wave index and reset once all waves are complete
-        int m_WaveIndex;
+        int _mWaveIndex;
 
         // keep reference to our current watch-for-players coroutine
-        Coroutine m_WatchForPlayers;
+        Coroutine _mWatchForPlayers;
 
         // keep reference to our wave spawning coroutine
-        Coroutine m_WaveSpawning;
+        Coroutine _mWaveSpawning;
 
         // cache array of RaycastHit as it will be reused for player visibility
-        RaycastHit[] m_Hit;
+        RaycastHit[] _mHit;
 
         // indicates whether OnNetworkSpawn() has been called on us yet
-        bool m_IsStarted;
+        bool _mIsStarted;
 
         // are we currently spawning stuff?
-        bool m_IsSpawnerEnabled;
+        bool _mIsSpawnerEnabled;
 
         // a running tally of spawned entities, used in determining which spawn-point to use next
-        int m_SpawnedCount;
+        int _mSpawnedCount;
 
         // the currently-spawned entities. We only bother to track these if m_MaxActiveSpawns is non-zero
-        List<NetworkObject> m_ActiveSpawns = new List<NetworkObject>();
+        List<NetworkObject> _mActiveSpawns = new List<NetworkObject>();
 
         void Awake()
         {
-            m_Transform = transform;
+            _mTransform = transform;
         }
 
         public override void OnNetworkSpawn()
@@ -106,9 +107,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 enabled = false;
                 return;
             }
-            m_Hit = new RaycastHit[1];
-            m_IsStarted = true;
-            if (m_IsSpawnerEnabled)
+            _mHit = new RaycastHit[1];
+            _mIsStarted = true;
+            if (_mIsSpawnerEnabled)
             {
                 StartWaveSpawning();
             }
@@ -116,7 +117,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         public void SetSpawnerEnabled(bool isEnabledNow)
         {
-            if (m_IsStarted && m_IsSpawnerEnabled != isEnabledNow)
+            if (_mIsStarted && _mIsSpawnerEnabled != isEnabledNow)
             {
                 if (!isEnabledNow)
                 {
@@ -127,27 +128,27 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                     StartWaveSpawning();
                 }
             }
-            m_IsSpawnerEnabled = isEnabledNow;
+            _mIsSpawnerEnabled = isEnabledNow;
         }
 
         void StartWaveSpawning()
         {
             StopWaveSpawning();
-            m_WatchForPlayers = StartCoroutine(TriggerSpawnWhenPlayersNear());
+            _mWatchForPlayers = StartCoroutine(TriggerSpawnWhenPlayersNear());
         }
 
         void StopWaveSpawning()
         {
-            if (m_WaveSpawning != null)
+            if (_mWaveSpawning != null)
             {
-                StopCoroutine(m_WaveSpawning);
+                StopCoroutine(_mWaveSpawning);
             }
-            m_WaveSpawning = null;
-            if (m_WatchForPlayers != null)
+            _mWaveSpawning = null;
+            if (_mWatchForPlayers != null)
             {
-                StopCoroutine(m_WatchForPlayers);
+                StopCoroutine(_mWatchForPlayers);
             }
-            m_WatchForPlayers = null;
+            _mWatchForPlayers = null;
         }
 
         public override void OnNetworkDespawn()
@@ -162,9 +163,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             while (true)
             {
-                if (m_WaveSpawning == null && IsAnyPlayerNearbyAndVisible())
+                if (_mWaveSpawning == null && IsAnyPlayerNearbyAndVisible())
                 {
-                    m_WaveSpawning = StartCoroutine(SpawnWaves());
+                    _mWaveSpawning = StartCoroutine(SpawnWaves());
                 }
 
                 yield return new WaitForSeconds(m_PlayerProximityValidationTimestep);
@@ -178,9 +179,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// <returns></returns>
         IEnumerator SpawnWaves()
         {
-            m_WaveIndex = 0;
+            _mWaveIndex = 0;
 
-            while (m_WaveIndex < m_NumberOfWaves)
+            while (_mWaveIndex < m_NumberOfWaves)
             {
                 yield return SpawnWave();
 
@@ -189,7 +190,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
             yield return new WaitForSeconds(m_RestartDelay);
 
-            m_WaveSpawning = null;
+            _mWaveSpawning = null;
         }
 
         /// <summary>
@@ -203,13 +204,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 if (IsRoomAvailableForAnotherSpawn())
                 {
                     var newSpawn = SpawnPrefab();
-                    m_ActiveSpawns.Add(newSpawn);
+                    _mActiveSpawns.Add(newSpawn);
                 }
 
                 yield return new WaitForSeconds(m_TimeBetweenSpawns);
             }
 
-            m_WaveIndex++;
+            _mWaveIndex++;
         }
 
         /// <summary>
@@ -222,7 +223,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 throw new System.ArgumentNullException("m_NetworkedPrefab");
             }
 
-            int posIdx = m_SpawnedCount++ % m_SpawnPositions.Count;
+            int posIdx = _mSpawnedCount++ % m_SpawnPositions.Count;
             var clone = Instantiate(m_NetworkedPrefab, m_SpawnPositions[posIdx].position, m_SpawnPositions[posIdx].rotation);
             if (!clone.IsSpawned)
             {
@@ -245,8 +246,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             // references to spawned components that no longer exist will become null,
             // so clear those out. Then we know how many we have left
-            m_ActiveSpawns.RemoveAll(spawnedNetworkObject => { return spawnedNetworkObject == null; });
-            return m_ActiveSpawns.Count < GetCurrentSpawnCap();
+            _mActiveSpawns.RemoveAll(spawnedNetworkObject => { return spawnedNetworkObject == null; });
+            return _mActiveSpawns.Count < GetCurrentSpawnCap();
         }
 
         /// <summary>
@@ -274,7 +275,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// <returns> True if visible and within range, else false. </returns>
         bool IsAnyPlayerNearbyAndVisible()
         {
-            var spawnerPosition = m_Transform.position;
+            var spawnerPosition = _mTransform.position;
 
             var ray = new Ray();
 
@@ -291,7 +292,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                     continue;
                 }
 
-                var playerPosition = serverCharacter.physicsWrapper.Transform.position;
+                var playerPosition = serverCharacter.PhysicsWrapper.Transform.position;
                 var direction = playerPosition - spawnerPosition;
 
                 if (direction.sqrMagnitude > squaredProximityDistance)
@@ -302,7 +303,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 ray.origin = spawnerPosition;
                 ray.direction = direction;
 
-                var hit = Physics.RaycastNonAlloc(ray, m_Hit,
+                var hit = Physics.RaycastNonAlloc(ray, _mHit,
                     Mathf.Min(direction.magnitude, m_ProximityDistance), m_BlockingMask);
                 if (hit == 0)
                 {

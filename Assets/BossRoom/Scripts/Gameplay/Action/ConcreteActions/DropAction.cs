@@ -11,25 +11,25 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Drop Action")]
     public class DropAction : Action
     {
-        float m_ActionStartTime;
+        float _mActionStartTime;
 
-        NetworkObject m_HeldNetworkObject;
+        NetworkObject _mHeldNetworkObject;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
-            m_ActionStartTime = Time.time;
+            _mActionStartTime = Time.time;
 
             // play animation of dropping a heavy object, if one is already held
             if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
                     serverCharacter.HeldNetworkObject.Value, out var heldObject))
             {
-                m_HeldNetworkObject = heldObject;
+                _mHeldNetworkObject = heldObject;
 
                 Data.TargetIds = null;
 
                 if (!string.IsNullOrEmpty(Config.Anim))
                 {
-                    serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+                    serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
                 }
             }
 
@@ -39,16 +39,16 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void Reset()
         {
             base.Reset();
-            m_ActionStartTime = 0;
-            m_HeldNetworkObject = null;
+            _mActionStartTime = 0;
+            _mHeldNetworkObject = null;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (Time.time > m_ActionStartTime + Config.ExecTimeSeconds)
+            if (Time.time > _mActionStartTime + Config.ExecTimeSeconds)
             {
                 // drop the pot in space
-                m_HeldNetworkObject.transform.SetParent(null);
+                _mHeldNetworkObject.transform.SetParent(null);
                 clientCharacter.HeldNetworkObject.Value = 0;
 
                 return ActionConclusion.Stop;

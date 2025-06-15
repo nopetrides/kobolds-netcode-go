@@ -13,17 +13,17 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         Slider m_HitPointsSlider;
 
-        NetworkVariable<int> m_NetworkedHealth;
+        NetworkVariable<int> _mNetworkedHealth;
 
         public void Initialize(NetworkVariable<int> networkedHealth, int maxValue)
         {
-            m_NetworkedHealth = networkedHealth;
+            _mNetworkedHealth = networkedHealth;
 
             m_HitPointsSlider.minValue = 0;
             m_HitPointsSlider.maxValue = maxValue;
             HealthChanged(maxValue, maxValue);
 
-            m_NetworkedHealth.OnValueChanged += HealthChanged;
+            _mNetworkedHealth.OnValueChanged += HealthChanged;
         }
 
         void HealthChanged(int previousValue, int newValue)
@@ -35,7 +35,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnDestroy()
         {
-            m_NetworkedHealth.OnValueChanged -= HealthChanged;
+            _mNetworkedHealth.OnValueChanged -= HealthChanged;
         }
     }
 }

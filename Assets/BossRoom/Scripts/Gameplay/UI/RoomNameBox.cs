@@ -14,32 +14,32 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         Button m_CopyToClipboardButton;
 
-        LocalLobby m_LocalLobby;
-        string m_LobbyCode;
+        LocalLobby _mLocalLobby;
+        string _mLobbyCode;
 
         [Inject]
         private void InjectDependencies(LocalLobby localLobby)
         {
-            m_LocalLobby = localLobby;
-            m_LocalLobby.changed += UpdateUI;
+            _mLocalLobby = localLobby;
+            _mLocalLobby.Changed += UpdateUI;
         }
 
         void Awake()
         {
-            UpdateUI(m_LocalLobby);
+            UpdateUI(_mLocalLobby);
         }
 
         private void OnDestroy()
         {
-            m_LocalLobby.changed -= UpdateUI;
+            _mLocalLobby.Changed -= UpdateUI;
         }
 
         private void UpdateUI(LocalLobby localLobby)
         {
             if (!string.IsNullOrEmpty(localLobby.LobbyCode))
             {
-                m_LobbyCode = localLobby.LobbyCode;
-                m_RoomNameText.text = $"Lobby Code: {m_LobbyCode}";
+                _mLobbyCode = localLobby.LobbyCode;
+                m_RoomNameText.text = $"Lobby Code: {_mLobbyCode}";
                 gameObject.SetActive(true);
                 m_CopyToClipboardButton.gameObject.SetActive(true);
             }
@@ -51,7 +51,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void CopyToClipboard()
         {
-            GUIUtility.systemCopyBuffer = m_LobbyCode;
+            GUIUtility.systemCopyBuffer = _mLobbyCode;
         }
     }
 }

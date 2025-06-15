@@ -13,46 +13,46 @@ using UnityEditor.Build.Reporting;
 /// </summary>
 internal static class BuildHelpers
 {
-    const string k_MenuRoot = "Boss Room/Playtest Builds/";
-    const string k_Build = k_MenuRoot + "Build";
-    const string k_DeleteBuilds = k_MenuRoot + "Delete All Builds (keeps cache)";
-    const string k_AllToggleName = k_MenuRoot + "Toggle All";
-    const string k_MobileToggleName = k_MenuRoot + "Toggle Mobile";
-    const string k_IOSToggleName = k_MenuRoot + "Toggle iOS";
-    const string k_AndroidToggleName = k_MenuRoot + "Toggle Android";
-    const string k_DesktopToggleName = k_MenuRoot + "Toggle Desktop";
-    const string k_MacOSToggleName = k_MenuRoot + "Toggle MacOS";
-    const string k_WindowsToggleName = k_MenuRoot + "Toggle Windows";
-    const string k_DisableProjectIDToggleName = k_MenuRoot + "Skip Project ID Check"; // double negative in the name since menu is unchecked by default
-    const string k_SkipAutoDeleteToggleName = k_MenuRoot + "Skip Auto Delete Builds";
+    const string KMenuRoot = "Boss Room/Playtest Builds/";
+    const string KBuild = KMenuRoot + "Build";
+    const string KDeleteBuilds = KMenuRoot + "Delete All Builds (keeps cache)";
+    const string KAllToggleName = KMenuRoot + "Toggle All";
+    const string KMobileToggleName = KMenuRoot + "Toggle Mobile";
+    const string KiosToggleName = KMenuRoot + "Toggle iOS";
+    const string KAndroidToggleName = KMenuRoot + "Toggle Android";
+    const string KDesktopToggleName = KMenuRoot + "Toggle Desktop";
+    const string KMacOSToggleName = KMenuRoot + "Toggle MacOS";
+    const string KWindowsToggleName = KMenuRoot + "Toggle Windows";
+    const string KDisableProjectIDToggleName = KMenuRoot + "Skip Project ID Check"; // double negative in the name since menu is unchecked by default
+    const string KSkipAutoDeleteToggleName = KMenuRoot + "Skip Auto Delete Builds";
 
-    const int k_MenuGroupingBuild = 0; // to add separator in menus
-    const int k_MenuGroupingPlatforms = 11;
-    const int k_MenuGroupingOtherToggles = 22;
+    const int KMenuGroupingBuild = 0; // to add separator in menus
+    const int KMenuGroupingPlatforms = 11;
+    const int KMenuGroupingOtherToggles = 22;
 
-    static BuildTarget s_CurrentEditorBuildTarget;
-    static BuildTargetGroup s_CurrentEditorBuildTargetGroup;
-    static int s_NbBuildsDone;
+    static BuildTarget _sCurrentEditorBuildTarget;
+    static BuildTargetGroup _sCurrentEditorBuildTargetGroup;
+    static int _sNbBuildsDone;
 
     static string BuildPathRootDirectory => Path.Combine(Path.GetDirectoryName(Application.dataPath), "Builds", "Playtest");
     static string BuildPathDirectory(string platformName) => Path.Combine(BuildPathRootDirectory, platformName);
     public static string BuildPath(string platformName) => Path.Combine(BuildPathDirectory(platformName), "BossRoomPlaytest");
 
-    [MenuItem(k_Build, false, k_MenuGroupingBuild)]
+    [MenuItem(KBuild, false, KMenuGroupingBuild)]
     static async void Build()
     {
-        s_NbBuildsDone = 0;
-        bool buildiOS = Menu.GetChecked(k_IOSToggleName);
-        bool buildAndroid = Menu.GetChecked(k_AndroidToggleName);
-        bool buildMacOS = Menu.GetChecked(k_MacOSToggleName);
-        bool buildWindows = Menu.GetChecked(k_WindowsToggleName);
+        _sNbBuildsDone = 0;
+        bool buildiOS = Menu.GetChecked(KiosToggleName);
+        bool buildAndroid = Menu.GetChecked(KAndroidToggleName);
+        bool buildMacOS = Menu.GetChecked(KMacOSToggleName);
+        bool buildWindows = Menu.GetChecked(KWindowsToggleName);
 
-        bool skipAutoDelete = Menu.GetChecked(k_SkipAutoDeleteToggleName);
+        bool skipAutoDelete = Menu.GetChecked(KSkipAutoDeleteToggleName);
 
         Debug.Log($"Starting build: buildiOS?:{buildiOS} buildAndroid?:{buildAndroid} buildMacOS?:{buildMacOS} buildWindows?:{buildWindows}");
-        if (string.IsNullOrEmpty(CloudProjectSettings.projectId) && !Menu.GetChecked(k_DisableProjectIDToggleName))
+        if (string.IsNullOrEmpty(CloudProjectSettings.projectId) && !Menu.GetChecked(KDisableProjectIDToggleName))
         {
-            string errorMessage = $"Project ID was supposed to be setup and wasn't, make sure to set it up or disable project ID check with the [{k_DisableProjectIDToggleName}] menu";
+            string errorMessage = $"Project ID was supposed to be setup and wasn't, make sure to set it up or disable project ID check with the [{KDisableProjectIDToggleName}] menu";
             EditorUtility.DisplayDialog("Error Custom Build", errorMessage, "ok");
             throw new Exception(errorMessage);
         }
@@ -78,94 +78,94 @@ internal static class BuildHelpers
         }
         finally
         {
-            Debug.Log($"Count builds done: {s_NbBuildsDone}");
+            Debug.Log($"Count builds done: {_sNbBuildsDone}");
             RestoreBuildTarget();
         }
     }
 
-    [MenuItem(k_Build, true)]
+    [MenuItem(KBuild, true)]
     static bool CanBuild()
     {
-        return Menu.GetChecked(k_IOSToggleName) ||
-            Menu.GetChecked(k_AndroidToggleName) ||
-            Menu.GetChecked(k_MacOSToggleName) ||
-            Menu.GetChecked(k_WindowsToggleName);
+        return Menu.GetChecked(KiosToggleName) ||
+            Menu.GetChecked(KAndroidToggleName) ||
+            Menu.GetChecked(KMacOSToggleName) ||
+            Menu.GetChecked(KWindowsToggleName);
     }
 
     static void RestoreBuildTarget()
     {
-        Debug.Log($"restoring editor to initial build target {s_CurrentEditorBuildTarget}");
-        EditorUserBuildSettings.SwitchActiveBuildTarget(s_CurrentEditorBuildTargetGroup, s_CurrentEditorBuildTarget);
+        Debug.Log($"restoring editor to initial build target {_sCurrentEditorBuildTarget}");
+        EditorUserBuildSettings.SwitchActiveBuildTarget(_sCurrentEditorBuildTargetGroup, _sCurrentEditorBuildTarget);
     }
 
     static void SaveCurrentBuildTarget()
     {
-        s_CurrentEditorBuildTarget = EditorUserBuildSettings.activeBuildTarget;
-        s_CurrentEditorBuildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
+        _sCurrentEditorBuildTarget = EditorUserBuildSettings.activeBuildTarget;
+        _sCurrentEditorBuildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
     }
 
-    [MenuItem(k_AllToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KAllToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleAll()
     {
-        var newValue = ToggleMenu(k_AllToggleName);
-        ToggleMenu(k_DesktopToggleName, newValue);
-        ToggleMenu(k_MacOSToggleName, newValue);
-        ToggleMenu(k_WindowsToggleName, newValue);
-        ToggleMenu(k_MobileToggleName, newValue);
-        ToggleMenu(k_IOSToggleName, newValue);
-        ToggleMenu(k_AndroidToggleName, newValue);
+        var newValue = ToggleMenu(KAllToggleName);
+        ToggleMenu(KDesktopToggleName, newValue);
+        ToggleMenu(KMacOSToggleName, newValue);
+        ToggleMenu(KWindowsToggleName, newValue);
+        ToggleMenu(KMobileToggleName, newValue);
+        ToggleMenu(KiosToggleName, newValue);
+        ToggleMenu(KAndroidToggleName, newValue);
     }
 
-    [MenuItem(k_MobileToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KMobileToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleMobile()
     {
-        var newValue = ToggleMenu(k_MobileToggleName);
-        ToggleMenu(k_IOSToggleName, newValue);
-        ToggleMenu(k_AndroidToggleName, newValue);
+        var newValue = ToggleMenu(KMobileToggleName);
+        ToggleMenu(KiosToggleName, newValue);
+        ToggleMenu(KAndroidToggleName, newValue);
     }
 
-    [MenuItem(k_IOSToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KiosToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleiOS()
     {
-        ToggleMenu(k_IOSToggleName);
+        ToggleMenu(KiosToggleName);
     }
 
-    [MenuItem(k_AndroidToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KAndroidToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleAndroid()
     {
-        ToggleMenu(k_AndroidToggleName);
+        ToggleMenu(KAndroidToggleName);
     }
 
-    [MenuItem(k_DesktopToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KDesktopToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleDesktop()
     {
-        var newValue = ToggleMenu(k_DesktopToggleName);
-        ToggleMenu(k_MacOSToggleName, newValue);
-        ToggleMenu(k_WindowsToggleName, newValue);
+        var newValue = ToggleMenu(KDesktopToggleName);
+        ToggleMenu(KMacOSToggleName, newValue);
+        ToggleMenu(KWindowsToggleName, newValue);
     }
 
-    [MenuItem(k_MacOSToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KMacOSToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleMacOS()
     {
-        ToggleMenu(k_MacOSToggleName);
+        ToggleMenu(KMacOSToggleName);
     }
 
-    [MenuItem(k_WindowsToggleName, false, k_MenuGroupingPlatforms)]
+    [MenuItem(KWindowsToggleName, false, KMenuGroupingPlatforms)]
     static void ToggleWindows()
     {
-        ToggleMenu(k_WindowsToggleName);
+        ToggleMenu(KWindowsToggleName);
     }
 
-    [MenuItem(k_DisableProjectIDToggleName, false, k_MenuGroupingOtherToggles)]
+    [MenuItem(KDisableProjectIDToggleName, false, KMenuGroupingOtherToggles)]
     static void ToggleProjectID()
     {
-        ToggleMenu(k_DisableProjectIDToggleName);
+        ToggleMenu(KDisableProjectIDToggleName);
     }
 
-    [MenuItem(k_SkipAutoDeleteToggleName, false, k_MenuGroupingOtherToggles)]
+    [MenuItem(KSkipAutoDeleteToggleName, false, KMenuGroupingOtherToggles)]
     static void ToggleAutoDelete()
     {
-        ToggleMenu(k_SkipAutoDeleteToggleName);
+        ToggleMenu(KSkipAutoDeleteToggleName);
     }
 
     static bool ToggleMenu(string menuName, bool? valueToSet = null)
@@ -182,7 +182,7 @@ internal static class BuildHelpers
 
     static async Task BuildPlayerUtilityAsync(BuildTarget buildTarget = BuildTarget.NoTarget, string buildPathExtension = null, bool buildDebug = false)
     {
-        s_NbBuildsDone++;
+        _sNbBuildsDone++;
         Debug.Log($"Starting build for {buildTarget.ToString()}");
 
         await Task.Delay(100); // skipping some time to make sure debug logs are flushed before we build
@@ -227,7 +227,7 @@ internal static class BuildHelpers
         }
     }
 
-    [MenuItem(k_DeleteBuilds, false, k_MenuGroupingBuild)]
+    [MenuItem(KDeleteBuilds, false, KMenuGroupingBuild)]
     public static void DeleteBuilds()
     {
         if (Directory.Exists(BuildPathRootDirectory))

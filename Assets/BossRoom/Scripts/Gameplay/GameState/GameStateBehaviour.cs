@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using VContainer.Unity;
 
+
 namespace Unity.BossRoom.Gameplay.GameState
 {
     public enum GameState
@@ -52,7 +53,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         /// <summary>
         /// This is the single active GameState object. There can be only one.
         /// </summary>
-        private static GameObject s_ActiveStateGO;
+        private static GameObject _sActiveStateGo;
 
         protected override void Awake()
         {
@@ -67,9 +68,9 @@ namespace Unity.BossRoom.Gameplay.GameState
         // Start is called before the first frame update
         protected virtual void Start()
         {
-            if (s_ActiveStateGO != null)
+            if (_sActiveStateGo != null)
             {
-                if (s_ActiveStateGO == gameObject)
+                if (_sActiveStateGo == gameObject)
                 {
                     //nothing to do here, if we're already the active state object.
                     return;
@@ -77,7 +78,7 @@ namespace Unity.BossRoom.Gameplay.GameState
 
                 //on the host, this might return either the client or server version, but it doesn't matter which;
                 //we are only curious about its type, and its persist state.
-                var previousState = s_ActiveStateGO.GetComponent<GameStateBehaviour>();
+                var previousState = _sActiveStateGo.GetComponent<GameStateBehaviour>();
 
                 if (previousState.Persists && previousState.ActiveState == ActiveState)
                 {
@@ -88,10 +89,10 @@ namespace Unity.BossRoom.Gameplay.GameState
 
                 //otherwise, the old state is going away. Either it wasn't a Persisting state, or it was,
                 //but we're a different kind of state. In either case, we're going to be replacing it.
-                Destroy(s_ActiveStateGO);
+                Destroy(_sActiveStateGo);
             }
 
-            s_ActiveStateGO = gameObject;
+            _sActiveStateGo = gameObject;
             if (Persists)
             {
                 DontDestroyOnLoad(gameObject);
@@ -102,7 +103,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             if (!Persists)
             {
-                s_ActiveStateGO = null;
+                _sActiveStateGo = null;
             }
         }
     }

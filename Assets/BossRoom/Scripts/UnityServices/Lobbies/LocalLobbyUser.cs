@@ -10,11 +10,11 @@ namespace Unity.BossRoom.UnityServices.Lobbies
     [Serializable]
     public class LocalLobbyUser
     {
-        public event Action<LocalLobbyUser> changed;
+        public event Action<LocalLobbyUser> Changed;
 
         public LocalLobbyUser()
         {
-            m_UserData = new UserData(isHost: false, displayName: null, id: null);
+            _mUserData = new UserData(isHost: false, displayName: null, id: null);
         }
 
         public struct UserData
@@ -31,11 +31,11 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             }
         }
 
-        UserData m_UserData;
+        UserData _mUserData;
 
         public void ResetState()
         {
-            m_UserData = new UserData(false, m_UserData.DisplayName, m_UserData.ID);
+            _mUserData = new UserData(false, _mUserData.DisplayName, _mUserData.ID);
         }
 
         /// <summary>
@@ -49,17 +49,17 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             ID = 4,
         }
 
-        UserMembers m_LastChanged;
+        UserMembers _mLastChanged;
 
         public bool IsHost
         {
-            get { return m_UserData.IsHost; }
+            get { return _mUserData.IsHost; }
             set
             {
-                if (m_UserData.IsHost != value)
+                if (_mUserData.IsHost != value)
                 {
-                    m_UserData.IsHost = value;
-                    m_LastChanged = UserMembers.IsHost;
+                    _mUserData.IsHost = value;
+                    _mLastChanged = UserMembers.IsHost;
                     OnChanged();
                 }
             }
@@ -67,13 +67,13 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         public string DisplayName
         {
-            get => m_UserData.DisplayName;
+            get => _mUserData.DisplayName;
             set
             {
-                if (m_UserData.DisplayName != value)
+                if (_mUserData.DisplayName != value)
                 {
-                    m_UserData.DisplayName = value;
-                    m_LastChanged = UserMembers.DisplayName;
+                    _mUserData.DisplayName = value;
+                    _mLastChanged = UserMembers.DisplayName;
                     OnChanged();
                 }
             }
@@ -81,13 +81,13 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         public string ID
         {
-            get => m_UserData.ID;
+            get => _mUserData.ID;
             set
             {
-                if (m_UserData.ID != value)
+                if (_mUserData.ID != value)
                 {
-                    m_UserData.ID = value;
-                    m_LastChanged = UserMembers.ID;
+                    _mUserData.ID = value;
+                    _mLastChanged = UserMembers.ID;
                     OnChanged();
                 }
             }
@@ -96,26 +96,26 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         public void CopyDataFrom(LocalLobbyUser lobby)
         {
-            var data = lobby.m_UserData;
+            var data = lobby._mUserData;
             int lastChanged = // Set flags just for the members that will be changed.
-                (m_UserData.IsHost == data.IsHost ? 0 : (int)UserMembers.IsHost) |
-                (m_UserData.DisplayName == data.DisplayName ? 0 : (int)UserMembers.DisplayName) |
-                (m_UserData.ID == data.ID ? 0 : (int)UserMembers.ID);
+                (_mUserData.IsHost == data.IsHost ? 0 : (int)UserMembers.IsHost) |
+                (_mUserData.DisplayName == data.DisplayName ? 0 : (int)UserMembers.DisplayName) |
+                (_mUserData.ID == data.ID ? 0 : (int)UserMembers.ID);
 
             if (lastChanged == 0) // Ensure something actually changed.
             {
                 return;
             }
 
-            m_UserData = data;
-            m_LastChanged = (UserMembers)lastChanged;
+            _mUserData = data;
+            _mLastChanged = (UserMembers)lastChanged;
 
             OnChanged();
         }
 
         void OnChanged()
         {
-            changed?.Invoke(this);
+            Changed?.Invoke(this);
         }
 
         public Dictionary<string, PlayerDataObject> GetDataForUnityServices() =>

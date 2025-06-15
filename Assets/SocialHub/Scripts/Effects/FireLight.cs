@@ -10,18 +10,18 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
         [SerializeField]
         float m_FireSpeed = 1f;
 
-        Light m_Light;
-        float m_InitialIntensity;
+        Light _mLight;
+        float _mInitialIntensity;
 
         void Awake()
         {
-            m_Light = GetComponent<Light>();
-            m_InitialIntensity = m_Light.intensity;
+            _mLight = GetComponent<Light>();
+            _mInitialIntensity = _mLight.intensity;
         }
 
         void Update()
         {
-            m_Light.intensity = m_InitialIntensity * m_LightCurve.Evaluate(Time.time * m_FireSpeed);
+            _mLight.intensity = _mInitialIntensity * m_LightCurve.Evaluate(Time.time * m_FireSpeed);
         }
     }
 }

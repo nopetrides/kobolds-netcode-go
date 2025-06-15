@@ -10,58 +10,58 @@ namespace Unity.BossRoom.Gameplay.Actions
 {
     public partial class TargetAction
     {
-        private GameObject m_TargetReticule;
-        private ulong m_CurrentTarget;
-        private ulong m_NewTarget;
+        private GameObject _mTargetReticule;
+        private ulong _mCurrentTarget;
+        private ulong _mNewTarget;
 
-        private const float k_ReticuleGroundHeight = 0.2f;
+        private const float KReticuleGroundHeight = 0.2f;
 
         public override bool OnStartClient(ClientCharacter clientCharacter)
         {
             base.OnStartClient(clientCharacter);
-            clientCharacter.serverCharacter.TargetId.OnValueChanged += OnTargetChanged;
-            clientCharacter.serverCharacter.GetComponent<ClientInputSender>().ActionInputEvent += OnActionInput;
+            clientCharacter.ServerCharacter.TargetId.OnValueChanged += OnTargetChanged;
+            clientCharacter.ServerCharacter.GetComponent<ClientInputSender>().ActionInputEvent += OnActionInput;
 
             return true;
         }
 
         private void OnTargetChanged(ulong oldTarget, ulong newTarget)
         {
-            m_NewTarget = newTarget;
+            _mNewTarget = newTarget;
         }
 
         public override bool OnUpdateClient(ClientCharacter clientCharacter)
         {
-            if (m_CurrentTarget != m_NewTarget)
+            if (_mCurrentTarget != _mNewTarget)
             {
-                m_CurrentTarget = m_NewTarget;
+                _mCurrentTarget = _mNewTarget;
 
-                if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(m_CurrentTarget, out NetworkObject targetObject))
+                if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_mCurrentTarget, out NetworkObject targetObject))
                 {
                     var targetEntity = targetObject != null ? targetObject.GetComponent<ITargetable>() : null;
                     if (targetEntity != null)
                     {
                         ValidateReticule(clientCharacter, targetObject);
-                        m_TargetReticule.SetActive(true);
+                        _mTargetReticule.SetActive(true);
 
                         var parentTransform = targetObject.transform;
-                        if (targetObject.TryGetComponent(out ServerCharacter serverCharacter) && serverCharacter.clientCharacter)
+                        if (targetObject.TryGetComponent(out ServerCharacter serverCharacter) && serverCharacter.ClientCharacter)
                         {
                             //for characters, attach the reticule to the child graphics object.
-                            parentTransform = serverCharacter.clientCharacter.transform;
+                            parentTransform = serverCharacter.ClientCharacter.transform;
                         }
 
-                        m_TargetReticule.transform.parent = parentTransform;
-                        m_TargetReticule.transform.localPosition = new Vector3(0, k_ReticuleGroundHeight, 0);
+                        _mTargetReticule.transform.parent = parentTransform;
+                        _mTargetReticule.transform.localPosition = new Vector3(0, KReticuleGroundHeight, 0);
                     }
                 }
                 else
                 {
                     // null check here in case the target was destroyed along with the target reticule
-                    if (m_TargetReticule != null)
+                    if (_mTargetReticule != null)
                     {
-                        m_TargetReticule.transform.parent = null;
-                        m_TargetReticule.SetActive(false);
+                        _mTargetReticule.transform.parent = null;
+                        _mTargetReticule.SetActive(false);
                     }
                 }
             }
@@ -75,23 +75,23 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </summary>
         void ValidateReticule(ClientCharacter parent, NetworkObject targetObject)
         {
-            if (m_TargetReticule == null)
+            if (_mTargetReticule == null)
             {
-                m_TargetReticule = Object.Instantiate(parent.TargetReticulePrefab);
+                _mTargetReticule = Object.Instantiate(parent.TargetReticulePrefab);
             }
 
-            bool target_isnpc = targetObject.GetComponent<ITargetable>().IsNpc;
-            bool myself_isnpc = parent.serverCharacter.CharacterClass.IsNpc;
-            bool hostile = target_isnpc != myself_isnpc;
+            bool targetIsnpc = targetObject.GetComponent<ITargetable>().IsNpc;
+            bool myselfIsnpc = parent.ServerCharacter.CharacterClass.IsNpc;
+            bool hostile = targetIsnpc != myselfIsnpc;
 
-            m_TargetReticule.GetComponent<MeshRenderer>().material = hostile ? parent.ReticuleHostileMat : parent.ReticuleFriendlyMat;
+            _mTargetReticule.GetComponent<MeshRenderer>().material = hostile ? parent.ReticuleHostileMat : parent.ReticuleFriendlyMat;
         }
 
         public override void CancelClient(ClientCharacter clientCharacter)
         {
-            GameObject.Destroy(m_TargetReticule);
+            GameObject.Destroy(_mTargetReticule);
 
-            clientCharacter.serverCharacter.TargetId.OnValueChanged -= OnTargetChanged;
+            clientCharacter.ServerCharacter.TargetId.OnValueChanged -= OnTargetChanged;
             if (clientCharacter.TryGetComponent(out ClientInputSender inputSender))
             {
                 inputSender.ActionInputEvent -= OnActionInput;
@@ -103,7 +103,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             //this method runs on the owning client, and allows us to anticipate our new target for purposes of FX visualization.
             if (GameDataSource.Instance.GetActionPrototypeByID(data.ActionID).IsGeneralTargetAction)
             {
-                m_NewTarget = data.TargetIds[0];
+                _mNewTarget = data.TargetIds[0];
             }
         }
     }

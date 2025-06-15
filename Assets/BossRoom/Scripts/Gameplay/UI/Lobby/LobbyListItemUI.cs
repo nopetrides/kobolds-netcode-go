@@ -16,21 +16,21 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField] TextMeshProUGUI m_lobbyNameText;
         [SerializeField] TextMeshProUGUI m_lobbyCountText;
 
-        [Inject] LobbyUIMediator m_LobbyUIMediator;
+        [Inject] LobbyUIMediator _mLobbyUIMediator;
 
-        ISessionInfo m_Data;
+        ISessionInfo _mData;
 
 
         public void SetData(ISessionInfo data)
         {
-            m_Data = data;
+            _mData = data;
             m_lobbyNameText.SetText(data.Name);
             m_lobbyCountText.SetText($"{data.MaxPlayers - data.AvailableSlots}/{data.MaxPlayers}");
         }
 
         public void OnClick()
         {
-            m_LobbyUIMediator.JoinLobbyRequest(m_Data);
+            _mLobbyUIMediator.JoinLobbyRequest(_mData);
         }
     }
 }

@@ -29,10 +29,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         [SerializeField]
         VisualTreeAsset m_TouchscreenUI;
 
-        VirtualJoystick m_JoystickLeft;
-        VirtualJoystick m_JoystickRight;
-        MobileGamepadState m_RuntimeState;
-        PressedButton m_ButtonInteract;
+        VirtualJoystick _mJoystickLeft;
+        VirtualJoystick _mJoystickRight;
+        MobileGamepadState _mRuntimeState;
+        PressedButton _mButtonInteract;
 
         async void OnEnable()
         {
@@ -44,16 +44,16 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
             var root = m_Document.rootVisualElement.Q("touch-ui-container");
             m_TouchscreenUI.CloneTree(root);
-            m_RuntimeState = MobileGamepadState.GetOrCreate;
+            _mRuntimeState = MobileGamepadState.GetOrCreate;
 
             // Bindings
-            root.dataSource = m_RuntimeState;
+            root.dataSource = _mRuntimeState;
             var joystickMove = root.Q<VisualElement>(UIElementNames.JoystickMove);
-            m_JoystickLeft = new VirtualJoystick(joystickMove, OnJoystickLeftMoved,
-                m_RuntimeState.LeftJoystickTopName, m_RuntimeState.LeftJoystickLeftName);
+            _mJoystickLeft = new VirtualJoystick(joystickMove, OnJoystickLeftMoved,
+                _mRuntimeState.LeftJoystickTopName, _mRuntimeState.LeftJoystickLeftName);
             var joystickLook = root.Q<VisualElement>(UIElementNames.JoystickLook);
-            m_JoystickRight = new VirtualJoystick(joystickLook, OnJoystickRightMoved,
-                m_RuntimeState.RightJoystickTopName, m_RuntimeState.RightJoystickLeftName);
+            _mJoystickRight = new VirtualJoystick(joystickLook, OnJoystickRightMoved,
+                _mRuntimeState.RightJoystickTopName, _mRuntimeState.RightJoystickLeftName);
 
             var buttonMenu = root.Q<PressedButton>(UIElementNames.ButtonMenu);
             buttonMenu.SetBinding("value", new DataBinding
@@ -69,8 +69,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
                 bindingMode = BindingMode.ToSource,
             });
 
-            m_ButtonInteract = root.Q<PressedButton>(UIElementNames.ButtonInteract);
-            m_ButtonInteract.SetBinding("value", new DataBinding
+            _mButtonInteract = root.Q<PressedButton>(UIElementNames.ButtonInteract);
+            _mButtonInteract.SetBinding("value", new DataBinding
             {
                 dataSourcePath = new PropertyPath(nameof(MobileGamepadState.ButtonInteract)),
                 bindingMode = BindingMode.ToSource,
@@ -88,26 +88,26 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void OnPickupStateChanged(PickupState state, Transform _)
         {
-            m_ButtonInteract.enabledSelf = state != PickupState.Inactive;
+            _mButtonInteract.enabledSelf = state != PickupState.Inactive;
 
             if(state == PickupState.Carry)
             {
-                m_ButtonInteract.AddToClassList("state-carry");
+                _mButtonInteract.AddToClassList("state-carry");
                 return;
             }
 
-            m_ButtonInteract.RemoveFromClassList("state-carry");
+            _mButtonInteract.RemoveFromClassList("state-carry");
         }
 
-        void OnJoystickLeftMoved(Vector2 position) => m_RuntimeState.LeftJoystick = position;
-        void OnJoystickRightMoved(Vector2 position) => m_RuntimeState.RightJoystick = position;
+        void OnJoystickLeftMoved(Vector2 position) => _mRuntimeState.LeftJoystick = position;
+        void OnJoystickRightMoved(Vector2 position) => _mRuntimeState.RightJoystick = position;
 
         void OnDisable()
         {
-            m_JoystickLeft?.Dispose();
-            m_JoystickLeft = null;
-            m_JoystickRight?.Dispose();
-            m_JoystickRight = null;
+            _mJoystickLeft?.Dispose();
+            _mJoystickLeft = null;
+            _mJoystickRight?.Dispose();
+            _mJoystickRight = null;
 
             GameplayEventHandler.OnPickupStateChanged -= OnPickupStateChanged;
         }
@@ -126,13 +126,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         /// </remarks>
         class VirtualJoystick : IDisposable
         {
-            readonly VisualElement m_Root;
-            readonly Action<Vector2> m_OnJoystickMoved;
+            readonly VisualElement _mRoot;
+            readonly Action<Vector2> _mOnJoystickMoved;
 
             public VirtualJoystick(VisualElement root, Action<Vector2> onJoystickMoved, string topProperty, string leftProperty)
             {
-                m_Root = root;
-                m_OnJoystickMoved = onJoystickMoved;
+                _mRoot = root;
+                _mOnJoystickMoved = onJoystickMoved;
 
                 root.RegisterCallback<PointerDownEvent>(HandlePress);
                 root.RegisterCallback<PointerMoveEvent>(HandleDrag);
@@ -153,29 +153,29 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
             public void Dispose()
             {
-                m_Root.UnregisterCallback<PointerDownEvent>(HandlePress);
-                m_Root.UnregisterCallback<PointerMoveEvent>(HandleDrag);
-                m_Root.UnregisterCallback<PointerUpEvent>(HandleRelease);
+                _mRoot.UnregisterCallback<PointerDownEvent>(HandlePress);
+                _mRoot.UnregisterCallback<PointerMoveEvent>(HandleDrag);
+                _mRoot.UnregisterCallback<PointerUpEvent>(HandleRelease);
             }
 
-            void HandlePress(PointerDownEvent evt) => m_Root.CapturePointer(evt.pointerId);
+            void HandlePress(PointerDownEvent evt) => _mRoot.CapturePointer(evt.pointerId);
 
             void HandleRelease(PointerUpEvent evt)
             {
-                if (!m_Root.HasPointerCapture(evt.pointerId))
+                if (!_mRoot.HasPointerCapture(evt.pointerId))
                     return;
 
-                m_Root.ReleasePointer(evt.pointerId);
-                m_OnJoystickMoved(Vector2.zero);
+                _mRoot.ReleasePointer(evt.pointerId);
+                _mOnJoystickMoved(Vector2.zero);
             }
 
             void HandleDrag(PointerMoveEvent evt)
             {
-                if (!m_Root.HasPointerCapture(evt.pointerId))
+                if (!_mRoot.HasPointerCapture(evt.pointerId))
                     return;
 
-                var center = m_Root.contentRect.center;
-                var width = m_Root.contentRect.width;
+                var center = _mRoot.contentRect.center;
+                var width = _mRoot.contentRect.width;
                 var centerToPosition = ((Vector2)evt.localPosition - center) / width;
 
                 if (centerToPosition.sqrMagnitude > 1)
@@ -183,7 +183,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
                     centerToPosition = centerToPosition.normalized;
                 }
 
-                m_OnJoystickMoved(centerToPosition);
+                _mOnJoystickMoved(centerToPosition);
             }
         }
     }

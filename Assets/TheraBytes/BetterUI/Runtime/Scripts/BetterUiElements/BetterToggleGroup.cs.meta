@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: fadfd0a1b41d4334da7fe08985a25471
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 835d0487333df3f4d88daf3a1ec99a05, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Runtime/Scripts/BetterUiElements/BetterToggleGroup.cs
+  uploadId: 759928

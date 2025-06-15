@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: cd3b65e6384f1314fb7d97b99caa5e7f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 66381f396d2d6444fbee442c0c38d8a9, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Runtime/Scripts/BetterNavigation/HandlersAndControllers/TabSwitchController.cs
+  uploadId: 759928

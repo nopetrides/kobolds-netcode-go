@@ -4,6 +4,7 @@ using Unity.BossRoom.Infrastructure;
 using UnityEngine;
 using VContainer;
 
+
 namespace Unity.BossRoom.Gameplay.UI
 {
     /// <summary>
@@ -11,16 +12,16 @@ namespace Unity.BossRoom.Gameplay.UI
     /// </summary>
     public class ConnectionStatusMessageUIManager : MonoBehaviour
     {
-        DisposableGroup m_Subscriptions;
+        DisposableGroup _mSubscriptions;
 
-        PopupPanel m_CurrentReconnectPopup;
+        PopupPanel _mCurrentReconnectPopup;
 
         [Inject]
         void InjectDependencies(ISubscriber<ConnectStatus> connectStatusSub, ISubscriber<ReconnectMessage> reconnectMessageSub)
         {
-            m_Subscriptions = new DisposableGroup();
-            m_Subscriptions.Add(connectStatusSub.Subscribe(OnConnectStatus));
-            m_Subscriptions.Add(reconnectMessageSub.Subscribe(OnReconnectMessage));
+            _mSubscriptions = new DisposableGroup();
+            _mSubscriptions.Add(connectStatusSub.Subscribe(OnConnectStatus));
+            _mSubscriptions.Add(reconnectMessageSub.Subscribe(OnReconnectMessage));
         }
 
         void Awake()
@@ -30,9 +31,9 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnDestroy()
         {
-            if (m_Subscriptions != null)
+            if (_mSubscriptions != null)
             {
-                m_Subscriptions.Dispose();
+                _mSubscriptions.Dispose();
             }
         }
 
@@ -80,22 +81,22 @@ namespace Unity.BossRoom.Gameplay.UI
             {
                 CloseReconnectPopup();
             }
-            else if (m_CurrentReconnectPopup != null)
+            else if (_mCurrentReconnectPopup != null)
             {
-                m_CurrentReconnectPopup.SetupPopupPanel("Connection lost", $"Attempting to reconnect...\nAttempt {message.CurrentAttempt + 1}/{message.MaxAttempt}", closeableByUser: false);
+                _mCurrentReconnectPopup.SetupPopupPanel("Connection lost", $"Attempting to reconnect...\nAttempt {message.CurrentAttempt + 1}/{message.MaxAttempt}", closeableByUser: false);
             }
             else
             {
-                m_CurrentReconnectPopup = PopupManager.ShowPopupPanel("Connection lost", $"Attempting to reconnect...\nAttempt {message.CurrentAttempt + 1}/{message.MaxAttempt}", closeableByUser: false);
+                _mCurrentReconnectPopup = PopupManager.ShowPopupPanel("Connection lost", $"Attempting to reconnect...\nAttempt {message.CurrentAttempt + 1}/{message.MaxAttempt}", closeableByUser: false);
             }
         }
 
         void CloseReconnectPopup()
         {
-            if (m_CurrentReconnectPopup != null)
+            if (_mCurrentReconnectPopup != null)
             {
-                m_CurrentReconnectPopup.Hide();
-                m_CurrentReconnectPopup = null;
+                _mCurrentReconnectPopup.Hide();
+                _mCurrentReconnectPopup = null;
             }
         }
     }

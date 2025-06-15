@@ -10,19 +10,19 @@ namespace Unity.BossRoom.Utils
     public struct RotationLerper
     {
         // Calculated start for the most recent interpolation
-        Quaternion m_LerpStart;
+        Quaternion _mLerpStart;
 
         // Calculated time elapsed for the most recent interpolation
-        float m_CurrentLerpTime;
+        float _mCurrentLerpTime;
 
         // The duration of the interpolation, in seconds
-        float m_LerpTime;
+        float _mLerpTime;
 
         public RotationLerper(Quaternion start, float lerpTime)
         {
-            m_LerpStart = start;
-            m_CurrentLerpTime = 0f;
-            m_LerpTime = lerpTime;
+            _mLerpStart = start;
+            _mCurrentLerpTime = 0f;
+            _mLerpTime = lerpTime;
         }
 
         /// <summary>
@@ -35,19 +35,19 @@ namespace Unity.BossRoom.Utils
         {
             if (current != target)
             {
-                m_LerpStart = current;
-                m_CurrentLerpTime = 0f;
+                _mLerpStart = current;
+                _mCurrentLerpTime = 0f;
             }
 
-            m_CurrentLerpTime += Time.deltaTime;
-            if (m_CurrentLerpTime > m_LerpTime)
+            _mCurrentLerpTime += Time.deltaTime;
+            if (_mCurrentLerpTime > _mLerpTime)
             {
-                m_CurrentLerpTime = m_LerpTime;
+                _mCurrentLerpTime = _mLerpTime;
             }
 
-            var lerpPercentage = m_CurrentLerpTime / m_LerpTime;
+            var lerpPercentage = _mCurrentLerpTime / _mLerpTime;
 
-            return Quaternion.Slerp(m_LerpStart, target, lerpPercentage);
+            return Quaternion.Slerp(_mLerpStart, target, lerpPercentage);
         }
     }
 }

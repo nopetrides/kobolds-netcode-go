@@ -8,29 +8,29 @@ namespace Unity.BossRoom.Infrastructure
     /// <typeparam name="T"></typeparam>
     public class DisposableSubscription<T> : IDisposable
     {
-        Action<T> m_Handler;
-        bool m_IsDisposed;
-        IMessageChannel<T> m_MessageChannel;
+        Action<T> _mHandler;
+        bool _mIsDisposed;
+        IMessageChannel<T> _mMessageChannel;
 
         public DisposableSubscription(IMessageChannel<T> messageChannel, Action<T> handler)
         {
-            m_MessageChannel = messageChannel;
-            m_Handler = handler;
+            _mMessageChannel = messageChannel;
+            _mHandler = handler;
         }
 
         public void Dispose()
         {
-            if (!m_IsDisposed)
+            if (!_mIsDisposed)
             {
-                m_IsDisposed = true;
+                _mIsDisposed = true;
 
-                if (!m_MessageChannel.IsDisposed)
+                if (!_mMessageChannel.IsDisposed)
                 {
-                    m_MessageChannel.Unsubscribe(m_Handler);
+                    _mMessageChannel.Unsubscribe(_mHandler);
                 }
 
-                m_Handler = null;
-                m_MessageChannel = null;
+                _mHandler = null;
+                _mMessageChannel = null;
             }
         }
     }

@@ -18,18 +18,18 @@ namespace Unity.BossRoom.Utils
         // For a value like RTT an exponential moving average is a better indication of the current rtt and fluctuates less.
         struct ExponentialMovingAverageCalculator
         {
-            readonly float m_Alpha;
-            float m_Average;
+            readonly float _mAlpha;
+            float _mAverage;
 
-            public float Average => m_Average;
+            public float Average => _mAverage;
 
             public ExponentialMovingAverageCalculator(float average)
             {
-                m_Alpha = 2f / (k_MaxWindowSize + 1);
-                m_Average = average;
+                _mAlpha = 2f / (KMaxWindowSize + 1);
+                _mAverage = average;
             }
 
-            public float NextValue(float value) => m_Average = (value - m_Average) * m_Alpha + m_Average;
+            public float NextValue(float value) => _mAverage = (value - _mAverage) * _mAlpha + _mAverage;
         }
 
         // RTT
@@ -38,30 +38,30 @@ namespace Unity.BossRoom.Utils
         // The client receives that pong response and stops its time.
         // The RPC value is using a moving average, so we don't have a value that moves too much, but is still reactive to RTT changes.
 
-        const int k_MaxWindowSizeSeconds = 3; // it should take x seconds for the value to react to change
-        const float k_PingIntervalSeconds = 0.1f;
-        const float k_MaxWindowSize = k_MaxWindowSizeSeconds / k_PingIntervalSeconds;
+        const int KMaxWindowSizeSeconds = 3; // it should take x seconds for the value to react to change
+        const float KPingIntervalSeconds = 0.1f;
+        const float KMaxWindowSize = KMaxWindowSizeSeconds / KPingIntervalSeconds;
 
         // Some games are less sensitive to latency than others. For fast-paced games, latency above 100ms becomes a challenge for players while for others 500ms is fine. It's up to you to establish those thresholds.
-        const float k_StrugglingNetworkConditionsRTTThreshold = 130;
-        const float k_BadNetworkConditionsRTTThreshold = 200;
+        const float KStrugglingNetworkConditionsRTTThreshold = 130;
+        const float KBadNetworkConditionsRTTThreshold = 200;
 
-        ExponentialMovingAverageCalculator m_BossRoomRTT = new ExponentialMovingAverageCalculator(0);
-        ExponentialMovingAverageCalculator m_UtpRTT = new ExponentialMovingAverageCalculator(0);
+        ExponentialMovingAverageCalculator _mBossRoomRTT = new ExponentialMovingAverageCalculator(0);
+        ExponentialMovingAverageCalculator _mUtpRTT = new ExponentialMovingAverageCalculator(0);
 
-        float m_LastPingTime;
-        TextMeshProUGUI m_TextStat;
-        TextMeshProUGUI m_TextHostType;
-        TextMeshProUGUI m_TextBadNetworkConditions;
+        float _mLastPingTime;
+        TextMeshProUGUI _mTextStat;
+        TextMeshProUGUI _mTextHostType;
+        TextMeshProUGUI _mTextBadNetworkConditions;
 
         // When receiving pong client RPCs, we need to know when the initiating ping sent it so we can calculate its individual RTT
-        int m_CurrentRTTPingId;
+        int _mCurrentRTTPingId;
 
-        Dictionary<int, float> m_PingHistoryStartTimes = new Dictionary<int, float>();
+        Dictionary<int, float> _mPingHistoryStartTimes = new Dictionary<int, float>();
 
-        RpcParams m_PongClientParams;
+        RpcParams _mPongClientParams;
 
-        string m_TextToDisplay;
+        string _mTextToDisplay;
 
         public override void OnNetworkSpawn()
         {
@@ -77,7 +77,7 @@ namespace Unity.BossRoom.Utils
                 CreateNetworkStatsText();
             }
 
-            m_PongClientParams = RpcTarget.Group(new[] { OwnerClientId }, RpcTargetUse.Persistent);
+            _mPongClientParams = RpcTarget.Group(new[] { OwnerClientId }, RpcTargetUse.Persistent);
         }
 
         // Creating a UI text object and add it to NetworkOverlay canvas
@@ -87,94 +87,94 @@ namespace Unity.BossRoom.Utils
                 "No NetworkOverlay object part of scene. Add NetworkOverlay prefab to bootstrap scene!");
 
             string hostType = IsHost ? "Host" : IsClient ? "Client" : "Unknown";
-            Editor.NetworkOverlay.Instance.AddTextToUI("UI Host Type Text", $"Type: {hostType}", out m_TextHostType);
-            Editor.NetworkOverlay.Instance.AddTextToUI("UI Stat Text", "No Stat", out m_TextStat);
-            Editor.NetworkOverlay.Instance.AddTextToUI("UI Bad Conditions Text", "", out m_TextBadNetworkConditions);
+            Editor.NetworkOverlay.Instance.AddTextToUI("UI Host Type Text", $"Type: {hostType}", out _mTextHostType);
+            Editor.NetworkOverlay.Instance.AddTextToUI("UI Stat Text", "No Stat", out _mTextStat);
+            Editor.NetworkOverlay.Instance.AddTextToUI("UI Bad Conditions Text", "", out _mTextBadNetworkConditions);
         }
 
         void FixedUpdate()
         {
             if (!IsServer)
             {
-                if (Time.realtimeSinceStartup - m_LastPingTime > k_PingIntervalSeconds)
+                if (Time.realtimeSinceStartup - _mLastPingTime > KPingIntervalSeconds)
                 {
                     // We could have had a ping/pong where the ping sends the pong and the pong sends the ping. Issue with this
                     // is the higher the latency, the lower the sampling would be. We need pings to be sent at a regular interval
-                    ServerPingRpc(m_CurrentRTTPingId);
-                    m_PingHistoryStartTimes[m_CurrentRTTPingId] = Time.realtimeSinceStartup;
-                    m_CurrentRTTPingId++;
-                    m_LastPingTime = Time.realtimeSinceStartup;
+                    ServerPingRpc(_mCurrentRTTPingId);
+                    _mPingHistoryStartTimes[_mCurrentRTTPingId] = Time.realtimeSinceStartup;
+                    _mCurrentRTTPingId++;
+                    _mLastPingTime = Time.realtimeSinceStartup;
 
-                    m_UtpRTT.NextValue(NetworkManager.NetworkConfig.NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId));
+                    _mUtpRTT.NextValue(NetworkManager.NetworkConfig.NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId));
                 }
 
-                if (m_TextStat != null)
+                if (_mTextStat != null)
                 {
-                    m_TextToDisplay = $"RTT: {(m_BossRoomRTT.Average * 1000).ToString("0")} ms;\nUTP RTT {m_UtpRTT.Average.ToString("0")} ms";
-                    if (m_UtpRTT.Average > k_BadNetworkConditionsRTTThreshold)
+                    _mTextToDisplay = $"RTT: {(_mBossRoomRTT.Average * 1000).ToString("0")} ms;\nUTP RTT {_mUtpRTT.Average.ToString("0")} ms";
+                    if (_mUtpRTT.Average > KBadNetworkConditionsRTTThreshold)
                     {
-                        m_TextStat.color = Color.red;
+                        _mTextStat.color = Color.red;
                     }
-                    else if (m_UtpRTT.Average > k_StrugglingNetworkConditionsRTTThreshold)
+                    else if (_mUtpRTT.Average > KStrugglingNetworkConditionsRTTThreshold)
                     {
-                        m_TextStat.color = Color.yellow;
+                        _mTextStat.color = Color.yellow;
                     }
                     else
                     {
-                        m_TextStat.color = Color.white;
+                        _mTextStat.color = Color.white;
                     }
                 }
 
-                if (m_TextBadNetworkConditions != null)
+                if (_mTextBadNetworkConditions != null)
                 {
                     // Right now, we only base this warning on UTP's RTT metric, but in the future we could watch for packet loss as well, or other metrics.
                     // This could be a simple icon instead of doing heavy string manipulations.
-                    m_TextBadNetworkConditions.text = m_UtpRTT.Average > k_BadNetworkConditionsRTTThreshold ? "Bad Network Conditions Detected!" : "";
+                    _mTextBadNetworkConditions.text = _mUtpRTT.Average > KBadNetworkConditionsRTTThreshold ? "Bad Network Conditions Detected!" : "";
                     var color = Color.red;
                     color.a = Mathf.PingPong(Time.time, 1f);
-                    m_TextBadNetworkConditions.color = color;
+                    _mTextBadNetworkConditions.color = color;
                 }
             }
             else
             {
-                m_TextToDisplay = $"Connected players: {NetworkManager.Singleton.ConnectedClients.Count.ToString()}";
+                _mTextToDisplay = $"Connected players: {NetworkManager.Singleton.ConnectedClients.Count.ToString()}";
             }
 
-            if (m_TextStat)
+            if (_mTextStat)
             {
-                m_TextStat.text = m_TextToDisplay;
+                _mTextStat.text = _mTextToDisplay;
             }
         }
 
         [Rpc(SendTo.Server)]
         void ServerPingRpc(int pingId, RpcParams serverParams = default)
         {
-            ClientPongRpc(pingId, m_PongClientParams);
+            ClientPongRpc(pingId, _mPongClientParams);
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
         void ClientPongRpc(int pingId, RpcParams clientParams = default)
         {
-            var startTime = m_PingHistoryStartTimes[pingId];
-            m_PingHistoryStartTimes.Remove(pingId);
-            m_BossRoomRTT.NextValue(Time.realtimeSinceStartup - startTime);
+            var startTime = _mPingHistoryStartTimes[pingId];
+            _mPingHistoryStartTimes.Remove(pingId);
+            _mBossRoomRTT.NextValue(Time.realtimeSinceStartup - startTime);
         }
 
         public override void OnNetworkDespawn()
         {
-            if (m_TextStat != null)
+            if (_mTextStat != null)
             {
-                Destroy(m_TextStat.gameObject);
+                Destroy(_mTextStat.gameObject);
             }
 
-            if (m_TextHostType != null)
+            if (_mTextHostType != null)
             {
-                Destroy(m_TextHostType.gameObject);
+                Destroy(_mTextHostType.gameObject);
             }
 
-            if (m_TextBadNetworkConditions != null)
+            if (_mTextBadNetworkConditions != null)
             {
-                Destroy(m_TextBadNetworkConditions.gameObject);
+                Destroy(_mTextBadNetworkConditions.gameObject);
             }
         }
     }

@@ -26,7 +26,7 @@ namespace Unity.BossRoom.Audio
         /// To convert, we use log10(slider) multiplied by 20. Why 20? because log10(.0001)*20=-80, which is the
         /// bottom range for our mixer, meaning it's disabled.
         /// </summary>
-        private const float k_VolumeLog10Multiplier = 20;
+        private const float KVolumeLog10Multiplier = 20;
 
         private void Awake()
         {
@@ -52,7 +52,7 @@ namespace Unity.BossRoom.Audio
             {
                 volume = 0.0001f;
             }
-            return Mathf.Log10(volume) * k_VolumeLog10Multiplier;
+            return Mathf.Log10(volume) * KVolumeLog10Multiplier;
         }
     }
 }

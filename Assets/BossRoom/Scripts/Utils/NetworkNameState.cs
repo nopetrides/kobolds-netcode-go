@@ -19,18 +19,18 @@ namespace Unity.BossRoom.Utils
     /// </summary>
     public struct FixedPlayerName : INetworkSerializable
     {
-        FixedString32Bytes m_Name;
+        FixedString32Bytes _mName;
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            serializer.SerializeValue(ref m_Name);
+            serializer.SerializeValue(ref _mName);
         }
 
         public override string ToString()
         {
-            return m_Name.Value.ToString();
+            return _mName.Value.ToString();
         }
 
         public static implicit operator string(FixedPlayerName s) => s.ToString();
-        public static implicit operator FixedPlayerName(string s) => new FixedPlayerName() { m_Name = new FixedString32Bytes(s) };
+        public static implicit operator FixedPlayerName(string s) => new FixedPlayerName() { _mName = new FixedString32Bytes(s) };
     }
 }

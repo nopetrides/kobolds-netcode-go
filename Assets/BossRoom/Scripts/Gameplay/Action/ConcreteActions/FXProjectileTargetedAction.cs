@@ -17,22 +17,22 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/FX Projectile Targeted Action")]
     public partial class FXProjectileTargetedAction : Action
     {
-        private bool m_ImpactedTarget;
-        private float m_TimeUntilImpact;
-        private IDamageable m_DamageableTarget;
+        private bool _mImpactedTarget;
+        private float _mTimeUntilImpact;
+        private IDamageable _mDamageableTarget;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
-            m_DamageableTarget = GetDamageableTarget(serverCharacter);
+            _mDamageableTarget = GetDamageableTarget(serverCharacter);
 
             // figure out where the player wants us to aim at...
-            Vector3 targetPos = m_DamageableTarget != null ? m_DamageableTarget.transform.position : m_Data.Position;
+            Vector3 targetPos = _mDamageableTarget != null ? _mDamageableTarget.Transform.position : MData.Position;
 
             // then make sure we can actually see that point!
-            if (!ActionUtils.HasLineOfSight(serverCharacter.physicsWrapper.Transform.position, targetPos, out Vector3 collidePos))
+            if (!ActionUtils.HasLineOfSight(serverCharacter.PhysicsWrapper.Transform.position, targetPos, out Vector3 collidePos))
             {
                 // we do not have line of sight to the target point. So our target instead becomes the obstruction point
-                m_DamageableTarget = null;
+                _mDamageableTarget = null;
                 targetPos = collidePos;
 
                 // and update our action data so that when we send it to the clients, it will be up-to-date
@@ -41,15 +41,15 @@ namespace Unity.BossRoom.Gameplay.Actions
             }
 
             // turn to face our target!
-            serverCharacter.physicsWrapper.Transform.LookAt(targetPos);
+            serverCharacter.PhysicsWrapper.Transform.LookAt(targetPos);
 
             // figure out how long the pretend-projectile will be flying to the target
-            float distanceToTargetPos = Vector3.Distance(targetPos, serverCharacter.physicsWrapper.Transform.position);
-            m_TimeUntilImpact = Config.ExecTimeSeconds + (distanceToTargetPos / Config.Projectiles[0].Speed_m_s);
+            float distanceToTargetPos = Vector3.Distance(targetPos, serverCharacter.PhysicsWrapper.Transform.position);
+            _mTimeUntilImpact = Config.ExecTimeSeconds + (distanceToTargetPos / Config.Projectiles[0].Speed_m_s);
 
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
             // tell clients to visualize this action
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
             return true;
         }
 
@@ -57,24 +57,24 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             base.Reset();
 
-            m_ImpactedTarget = false;
-            m_TimeUntilImpact = 0;
-            m_DamageableTarget = null;
-            m_ImpactPlayed = false;
-            m_ProjectileDuration = 0;
-            m_Projectile = null;
-            m_Target = null;
-            m_TargetTransform = null;
+            _mImpactedTarget = false;
+            _mTimeUntilImpact = 0;
+            _mDamageableTarget = null;
+            _mImpactPlayed = false;
+            _mProjectileDuration = 0;
+            _mProjectile = null;
+            _mTarget = null;
+            _mTargetTransform = null;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (!m_ImpactedTarget && m_TimeUntilImpact <= TimeRunning)
+            if (!_mImpactedTarget && _mTimeUntilImpact <= TimeRunning)
             {
-                m_ImpactedTarget = true;
-                if (m_DamageableTarget != null)
+                _mImpactedTarget = true;
+                if (_mDamageableTarget != null)
                 {
-                    m_DamageableTarget.ReceiveHP(clientCharacter, -Config.Projectiles[0].Damage);
+                    _mDamageableTarget.ReceiveHp(clientCharacter, -Config.Projectiles[0].Damage);
                 }
             }
             return true;
@@ -82,9 +82,9 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public override void Cancel(ServerCharacter serverCharacter)
         {
-            if (!m_ImpactedTarget)
+            if (!_mImpactedTarget)
             {
-                serverCharacter.clientCharacter.ClientCancelActionsByPrototypeIDRpc(ActionID);
+                serverCharacter.ClientCharacter.ClientCancelActionsByPrototypeIDRpc(ActionID);
             }
         }
 

@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -25,7 +26,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         public NetworkVariable<bool> IsOpen { get; } = new NetworkVariable<bool>();
 
-        const string k_AnimatorDoorOpenBoolVarName = "IsOpen";
+        const string KAnimatorDoorOpenBoolVarName = "IsOpen";
 
         [SerializeField, HideInInspector]
         int m_AnimatorDoorOpenBoolID;
@@ -39,7 +40,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         GameObject m_PhysicsObject;
 
         [Inject]
-        IPublisher<DoorStateChangedEventMessage> m_Publisher;
+        IPublisher<DoorStateChangedEventMessage> _mPublisher;
 
         void Awake()
         {
@@ -100,16 +101,16 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             if (IsClient)
             {
                 m_PhysicsObject.SetActive(!isDoorOpen);
-                if (m_Publisher != null)
+                if (_mPublisher != null)
                 {
-                    m_Publisher.Publish(new DoorStateChangedEventMessage() { IsDoorOpen = isDoorOpen });
+                    _mPublisher.Publish(new DoorStateChangedEventMessage() { IsDoorOpen = isDoorOpen });
                 }
             }
         }
 
         void OnValidate()
         {
-            m_AnimatorDoorOpenBoolID = Animator.StringToHash(k_AnimatorDoorOpenBoolVarName);
+            m_AnimatorDoorOpenBoolID = Animator.StringToHash(KAnimatorDoorOpenBoolVarName);
         }
     }
 }

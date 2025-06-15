@@ -9,13 +9,13 @@ namespace Unity.BossRoom.Gameplay.Actions
     /// </summary>
     public sealed class ClientActionPlayer
     {
-        private List<Action> m_PlayingActions = new List<Action>();
+        private List<Action> _mPlayingActions = new List<Action>();
 
         /// <summary>
         /// Don't let anticipated actionFXs persist longer than this. This is a safeguard against scenarios
         /// where we never get a confirmed action for an action we anticipated.
         /// </summary>
-        private const float k_AnticipationTimeoutSeconds = 1;
+        private const float KAnticipationTimeoutSeconds = 1;
 
         public ClientCharacter ClientCharacter { get; private set; }
 
@@ -27,19 +27,19 @@ namespace Unity.BossRoom.Gameplay.Actions
         public void OnUpdate()
         {
             //do a reverse-walk so we can safely remove inside the loop.
-            for (int i = m_PlayingActions.Count - 1; i >= 0; --i)
+            for (int i = _mPlayingActions.Count - 1; i >= 0; --i)
             {
-                var action = m_PlayingActions[i];
+                var action = _mPlayingActions[i];
                 bool keepGoing = action.AnticipatedClient || action.OnUpdateClient(ClientCharacter); // only call OnUpdate() on actions that are past anticipation
                 bool expirable = action.Config.DurationSeconds > 0f; //non-positive value is a sentinel indicating the duration is indefinite.
                 bool timeExpired = expirable && action.TimeRunning >= action.Config.DurationSeconds;
-                bool timedOut = action.AnticipatedClient && action.TimeRunning >= k_AnticipationTimeoutSeconds;
+                bool timedOut = action.AnticipatedClient && action.TimeRunning >= KAnticipationTimeoutSeconds;
                 if (!keepGoing || timeExpired || timedOut)
                 {
                     if (timedOut) { action.CancelClient(ClientCharacter); } //an anticipated action that timed out shouldn't get its End called. It is canceled instead.
                     else { action.EndClient(ClientCharacter); }
 
-                    m_PlayingActions.RemoveAt(i);
+                    _mPlayingActions.RemoveAt(i);
                     ActionFactory.ReturnAction(action);
                 }
             }
@@ -48,12 +48,12 @@ namespace Unity.BossRoom.Gameplay.Actions
         //helper wrapper for a FindIndex call on m_PlayingActions.
         private int FindAction(ActionID actionID, bool anticipatedOnly)
         {
-            return m_PlayingActions.FindIndex(a => a.ActionID == actionID && (!anticipatedOnly || a.AnticipatedClient));
+            return _mPlayingActions.FindIndex(a => a.ActionID == actionID && (!anticipatedOnly || a.AnticipatedClient));
         }
 
         public void OnAnimEvent(string id)
         {
-            foreach (var actionFX in m_PlayingActions)
+            foreach (var actionFX in _mPlayingActions)
             {
                 actionFX.OnAnimEventClient(ClientCharacter, id);
             }
@@ -61,7 +61,7 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public void OnStoppedChargingUp(float finalChargeUpPercentage)
         {
-            foreach (var actionFX in m_PlayingActions)
+            foreach (var actionFX in _mPlayingActions)
             {
                 actionFX.OnStoppedChargingUpClient(ClientCharacter, finalChargeUpPercentage);
             }
@@ -107,7 +107,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             {
                 var actionFX = ActionFactory.CreateActionFromData(ref data);
                 actionFX.AnticipateActionClient(ClientCharacter);
-                m_PlayingActions.Add(actionFX);
+                _mPlayingActions.Add(actionFX);
             }
         }
 
@@ -115,19 +115,19 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             var anticipatedActionIndex = FindAction(data.ActionID, true);
 
-            var actionFX = anticipatedActionIndex >= 0 ? m_PlayingActions[anticipatedActionIndex] : ActionFactory.CreateActionFromData(ref data);
+            var actionFX = anticipatedActionIndex >= 0 ? _mPlayingActions[anticipatedActionIndex] : ActionFactory.CreateActionFromData(ref data);
             if (actionFX.OnStartClient(ClientCharacter))
             {
                 if (anticipatedActionIndex < 0)
                 {
-                    m_PlayingActions.Add(actionFX);
+                    _mPlayingActions.Add(actionFX);
                 }
                 //otherwise just let the action sit in it's existing slot
             }
             else if (anticipatedActionIndex >= 0)
             {
-                var removedAction = m_PlayingActions[anticipatedActionIndex];
-                m_PlayingActions.RemoveAt(anticipatedActionIndex);
+                var removedAction = _mPlayingActions[anticipatedActionIndex];
+                _mPlayingActions.RemoveAt(anticipatedActionIndex);
                 ActionFactory.ReturnAction(removedAction);
             }
         }
@@ -137,23 +137,23 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </summary>
         public void CancelAllActions()
         {
-            foreach (var action in m_PlayingActions)
+            foreach (var action in _mPlayingActions)
             {
                 action.CancelClient(ClientCharacter);
                 ActionFactory.ReturnAction(action);
             }
-            m_PlayingActions.Clear();
+            _mPlayingActions.Clear();
         }
 
         public void CancelAllActionsWithSamePrototypeID(ActionID actionID)
         {
-            for (int i = m_PlayingActions.Count - 1; i >= 0; --i)
+            for (int i = _mPlayingActions.Count - 1; i >= 0; --i)
             {
-                if (m_PlayingActions[i].ActionID == actionID)
+                if (_mPlayingActions[i].ActionID == actionID)
                 {
-                    var action = m_PlayingActions[i];
+                    var action = _mPlayingActions[i];
                     action.CancelClient(ClientCharacter);
-                    m_PlayingActions.RemoveAt(i);
+                    _mPlayingActions.RemoveAt(i);
                     ActionFactory.ReturnAction(action);
                 }
             }

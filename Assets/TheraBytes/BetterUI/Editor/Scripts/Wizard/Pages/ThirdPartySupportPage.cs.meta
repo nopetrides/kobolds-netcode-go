@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 8e125d9306c7d5f41b9b921eaab0fb1a
+timeCreated: 1619992716
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Editor/Scripts/Wizard/Pages/ThirdPartySupportPage.cs
+  uploadId: 759928

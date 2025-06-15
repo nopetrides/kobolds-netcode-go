@@ -17,7 +17,7 @@ namespace Unity.BossRoom.Gameplay.Actions
     {
         public override bool OnStart(ServerCharacter serverCharacter)
         {
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
             return true;
         }
 
@@ -38,7 +38,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             if (!string.IsNullOrEmpty(Config.Anim2))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
             }
         }
 

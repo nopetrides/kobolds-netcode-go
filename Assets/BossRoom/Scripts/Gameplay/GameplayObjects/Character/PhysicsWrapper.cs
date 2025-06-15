@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     /// <summary>
@@ -15,7 +16,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
     /// </remarks>
     public class PhysicsWrapper : NetworkBehaviour
     {
-        static Dictionary<ulong, PhysicsWrapper> m_PhysicsWrappers = new Dictionary<ulong, PhysicsWrapper>();
+        static Dictionary<ulong, PhysicsWrapper> _mPhysicsWrappers = new Dictionary<ulong, PhysicsWrapper>();
 
         [SerializeField]
         Transform m_Transform;
@@ -27,13 +28,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         public Collider DamageCollider => m_DamageCollider;
 
-        ulong m_NetworkObjectID;
+        ulong _mNetworkObjectID;
 
         public override void OnNetworkSpawn()
         {
-            m_PhysicsWrappers.Add(NetworkObjectId, this);
+            _mPhysicsWrappers.Add(NetworkObjectId, this);
 
-            m_NetworkObjectID = NetworkObjectId;
+            _mNetworkObjectID = NetworkObjectId;
         }
 
         public override void OnNetworkDespawn()
@@ -49,12 +50,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         void RemovePhysicsWrapper()
         {
-            m_PhysicsWrappers.Remove(m_NetworkObjectID);
+            _mPhysicsWrappers.Remove(_mNetworkObjectID);
         }
 
         public static bool TryGetPhysicsWrapper(ulong networkObjectID, out PhysicsWrapper physicsWrapper)
         {
-            return m_PhysicsWrappers.TryGetValue(networkObjectID, out physicsWrapper);
+            return _mPhysicsWrappers.TryGetValue(networkObjectID, out physicsWrapper);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         [SerializeField]
         LobbyUIMediator m_LobbyUIMediator;
         [SerializeField]
-        IPUIMediator m_IPUIMediator;
+        IpuiMediator m_IPUIMediator;
         [SerializeField]
         Button m_LobbyButton;
         [SerializeField]
@@ -39,13 +39,13 @@ namespace Unity.BossRoom.Gameplay.GameState
         UITooltipDetector m_UGSSetupTooltipDetector;
 
         [Inject]
-        AuthenticationServiceFacade m_AuthServiceFacade;
+        AuthenticationServiceFacade _mAuthServiceFacade;
         [Inject]
-        LocalLobbyUser m_LocalUser;
+        LocalLobbyUser _mLocalUser;
         [Inject]
-        LocalLobby m_LocalLobby;
+        LocalLobby _mLocalLobby;
         [Inject]
-        ProfileManager m_ProfileManager;
+        ProfileManager _mProfileManager;
 
         protected override void Awake()
         {
@@ -76,11 +76,11 @@ namespace Unity.BossRoom.Gameplay.GameState
             try
             {
                 var unityAuthenticationInitOptions =
-                    m_AuthServiceFacade.GenerateAuthenticationOptions(m_ProfileManager.Profile);
+                    _mAuthServiceFacade.GenerateAuthenticationOptions(_mProfileManager.Profile);
 
-                await m_AuthServiceFacade.InitializeAndSignInAsync(unityAuthenticationInitOptions);
+                await _mAuthServiceFacade.InitializeAndSignInAsync(unityAuthenticationInitOptions);
                 OnAuthSignIn();
-                m_ProfileManager.onProfileChanged += OnProfileChanged;
+                _mProfileManager.OnProfileChanged += OnProfileChanged;
             }
             catch (Exception)
             {
@@ -119,7 +119,7 @@ namespace Unity.BossRoom.Gameplay.GameState
 
         protected override void OnDestroy()
         {
-            m_ProfileManager.onProfileChanged -= OnProfileChanged;
+            _mProfileManager.OnProfileChanged -= OnProfileChanged;
             base.OnDestroy();
         }
 
@@ -127,7 +127,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             m_LobbyButton.interactable = false;
             m_SignInSpinner.SetActive(true);
-            await m_AuthServiceFacade.SwitchProfileAndReSignInAsync(m_ProfileManager.Profile);
+            await _mAuthServiceFacade.SwitchProfileAndReSignInAsync(_mProfileManager.Profile);
 
             m_LobbyButton.interactable = true;
             m_SignInSpinner.SetActive(false);
@@ -135,9 +135,9 @@ namespace Unity.BossRoom.Gameplay.GameState
             Debug.Log($"Signed in. Unity Player ID {AuthenticationService.Instance.PlayerId}");
 
             // Updating LocalUser and LocalLobby
-            m_LocalLobby.RemoveUser(m_LocalUser);
-            m_LocalUser.ID = AuthenticationService.Instance.PlayerId;
-            m_LocalLobby.AddUser(m_LocalUser);
+            _mLocalLobby.RemoveUser(_mLocalUser);
+            _mLocalUser.ID = AuthenticationService.Instance.PlayerId;
+            _mLocalLobby.AddUser(_mLocalUser);
         }
 
         public void OnStartClicked()

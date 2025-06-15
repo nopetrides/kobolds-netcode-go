@@ -15,52 +15,52 @@ namespace Unity.BossRoom.Utils
     {
         public const string AuthProfileCommandLineArg = "-AuthProfile";
 
-        string m_Profile;
+        string _mProfile;
 
         public string Profile
         {
             get
             {
-                if (m_Profile == null)
+                if (_mProfile == null)
                 {
-                    m_Profile = GetProfile();
+                    _mProfile = GetProfile();
                 }
 
-                return m_Profile;
+                return _mProfile;
             }
             set
             {
-                m_Profile = value;
-                onProfileChanged?.Invoke();
+                _mProfile = value;
+                OnProfileChanged?.Invoke();
             }
         }
 
-        public event Action onProfileChanged;
+        public event Action OnProfileChanged;
 
-        List<string> m_AvailableProfiles;
+        List<string> _mAvailableProfiles;
 
         public ReadOnlyCollection<string> AvailableProfiles
         {
             get
             {
-                if (m_AvailableProfiles == null)
+                if (_mAvailableProfiles == null)
                 {
                     LoadProfiles();
                 }
 
-                return m_AvailableProfiles.AsReadOnly();
+                return _mAvailableProfiles.AsReadOnly();
             }
         }
 
         public void CreateProfile(string profile)
         {
-            m_AvailableProfiles.Add(profile);
+            _mAvailableProfiles.Add(profile);
             SaveProfiles();
         }
 
         public void DeleteProfile(string profile)
         {
-            m_AvailableProfiles.Remove(profile);
+            _mAvailableProfiles.Remove(profile);
             SaveProfiles();
         }
 
@@ -95,13 +95,13 @@ namespace Unity.BossRoom.Utils
 
         void LoadProfiles()
         {
-            m_AvailableProfiles = new List<string>();
+            _mAvailableProfiles = new List<string>();
             var loadedProfiles = ClientPrefs.GetAvailableProfiles();
             foreach (var profile in loadedProfiles.Split(',')) // this works since we're sanitizing our input strings
             {
                 if (profile.Length > 0)
                 {
-                    m_AvailableProfiles.Add(profile);
+                    _mAvailableProfiles.Add(profile);
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace Unity.BossRoom.Utils
         void SaveProfiles()
         {
             var profilesToSave = "";
-            foreach (var profile in m_AvailableProfiles)
+            foreach (var profile in _mAvailableProfiles)
             {
                 profilesToSave += profile + ",";
             }

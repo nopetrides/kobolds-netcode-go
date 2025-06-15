@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
+using TMPro;
 
 namespace Unity.BossRoom.Gameplay.UI
 {
@@ -10,19 +11,19 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         CanvasGroup m_CanvasGroup;
 
-        [SerializeField] InputField m_IPInputField;
+        [SerializeField] TMP_InputField m_IPInputField;
 
-        [SerializeField] InputField m_PortInputField;
+        [SerializeField] TMP_InputField m_PortInputField;
 
         [SerializeField]
         Button m_JoinButton;
 
-        [Inject] IPUIMediator m_IPUIMediator;
+        [Inject] IpuiMediator _mIpuiMediator;
 
         void Awake()
         {
-            m_IPInputField.text = IPUIMediator.k_DefaultIP;
-            m_PortInputField.text = IPUIMediator.k_DefaultPort.ToString();
+            m_IPInputField.text = IpuiMediator.KDefaultIP;
+            m_PortInputField.text = IpuiMediator.KDefaultPort.ToString();
         }
 
         public void Show()
@@ -39,7 +40,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void OnJoinButtonPressed()
         {
-            m_IPUIMediator.JoinWithIP(m_IPInputField.text, m_PortInputField.text);
+            _mIpuiMediator.JoinWithIP(m_IPInputField.text, m_PortInputField.text);
         }
 
         /// <summary>
@@ -47,8 +48,8 @@ namespace Unity.BossRoom.Gameplay.UI
         /// </summary>
         public void SanitizeIPInputText()
         {
-            m_IPInputField.text = IPUIMediator.SanitizeIP(m_IPInputField.text);
-            m_JoinButton.interactable = IPUIMediator.AreIpAddressAndPortValid(m_IPInputField.text, m_PortInputField.text);
+            m_IPInputField.text = IpuiMediator.SanitizeIP(m_IPInputField.text);
+            m_JoinButton.interactable = IpuiMediator.AreIpAddressAndPortValid(m_IPInputField.text, m_PortInputField.text);
         }
 
         /// <summary>
@@ -56,8 +57,8 @@ namespace Unity.BossRoom.Gameplay.UI
         /// </summary>
         public void SanitizePortText()
         {
-            m_PortInputField.text = IPUIMediator.SanitizePort(m_PortInputField.text);
-            m_JoinButton.interactable = IPUIMediator.AreIpAddressAndPortValid(m_IPInputField.text, m_PortInputField.text);
+            m_PortInputField.text = IpuiMediator.SanitizePort(m_PortInputField.text);
+            m_JoinButton.interactable = IpuiMediator.AreIpAddressAndPortValid(m_IPInputField.text, m_PortInputField.text);
         }
     }
 }

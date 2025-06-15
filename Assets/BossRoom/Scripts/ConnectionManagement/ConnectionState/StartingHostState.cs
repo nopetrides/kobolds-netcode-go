@@ -15,14 +15,14 @@ namespace Unity.BossRoom.ConnectionManagement
     class StartingHostState : OnlineState
     {
         [Inject]
-        LobbyServiceFacade m_LobbyServiceFacade;
+        LobbyServiceFacade _mLobbyServiceFacade;
         [Inject]
-        LocalLobby m_LocalLobby;
-        ConnectionMethodBase m_ConnectionMethod;
+        LocalLobby _mLocalLobby;
+        ConnectionMethodBase _mConnectionMethod;
 
         public StartingHostState Configure(ConnectionMethodBase baseConnectionMethod)
         {
-            m_ConnectionMethod = baseConnectionMethod;
+            _mConnectionMethod = baseConnectionMethod;
             return this;
         }
 
@@ -35,8 +35,8 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override void OnServerStarted()
         {
-            m_ConnectStatusPublisher.Publish(ConnectStatus.Success);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Hosting);
+            MConnectStatusPublisher.Publish(ConnectStatus.Success);
+            MConnectionManager.ChangeState(MConnectionManager.MHosting);
         }
 
         public override void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -44,7 +44,7 @@ namespace Unity.BossRoom.ConnectionManagement
             var connectionData = request.Payload;
             var clientId = request.ClientNetworkId;
             // This happens when starting as a host, before the end of the StartHost call. In that case, we simply approve ourselves.
-            if (clientId == m_ConnectionManager.NetworkManager.LocalClientId)
+            if (clientId == MConnectionManager.NetworkManager.LocalClientId)
             {
                 var payload = System.Text.Encoding.UTF8.GetString(connectionData);
                 var connectionPayload = JsonUtility.FromJson<ConnectionPayload>(payload); // https://docs.unity3d.com/2020.2/Documentation/Manual/JSONSerialization.html
@@ -68,7 +68,7 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             try
             {
-                await m_ConnectionMethod.SetupHostConnectionAsync();
+                await _mConnectionMethod.SetupHostConnectionAsync();
 
                 /*// NGO's StartHost launches everything
                 if (!m_ConnectionManager.NetworkManager.StartHost())
@@ -85,8 +85,8 @@ namespace Unity.BossRoom.ConnectionManagement
 
         void StartHostFailed()
         {
-            m_ConnectStatusPublisher.Publish(ConnectStatus.StartHostFailed);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+            MConnectStatusPublisher.Publish(ConnectStatus.StartHostFailed);
+            MConnectionManager.ChangeState(MConnectionManager.MOffline);
         }
     }
 }

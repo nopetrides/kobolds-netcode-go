@@ -44,10 +44,10 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// <summary>
         /// The default hit react animation; several different ActionFXs make use of this.
         /// </summary>
-        public const string k_DefaultHitReact = "HitReact1";
+        public const string KDefaultHitReact = "HitReact1";
 
 
-        protected ActionRequestData m_Data;
+        protected ActionRequestData MData;
 
         /// <summary>
         /// Time when this Action was started (from Time.time) in seconds. Set by the ActionPlayer or ActionVisualization.
@@ -62,7 +62,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// <summary>
         /// RequestData we were instantiated with. Value should be treated as readonly.
         /// </summary>
-        public ref ActionRequestData Data => ref m_Data;
+        public ref ActionRequestData Data => ref MData;
 
         /// <summary>
         /// Data Description for this action.
@@ -79,7 +79,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </summary>
         public void Initialize(ref ActionRequestData data)
         {
-            m_Data = data;
+            MData = data;
             ActionID = data.ActionID;
         }
 
@@ -88,7 +88,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </summary>
         public virtual void Reset()
         {
-            m_Data = default;
+            MData = default;
             ActionID = default;
             TimeStarted = 0;
         }
@@ -315,8 +315,8 @@ namespace Unity.BossRoom.Gameplay.Actions
             {
                 throw new System.Exception($"One of the Spawns on action {this.name} does not have a SpecialFXGraphic component and can't be instantiated!");
             }
-            var graphicsGO = GameObject.Instantiate(prefab, origin.transform.position, origin.transform.rotation, (parentToOrigin ? origin.transform : null));
-            return graphicsGO.GetComponent<SpecialFXGraphic>();
+            var graphicsGo = GameObject.Instantiate(prefab, origin.transform.position, origin.transform.rotation, (parentToOrigin ? origin.transform : null));
+            return graphicsGo.GetComponent<SpecialFXGraphic>();
         }
 
         /// <summary>

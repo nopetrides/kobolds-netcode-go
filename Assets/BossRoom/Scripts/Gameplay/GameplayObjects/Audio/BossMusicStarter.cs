@@ -18,7 +18,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Audio
         [SerializeField]
         NetworkHealthState m_NetworkHealthState;
 
-        bool m_Won;
+        bool _mWon;
 
         void Start()
         {
@@ -48,14 +48,14 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Audio
             {
                 // players won! Start victory theme
                 ClientMusicPlayer.Instance.PlayVictoryMusic();
-                m_Won = true;
+                _mWon = true;
             }
         }
 
         private void OnHealthChanged(int previousValue, int newValue)
         {
             // don't do anything if battle is over
-            if (m_Won) { return; }
+            if (_mWon) { return; }
 
             // make sure battle music started anytime boss is hurt
             if (newValue < previousValue)

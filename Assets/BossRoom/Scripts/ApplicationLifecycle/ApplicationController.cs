@@ -21,7 +21,8 @@ namespace Unity.BossRoom.ApplicationLifecycle
     /// An entry point to the application, where we bind all the common dependencies to the root DI scope.
     /// </summary>
     public class ApplicationController : LifetimeScope
-    {
+	{
+		[SerializeField] private string SceneToLoad = "KoboldsMenu";
         [SerializeField]
         UpdateRunner m_UpdateRunner;
         [SerializeField]
@@ -29,10 +30,10 @@ namespace Unity.BossRoom.ApplicationLifecycle
         [SerializeField]
         NetworkManager m_NetworkManager;
 
-        LocalLobby m_LocalLobby;
-        LobbyServiceFacade m_LobbyServiceFacade;
+        LocalLobby _mLocalLobby;
+        LobbyServiceFacade _mLobbyServiceFacade;
 
-        IDisposable m_Subscriptions;
+        IDisposable _mSubscriptions;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -80,32 +81,32 @@ namespace Unity.BossRoom.ApplicationLifecycle
 
         private void Start()
         {
-            m_LocalLobby = Container.Resolve<LocalLobby>();
-            m_LobbyServiceFacade = Container.Resolve<LobbyServiceFacade>();
+            _mLocalLobby = Container.Resolve<LocalLobby>();
+            _mLobbyServiceFacade = Container.Resolve<LobbyServiceFacade>();
 
             var quitApplicationSub = Container.Resolve<ISubscriber<QuitApplicationMessage>>();
 
             var subHandles = new DisposableGroup();
             subHandles.Add(quitApplicationSub.Subscribe(QuitGame));
-            m_Subscriptions = subHandles;
+            _mSubscriptions = subHandles;
 
             Application.wantsToQuit += OnWantToQuit;
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(m_UpdateRunner.gameObject);
             Application.targetFrameRate = 120;
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene(SceneToLoad);
         }
 
         protected override void OnDestroy()
         {
-            if (m_Subscriptions != null)
+            if (_mSubscriptions != null)
             {
-                m_Subscriptions.Dispose();
+                _mSubscriptions.Dispose();
             }
 
-            if (m_LobbyServiceFacade != null)
+            if (_mLobbyServiceFacade != null)
             {
-                m_LobbyServiceFacade.EndTracking();
+                _mLobbyServiceFacade.EndTracking();
             }
 
             base.OnDestroy();
@@ -120,7 +121,7 @@ namespace Unity.BossRoom.ApplicationLifecycle
             // We want to quit anyways, so if anything happens while trying to leave the Lobby, log the exception then carry on
             try
             {
-                m_LobbyServiceFacade.EndTracking();
+                _mLobbyServiceFacade.EndTracking();
             }
             catch (Exception e)
             {
@@ -135,7 +136,7 @@ namespace Unity.BossRoom.ApplicationLifecycle
         {
             Application.wantsToQuit -= OnWantToQuit;
 
-            var canQuit = m_LocalLobby != null && string.IsNullOrEmpty(m_LocalLobby.LobbyID);
+            var canQuit = _mLocalLobby != null && string.IsNullOrEmpty(_mLocalLobby.LobbyID);
             if (!canQuit)
             {
                 StartCoroutine(LeaveBeforeQuit());

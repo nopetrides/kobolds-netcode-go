@@ -22,54 +22,54 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         [SerializeField]
         UIDocument m_WorldspaceUI;
 
-        VisualElement m_PickupUI;
+        VisualElement _mPickupUI;
 
-        Transform m_CurrentPickup;
+        Transform _mCurrentPickup;
 
-        Transform m_NextPickup;
+        Transform _mNextPickup;
 
-        bool m_IsShown = false;
+        bool _mIsShown = false;
 
-        bool isShown
+        bool IsShown
         {
             set
             {
                 // if the value is the same, do nothing
-                if (m_IsShown == value)
+                if (_mIsShown == value)
                     return;
 
-                m_IsShown = value;
+                _mIsShown = value;
 
                 // fade in the pickup UI
-                if (m_IsShown)
+                if (_mIsShown)
                 {
-                    m_PickupUI.RemoveFromClassList(UIUtils.s_InactiveUSSClass);
-                    m_PickupUI.AddToClassList(UIUtils.s_ActiveUSSClass);
+                    _mPickupUI.RemoveFromClassList(UIUtils.SInactiveUSSClass);
+                    _mPickupUI.AddToClassList(UIUtils.SActiveUSSClass);
                     return;
                 }
 
                 // fade out the pickup UI
-                m_PickupUI.RemoveFromClassList(UIUtils.s_ActiveUSSClass);
-                m_PickupUI.AddToClassList(UIUtils.s_InactiveUSSClass);
+                _mPickupUI.RemoveFromClassList(UIUtils.SActiveUSSClass);
+                _mPickupUI.AddToClassList(UIUtils.SInactiveUSSClass);
             }
         }
 
         void ShowPickup(Transform t)
         {
-            m_NextPickup = t;
+            _mNextPickup = t;
         }
 
         void ClearPickup()
         {
-            m_NextPickup = null;
+            _mNextPickup = null;
         }
 
         void OnEnable()
         {
             // pick first child to avoid adding the root element
-            m_PickupUI = m_PickupAsset.CloneTree().GetFirstChild();
-            m_PickupUI.AddToClassList(UIUtils.s_InactiveUSSClass);
-            m_WorldspaceUI.rootVisualElement.Q<VisualElement>("Pickup").Add(m_PickupUI);
+            _mPickupUI = m_PickupAsset.CloneTree().GetFirstChild();
+            _mPickupUI.AddToClassList(UIUtils.SInactiveUSSClass);
+            m_WorldspaceUI.rootVisualElement.Q<VisualElement>("Pickup").Add(_mPickupUI);
             GameplayEventHandler.OnPickupStateChanged += OnPickupStateChanged;
         }
 
@@ -88,27 +88,27 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void Update()
         {
-            if (m_CurrentPickup == m_NextPickup)
+            if (_mCurrentPickup == _mNextPickup)
             {
-                if (m_CurrentPickup != null)
+                if (_mCurrentPickup != null)
                 {
-                    isShown = true;
+                    IsShown = true;
                     UpdatePickup();
                 }
 
                 return;
             }
 
-            isShown = false;
-            if (m_PickupUI.resolvedStyle.opacity == 0)
+            IsShown = false;
+            if (_mPickupUI.resolvedStyle.opacity == 0)
             {
-                m_CurrentPickup = m_NextPickup;
+                _mCurrentPickup = _mNextPickup;
             }
         }
 
         void UpdatePickup()
         {
-            UIUtils.TransformUIDocumentWorldspace(m_WorldspaceUI, m_Camera, m_CurrentPickup, m_VerticalOffset);
+            UIUtils.TransformUIDocumentWorldspace(m_WorldspaceUI, m_Camera, _mCurrentPickup, m_VerticalOffset);
         }
 
         void OnDisable()

@@ -17,15 +17,15 @@ namespace Unity.BossRoom.Infrastructure
             public float LastCallTime;
         }
 
-        readonly Queue<Action> m_PendingHandlers = new Queue<Action>();
-        readonly HashSet<Action<float>> m_Subscribers = new HashSet<Action<float>>();
-        readonly Dictionary<Action<float>, SubscriberData> m_SubscriberData = new Dictionary<Action<float>, SubscriberData>();
+        readonly Queue<Action> _mPendingHandlers = new Queue<Action>();
+        readonly HashSet<Action<float>> _mSubscribers = new HashSet<Action<float>>();
+        readonly Dictionary<Action<float>, SubscriberData> _mSubscriberData = new Dictionary<Action<float>, SubscriberData>();
 
         public void OnDestroy()
         {
-            m_PendingHandlers.Clear();
-            m_Subscribers.Clear();
-            m_SubscriberData.Clear();
+            _mPendingHandlers.Clear();
+            _mSubscribers.Clear();
+            _mSubscriberData.Clear();
         }
 
         /// <summary>
@@ -51,13 +51,13 @@ namespace Unity.BossRoom.Infrastructure
                 return;
             }
 
-            if (!m_Subscribers.Contains(onUpdate))
+            if (!_mSubscribers.Contains(onUpdate))
             {
-                m_PendingHandlers.Enqueue(() =>
+                _mPendingHandlers.Enqueue(() =>
                 {
-                    if (m_Subscribers.Add(onUpdate))
+                    if (_mSubscribers.Add(onUpdate))
                     {
-                        m_SubscriberData.Add(onUpdate, new SubscriberData() { Period = updatePeriod, NextCallTime = 0, LastCallTime = Time.time });
+                        _mSubscriberData.Add(onUpdate, new SubscriberData() { Period = updatePeriod, NextCallTime = 0, LastCallTime = Time.time });
                     }
                 });
             }
@@ -68,10 +68,10 @@ namespace Unity.BossRoom.Infrastructure
         /// </summary>
         public void Unsubscribe(Action<float> onUpdate)
         {
-            m_PendingHandlers.Enqueue(() =>
+            _mPendingHandlers.Enqueue(() =>
             {
-                m_Subscribers.Remove(onUpdate);
-                m_SubscriberData.Remove(onUpdate);
+                _mSubscribers.Remove(onUpdate);
+                _mSubscriberData.Remove(onUpdate);
             });
         }
 
@@ -80,14 +80,14 @@ namespace Unity.BossRoom.Infrastructure
         /// </summary>
         void Update()
         {
-            while (m_PendingHandlers.Count > 0)
+            while (_mPendingHandlers.Count > 0)
             {
-                m_PendingHandlers.Dequeue()?.Invoke();
+                _mPendingHandlers.Dequeue()?.Invoke();
             }
 
-            foreach (var subscriber in m_Subscribers)
+            foreach (var subscriber in _mSubscribers)
             {
-                var subscriberData = m_SubscriberData[subscriber];
+                var subscriberData = _mSubscriberData[subscriber];
 
                 if (Time.time >= subscriberData.NextCallTime)
                 {

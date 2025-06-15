@@ -29,31 +29,31 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// - we were attacked,
         /// - or the maximum charge was reached.
         /// </summary>
-        private float m_StoppedChargingUpTime = 0;
+        private float _mStoppedChargingUpTime = 0;
 
         /// <summary>
         /// Were we attacked while charging up? (If so, we won't actually fire.)
         /// </summary>
-        private bool m_HitByAttack = false;
+        private bool _mHitByAttack = false;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
             // if we have an explicit target, make sure we're aimed at them.
             // (But if the player just clicked on an attack button, there won't be an explicit target, so we should stay facing however we're facing.)
-            if (m_Data.TargetIds != null && m_Data.TargetIds.Length > 0)
+            if (MData.TargetIds != null && MData.TargetIds.Length > 0)
             {
-                NetworkObject initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[m_Data.TargetIds[0]];
+                NetworkObject initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[MData.TargetIds[0]];
                 if (initialTarget)
                 {
                     // face our target
-                    serverCharacter.physicsWrapper.Transform.LookAt(initialTarget.transform.position);
+                    serverCharacter.PhysicsWrapper.Transform.LookAt(initialTarget.transform.position);
                 }
             }
 
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
 
             // start the "charging up" ActionFX
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
 
             // sanity-check our data a bit
             Debug.Assert(Config.Projectiles.Length > 1, $"Action {name} has {Config.Projectiles.Length} Projectiles. Expected at least 2!");
@@ -69,22 +69,22 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void Reset()
         {
             base.Reset();
-            m_ChargeEnded = false;
-            m_StoppedChargingUpTime = 0;
-            m_HitByAttack = false;
-            m_Graphics.Clear();
+            _mChargeEnded = false;
+            _mStoppedChargingUpTime = 0;
+            _mHitByAttack = false;
+            _mGraphics.Clear();
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (m_StoppedChargingUpTime == 0 && GetPercentChargedUp() >= 1)
+            if (_mStoppedChargingUpTime == 0 && GetPercentChargedUp() >= 1)
             {
                 // we haven't explicitly stopped charging up... but we've reached max charge, so that implicitly stops us
                 StopChargingUp(clientCharacter);
             }
 
             // we end as soon as we've stopped charging up (and have fired the projectile)
-            return m_StoppedChargingUpTime == 0;
+            return _mStoppedChargingUpTime == 0;
         }
 
         public override void OnGameplayActivity(ServerCharacter serverCharacter, GameplayActivity activityType)
@@ -92,7 +92,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             if (activityType == GameplayActivity.AttackedByEnemy)
             {
                 // if we get attacked while charging up, we don't actually get to shoot!
-                m_HitByAttack = true;
+                _mHitByAttack = true;
                 StopChargingUp(serverCharacter);
             }
             else if (activityType == GameplayActivity.StoppedChargingUp)
@@ -113,17 +113,17 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         private void StopChargingUp(ServerCharacter parent)
         {
-            if (m_StoppedChargingUpTime == 0)
+            if (_mStoppedChargingUpTime == 0)
             {
-                m_StoppedChargingUpTime = Time.time;
+                _mStoppedChargingUpTime = Time.time;
 
                 if (!string.IsNullOrEmpty(Config.Anim2))
                 {
-                    parent.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                    parent.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
                 }
 
-                parent.clientCharacter.ClientStopChargingUpRpc(GetPercentChargedUp());
-                if (!m_HitByAttack)
+                parent.ClientCharacter.ClientStopChargingUpRpc(GetPercentChargedUp());
+                if (!_mHitByAttack)
                 {
                     LaunchProjectile(parent);
                 }
@@ -132,7 +132,7 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         private float GetPercentChargedUp()
         {
-            return ActionUtils.GetPercentChargedUp(m_StoppedChargingUpTime, TimeRunning, TimeStarted, Config.ExecTimeSeconds);
+            return ActionUtils.GetPercentChargedUp(_mStoppedChargingUpTime, TimeRunning, TimeStarted, Config.ExecTimeSeconds);
         }
 
         /// <summary>

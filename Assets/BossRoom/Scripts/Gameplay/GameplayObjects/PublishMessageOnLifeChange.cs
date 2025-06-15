@@ -8,6 +8,7 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -16,29 +17,29 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
     [RequireComponent(typeof(NetworkLifeState), typeof(ServerCharacter))]
     public class PublishMessageOnLifeChange : NetworkBehaviour
     {
-        NetworkLifeState m_NetworkLifeState;
-        ServerCharacter m_ServerCharacter;
+        NetworkLifeState _mNetworkLifeState;
+        ServerCharacter _mServerCharacter;
 
         [SerializeField]
         string m_CharacterName;
 
-        NetworkNameState m_NameState;
+        NetworkNameState _mNameState;
 
         [Inject]
-        IPublisher<LifeStateChangedEventMessage> m_Publisher;
+        IPublisher<LifeStateChangedEventMessage> _mPublisher;
 
         void Awake()
         {
-            m_NetworkLifeState = GetComponent<NetworkLifeState>();
-            m_ServerCharacter = GetComponent<ServerCharacter>();
+            _mNetworkLifeState = GetComponent<NetworkLifeState>();
+            _mServerCharacter = GetComponent<ServerCharacter>();
         }
 
         public override void OnNetworkSpawn()
         {
             if (IsServer)
             {
-                m_NameState = GetComponent<NetworkNameState>();
-                m_NetworkLifeState.LifeState.OnValueChanged += OnLifeStateChanged;
+                _mNameState = GetComponent<NetworkNameState>();
+                _mNetworkLifeState.LifeState.OnValueChanged += OnLifeStateChanged;
 
                 var gameState = FindFirstObjectByType<ServerBossRoomState>();
                 if (gameState != null)
@@ -50,10 +51,10 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         void OnLifeStateChanged(LifeState previousState, LifeState newState)
         {
-            m_Publisher.Publish(new LifeStateChangedEventMessage()
+            _mPublisher.Publish(new LifeStateChangedEventMessage()
             {
-                CharacterName = m_NameState != null ? m_NameState.Name.Value : (FixedPlayerName)m_CharacterName,
-                CharacterType = m_ServerCharacter.CharacterClass.CharacterType,
+                CharacterName = _mNameState != null ? _mNameState.Name.Value : (FixedPlayerName)m_CharacterName,
+                CharacterType = _mServerCharacter.CharacterClass.CharacterType,
                 NewLifeState = newState
             });
         }

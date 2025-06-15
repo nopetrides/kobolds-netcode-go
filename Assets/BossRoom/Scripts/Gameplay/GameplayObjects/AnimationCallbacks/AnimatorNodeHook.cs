@@ -21,13 +21,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
     /// </remarks>
     public class AnimatorNodeHook : StateMachineBehaviour
     {
-        private AnimatorTriggeredSpecialFX[] m_CachedTriggerRefs;
+        private AnimatorTriggeredSpecialFX[] _mCachedTriggerRefs;
 
         override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (m_CachedTriggerRefs == null)
-                m_CachedTriggerRefs = animator.GetComponentsInChildren<AnimatorTriggeredSpecialFX>();
-            foreach (var fxController in m_CachedTriggerRefs)
+            if (_mCachedTriggerRefs == null)
+                _mCachedTriggerRefs = animator.GetComponentsInChildren<AnimatorTriggeredSpecialFX>();
+            foreach (var fxController in _mCachedTriggerRefs)
             {
                 if (fxController && fxController.enabled)
                 {
@@ -38,9 +38,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
 
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            if (m_CachedTriggerRefs == null)
-                m_CachedTriggerRefs = animator.GetComponentsInChildren<AnimatorTriggeredSpecialFX>();
-            foreach (var fxController in m_CachedTriggerRefs)
+            if (_mCachedTriggerRefs == null)
+                _mCachedTriggerRefs = animator.GetComponentsInChildren<AnimatorTriggeredSpecialFX>();
+            foreach (var fxController in _mCachedTriggerRefs)
             {
                 if (fxController && fxController.enabled)
                 {

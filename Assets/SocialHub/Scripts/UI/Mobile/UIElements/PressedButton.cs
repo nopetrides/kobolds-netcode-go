@@ -8,7 +8,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
     [UxmlElement]
     public partial class PressedButton : Toggle
     {
-        bool m_HasPointer;
+        bool _mHasPointer;
 
         public PressedButton()
             : this(null)
@@ -18,26 +18,26 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         public PressedButton(string label)
             : base(label)
         {
-            m_HasPointer = false;
+            _mHasPointer = false;
             RegisterCallback<PointerCaptureEvent>(OnPointerCapture);
             RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOut);
         }
 
         void OnPointerCaptureOut(PointerCaptureOutEvent evt)
         {
-            m_HasPointer = false;
+            _mHasPointer = false;
             ToggleValue();
         }
 
         void OnPointerCapture(PointerCaptureEvent evt)
         {
-            m_HasPointer = true;
+            _mHasPointer = true;
             ToggleValue();
         }
 
         protected override void ToggleValue()
         {
-            value = m_HasPointer;
+            value = _mHasPointer;
         }
     }
 }

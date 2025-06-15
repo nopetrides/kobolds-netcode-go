@@ -8,18 +8,18 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
     /// </summary>
     class BaseFxObject : MonoBehaviour
     {
-        FXPrefabPool m_FXPrefabPool;
+        FXPrefabPool _mFXPrefabPool;
 
         public void SetFxPool(FXPrefabPool pool)
         {
-            m_FXPrefabPool = pool;
+            _mFXPrefabPool = pool;
         }
 
         internal void StopFx()
         {
             if (gameObject.activeInHierarchy)
             {
-                m_FXPrefabPool.ReleaseInstance(gameObject);
+                _mFXPrefabPool.ReleaseInstance(gameObject);
             }
         }
     }

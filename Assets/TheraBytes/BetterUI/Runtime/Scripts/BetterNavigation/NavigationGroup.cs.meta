@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 01987bfdbd556734dba58199f4a01469
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 3f203cf4bf5063144927811250d30330, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Runtime/Scripts/BetterNavigation/NavigationGroup.cs
+  uploadId: 759928

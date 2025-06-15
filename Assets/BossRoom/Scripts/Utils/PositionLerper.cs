@@ -9,19 +9,19 @@ namespace Unity.BossRoom.Utils
     public struct PositionLerper
     {
         // Calculated start for the most recent interpolation
-        Vector3 m_LerpStart;
+        Vector3 _mLerpStart;
 
         // Calculated time elapsed for the most recent interpolation
-        float m_CurrentLerpTime;
+        float _mCurrentLerpTime;
 
         // The duration of the interpolation, in seconds
-        float m_LerpTime;
+        float _mLerpTime;
 
         public PositionLerper(Vector3 start, float lerpTime)
         {
-            m_LerpStart = start;
-            m_CurrentLerpTime = 0f;
-            m_LerpTime = lerpTime;
+            _mLerpStart = start;
+            _mCurrentLerpTime = 0f;
+            _mLerpTime = lerpTime;
         }
 
         /// <summary>
@@ -34,19 +34,19 @@ namespace Unity.BossRoom.Utils
         {
             if (current != target)
             {
-                m_LerpStart = current;
-                m_CurrentLerpTime = 0f;
+                _mLerpStart = current;
+                _mCurrentLerpTime = 0f;
             }
 
-            m_CurrentLerpTime += Time.deltaTime;
-            if (m_CurrentLerpTime > m_LerpTime)
+            _mCurrentLerpTime += Time.deltaTime;
+            if (_mCurrentLerpTime > _mLerpTime)
             {
-                m_CurrentLerpTime = m_LerpTime;
+                _mCurrentLerpTime = _mLerpTime;
             }
 
-            var lerpPercentage = m_CurrentLerpTime / m_LerpTime;
+            var lerpPercentage = _mCurrentLerpTime / _mLerpTime;
 
-            return Vector3.Lerp(m_LerpStart, target, lerpPercentage);
+            return Vector3.Lerp(_mLerpStart, target, lerpPercentage);
         }
     }
 }

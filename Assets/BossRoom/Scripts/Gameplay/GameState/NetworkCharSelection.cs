@@ -30,7 +30,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             public ulong ClientId;
 
-            private FixedPlayerName m_PlayerName; // I'm sad there's no 256Bytes fixed list :(
+            private FixedPlayerName _mPlayerName; // I'm sad there's no 256Bytes fixed list :(
 
             public int PlayerNumber; // this player's assigned "P#". (0=P1, 1=P2, etc.)
             public int SeatIdx; // the latest seat they were in. -1 means none
@@ -46,21 +46,21 @@ namespace Unity.BossRoom.Gameplay.GameState
                 SeatState = state;
                 SeatIdx = seatIdx;
                 LastChangeTime = lastChangeTime;
-                m_PlayerName = new FixedPlayerName();
+                _mPlayerName = new FixedPlayerName();
 
                 PlayerName = name;
             }
 
             public string PlayerName
             {
-                get => m_PlayerName;
-                private set => m_PlayerName = value;
+                get => _mPlayerName;
+                private set => _mPlayerName = value;
             }
 
             public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
             {
                 serializer.SerializeValue(ref ClientId);
-                serializer.SerializeValue(ref m_PlayerName);
+                serializer.SerializeValue(ref _mPlayerName);
                 serializer.SerializeValue(ref PlayerNumber);
                 serializer.SerializeValue(ref SeatState);
                 serializer.SerializeValue(ref SeatIdx);
@@ -70,7 +70,7 @@ namespace Unity.BossRoom.Gameplay.GameState
             public bool Equals(LobbyPlayerState other)
             {
                 return ClientId == other.ClientId &&
-                       m_PlayerName.Equals(other.m_PlayerName) &&
+                       _mPlayerName.Equals(other._mPlayerName) &&
                        PlayerNumber == other.PlayerNumber &&
                        SeatIdx == other.SeatIdx &&
                        LastChangeTime.Equals(other.LastChangeTime) &&
@@ -78,19 +78,19 @@ namespace Unity.BossRoom.Gameplay.GameState
             }
         }
 
-        private NetworkList<LobbyPlayerState> m_LobbyPlayers;
+        private NetworkList<LobbyPlayerState> _mLobbyPlayers;
 
         public Avatar[] AvatarConfiguration;
 
         private void Awake()
         {
-            m_LobbyPlayers = new NetworkList<LobbyPlayerState>();
+            _mLobbyPlayers = new NetworkList<LobbyPlayerState>();
         }
 
         /// <summary>
         /// Current state of all players in the lobby.
         /// </summary>
-        public NetworkList<LobbyPlayerState> LobbyPlayers => m_LobbyPlayers;
+        public NetworkList<LobbyPlayerState> LobbyPlayers => _mLobbyPlayers;
 
         /// <summary>
         /// When this becomes true, the lobby is closed and in process of terminating (switching to gameplay).

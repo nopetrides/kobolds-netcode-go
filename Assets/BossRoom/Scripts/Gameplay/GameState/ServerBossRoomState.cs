@@ -17,6 +17,7 @@ using UnityEngine.Serialization;
 using VContainer;
 using Random = UnityEngine.Random;
 
+
 namespace Unity.BossRoom.Gameplay.GameState
 {
     /// <summary>
@@ -27,7 +28,7 @@ namespace Unity.BossRoom.Gameplay.GameState
     {
         [FormerlySerializedAs("m_NetworkWinState")]
         [SerializeField]
-        PersistentGameState persistentGameState;
+        PersistentGameState _persistentGameState;
 
         [SerializeField]
         NetcodeHooks m_NetcodeHooks;
@@ -40,13 +41,13 @@ namespace Unity.BossRoom.Gameplay.GameState
         [Tooltip("A collection of locations for spawning players")]
         private Transform[] m_PlayerSpawnPoints;
 
-        private List<Transform> m_PlayerSpawnPointsList = null;
+        private List<Transform> _mPlayerSpawnPointsList = null;
 
         public override GameState ActiveState { get { return GameState.BossRoom; } }
 
         // Wait time constants for switching to post game after the game is won or lost
-        private const float k_WinDelay = 7.0f;
-        private const float k_LoseDelay = 2.5f;
+        private const float KWinDelay = 7.0f;
+        private const float KLoseDelay = 2.5f;
 
         /// <summary>
         /// Has the ServerBossRoomState already hit its initial spawn? (i.e. spawned players following load from character select).
@@ -57,10 +58,10 @@ namespace Unity.BossRoom.Gameplay.GameState
         /// Keeping the subscriber during this GameState's lifetime to allow disposing of subscription and re-subscribing
         /// when despawning and spawning again.
         /// </summary>
-        [Inject] ISubscriber<LifeStateChangedEventMessage> m_LifeStateChangedEventMessageSubscriber;
+        [Inject] ISubscriber<LifeStateChangedEventMessage> _mLifeStateChangedEventMessageSubscriber;
 
-        [Inject] ConnectionManager m_ConnectionManager;
-        [Inject] PersistentGameState m_PersistentGameState;
+        [Inject] ConnectionManager _mConnectionManager;
+        [Inject] PersistentGameState _mPersistentGameState;
 
         protected override void Awake()
         {
@@ -76,8 +77,8 @@ namespace Unity.BossRoom.Gameplay.GameState
                 enabled = false;
                 return;
             }
-            m_PersistentGameState.Reset();
-            m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
+            _mPersistentGameState.Reset();
+            _mLifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
 
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventCompleted;
@@ -88,9 +89,9 @@ namespace Unity.BossRoom.Gameplay.GameState
 
         void OnNetworkDespawn()
         {
-            if (m_LifeStateChangedEventMessageSubscriber != null)
+            if (_mLifeStateChangedEventMessageSubscriber != null)
             {
-                m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
+                _mLifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
             }
 
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
@@ -100,9 +101,9 @@ namespace Unity.BossRoom.Gameplay.GameState
 
         protected override void OnDestroy()
         {
-            if (m_LifeStateChangedEventMessageSubscriber != null)
+            if (_mLifeStateChangedEventMessageSubscriber != null)
             {
-                m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
+                _mLifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
             }
 
             if (m_NetcodeHooks)
@@ -158,17 +159,17 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             Transform spawnPoint = null;
 
-            if (m_PlayerSpawnPointsList == null || m_PlayerSpawnPointsList.Count == 0)
+            if (_mPlayerSpawnPointsList == null || _mPlayerSpawnPointsList.Count == 0)
             {
-                m_PlayerSpawnPointsList = new List<Transform>(m_PlayerSpawnPoints);
+                _mPlayerSpawnPointsList = new List<Transform>(m_PlayerSpawnPoints);
             }
 
-            Debug.Assert(m_PlayerSpawnPointsList.Count > 0,
+            Debug.Assert(_mPlayerSpawnPointsList.Count > 0,
                 $"PlayerSpawnPoints array should have at least 1 spawn points.");
 
-            int index = Random.Range(0, m_PlayerSpawnPointsList.Count);
-            spawnPoint = m_PlayerSpawnPointsList[index];
-            m_PlayerSpawnPointsList.RemoveAt(index);
+            int index = Random.Range(0, _mPlayerSpawnPointsList.Count);
+            spawnPoint = _mPlayerSpawnPointsList[index];
+            _mPlayerSpawnPointsList.RemoveAt(index);
 
             var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(clientId);
 
@@ -176,7 +177,7 @@ namespace Unity.BossRoom.Gameplay.GameState
 
             var newPlayerCharacter = newPlayer.GetComponent<ServerCharacter>();
 
-            var physicsTransform = newPlayerCharacter.physicsWrapper.Transform;
+            var physicsTransform = newPlayerCharacter.PhysicsWrapper.Transform;
 
             if (spawnPoint != null)
             {
@@ -221,8 +222,8 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             switch (message.CharacterType)
             {
+                case CharacterTypeEnum.Default:
                 case CharacterTypeEnum.Tank:
-                case CharacterTypeEnum.Archer:
                 case CharacterTypeEnum.Mage:
                 case CharacterTypeEnum.Rogue:
                     // Every time a player's life state changes to fainted we check to see if game is over
@@ -256,18 +257,18 @@ namespace Unity.BossRoom.Gameplay.GameState
             }
 
             // If we made it this far, all players are down! switch to post game
-            StartCoroutine(CoroGameOver(k_LoseDelay, false));
+            StartCoroutine(CoroGameOver(KLoseDelay, false));
         }
 
         void BossDefeated()
         {
             // Boss is dead - set game won to true
-            StartCoroutine(CoroGameOver(k_WinDelay, true));
+            StartCoroutine(CoroGameOver(KWinDelay, true));
         }
 
         IEnumerator CoroGameOver(float wait, bool gameWon)
         {
-            m_PersistentGameState.SetWinState(gameWon ? WinState.Win : WinState.Loss);
+            _mPersistentGameState.SetWinState(gameWon ? WinState.Win : WinState.Loss);
 
             // wait 5 seconds for game animations to finish
             yield return new WaitForSeconds(wait);

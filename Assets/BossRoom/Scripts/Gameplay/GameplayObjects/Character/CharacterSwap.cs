@@ -28,7 +28,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             public GameObject handSocket;
             public AnimatorTriggeredSpecialFX specialFx;
             public AnimatorOverrideController animatorOverrides; // references a separate stand-alone object in the project
-            private List<Renderer> m_CachedRenderers;
+            private List<Renderer> _mCachedRenderers;
 
             public void SetFullActive(bool isActive)
             {
@@ -48,28 +48,28 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
             public List<Renderer> GetAllBodyParts()
             {
-                if (m_CachedRenderers == null)
+                if (_mCachedRenderers == null)
                 {
-                    m_CachedRenderers = new List<Renderer>();
-                    AddRenderer(ref m_CachedRenderers, ears);
-                    AddRenderer(ref m_CachedRenderers, head);
-                    AddRenderer(ref m_CachedRenderers, mouth);
-                    AddRenderer(ref m_CachedRenderers, hair);
-                    AddRenderer(ref m_CachedRenderers, torso);
-                    AddRenderer(ref m_CachedRenderers, gearRightHand);
-                    AddRenderer(ref m_CachedRenderers, gearLeftHand);
-                    AddRenderer(ref m_CachedRenderers, handRight);
-                    AddRenderer(ref m_CachedRenderers, handLeft);
-                    AddRenderer(ref m_CachedRenderers, shoulderRight);
-                    AddRenderer(ref m_CachedRenderers, shoulderLeft);
+                    _mCachedRenderers = new List<Renderer>();
+                    AddRenderer(ref _mCachedRenderers, ears);
+                    AddRenderer(ref _mCachedRenderers, head);
+                    AddRenderer(ref _mCachedRenderers, mouth);
+                    AddRenderer(ref _mCachedRenderers, hair);
+                    AddRenderer(ref _mCachedRenderers, torso);
+                    AddRenderer(ref _mCachedRenderers, gearRightHand);
+                    AddRenderer(ref _mCachedRenderers, gearLeftHand);
+                    AddRenderer(ref _mCachedRenderers, handRight);
+                    AddRenderer(ref _mCachedRenderers, handLeft);
+                    AddRenderer(ref _mCachedRenderers, shoulderRight);
+                    AddRenderer(ref _mCachedRenderers, shoulderLeft);
                 }
-                return m_CachedRenderers;
+                return _mCachedRenderers;
             }
 
-            private void AddRenderer(ref List<Renderer> rendererList, GameObject bodypartGO)
+            private void AddRenderer(ref List<Renderer> rendererList, GameObject bodypartGo)
             {
-                if (!bodypartGO) { return; }
-                var bodyPartRenderer = bodypartGO.GetComponent<Renderer>();
+                if (!bodypartGo) { return; }
+                var bodyPartRenderer = bodypartGo.GetComponent<Renderer>();
                 if (!bodyPartRenderer) { return; }
                 rendererList.Add(bodyPartRenderer);
             }
@@ -92,7 +92,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// Reference to the original controller in our Animator.
         /// We switch back to this whenever we don't have an Override.
         /// </summary>
-        private RuntimeAnimatorController m_OriginalController;
+        private RuntimeAnimatorController _mOriginalController;
 
         [SerializeField]
         [Tooltip("Special Material we plug in when the local player is \"stealthy\"")]
@@ -113,15 +113,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// When we swap all our Materials out for a special material,
         /// we keep the old references here, so we can swap them back.
         /// </summary>
-        private Dictionary<Renderer, Material> m_OriginalMaterials = new Dictionary<Renderer, Material>();
+        private Dictionary<Renderer, Material> _mOriginalMaterials = new Dictionary<Renderer, Material>();
 
-        ClientCharacter m_ClientCharacter;
+        ClientCharacter _mClientCharacter;
 
         void Awake()
         {
-            m_ClientCharacter = GetComponentInParent<ClientCharacter>();
-            m_Animator = m_ClientCharacter.OurAnimator;
-            m_OriginalController = m_Animator.runtimeAnimatorController;
+            _mClientCharacter = GetComponentInParent<ClientCharacter>();
+            m_Animator = _mClientCharacter.OurAnimator;
+            _mOriginalController = m_Animator.runtimeAnimatorController;
         }
 
         private void OnDisable()
@@ -154,7 +154,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 }
                 else
                 {
-                    m_Animator.runtimeAnimatorController = m_OriginalController;
+                    m_Animator.runtimeAnimatorController = _mOriginalController;
                 }
             }
 
@@ -172,14 +172,14 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         private void ClearOverrideMaterial()
         {
-            foreach (var entry in m_OriginalMaterials)
+            foreach (var entry in _mOriginalMaterials)
             {
                 if (entry.Key)
                 {
                     entry.Key.material = entry.Value;
                 }
             }
-            m_OriginalMaterials.Clear();
+            _mOriginalMaterials.Clear();
         }
 
         private void SetOverrideMaterial(Material overrideMaterial)
@@ -189,7 +189,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             {
                 if (bodyPart)
                 {
-                    m_OriginalMaterials[bodyPart] = bodyPart.material;
+                    _mOriginalMaterials[bodyPart] = bodyPart.material;
                     bodyPart.material = overrideMaterial;
                 }
             }

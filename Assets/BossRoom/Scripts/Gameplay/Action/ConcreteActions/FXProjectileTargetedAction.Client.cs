@@ -10,23 +10,23 @@ namespace Unity.BossRoom.Gameplay.Actions
     public partial class FXProjectileTargetedAction
     {
         // have we actually played an impact?
-        private bool m_ImpactPlayed;
+        private bool _mImpactPlayed;
         // the time the FX projectile spends in the air
-        private float m_ProjectileDuration;
+        private float _mProjectileDuration;
         // the currently-live projectile. (Note that the projectile will normally destroy itself! We only care in case someone calls Cancel() on us)
-        private FXProjectile m_Projectile;
+        private FXProjectile _mProjectile;
         // the enemy we're aiming at
-        private NetworkObject m_Target;
-        Transform m_TargetTransform;
+        private NetworkObject _mTarget;
+        Transform _mTargetTransform;
 
         public override bool OnStartClient(ClientCharacter clientCharacter)
         {
             base.OnStartClient(clientCharacter);
-            m_Target = GetTarget(clientCharacter);
+            _mTarget = GetTarget(clientCharacter);
 
-            if (m_Target && PhysicsWrapper.TryGetPhysicsWrapper(m_Target.NetworkObjectId, out var physicsWrapper))
+            if (_mTarget && PhysicsWrapper.TryGetPhysicsWrapper(_mTarget.NetworkObjectId, out var physicsWrapper))
             {
-                m_TargetTransform = physicsWrapper.Transform;
+                _mTargetTransform = physicsWrapper.Transform;
             }
 
             if (Config.Projectiles.Length < 1 || Config.Projectiles[0].ProjectilePrefab == null)
@@ -37,27 +37,27 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public override bool OnUpdateClient(ClientCharacter clientCharacter)
         {
-            if (TimeRunning >= Config.ExecTimeSeconds && m_Projectile == null)
+            if (TimeRunning >= Config.ExecTimeSeconds && _mProjectile == null)
             {
                 // figure out how long the pretend-projectile will be flying to the target
-                var targetPos = m_TargetTransform ? m_TargetTransform.position : Data.Position;
+                var targetPos = _mTargetTransform ? _mTargetTransform.position : Data.Position;
                 var initialDistance = Vector3.Distance(targetPos, clientCharacter.transform.position);
-                m_ProjectileDuration = initialDistance / Config.Projectiles[0].Speed_m_s;
+                _mProjectileDuration = initialDistance / Config.Projectiles[0].Speed_m_s;
 
                 // create the projectile. It will control itself from here on out
-                m_Projectile = SpawnAndInitializeProjectile(clientCharacter);
+                _mProjectile = SpawnAndInitializeProjectile(clientCharacter);
             }
 
             // we keep going until the projectile's duration ends
-            return TimeRunning <= m_ProjectileDuration + Config.ExecTimeSeconds;
+            return TimeRunning <= _mProjectileDuration + Config.ExecTimeSeconds;
         }
 
         public override void CancelClient(ClientCharacter clientCharacter)
         {
-            if (m_Projectile)
+            if (_mProjectile)
             {
                 // we aborted post-projectile-launch (somehow)! Tell the graphics! (It will destroy itself, possibly after playing some more FX)
-                m_Projectile.Cancel();
+                _mProjectile.Cancel();
             }
         }
 
@@ -68,19 +68,19 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         void PlayHitReact()
         {
-            if (m_ImpactPlayed)
+            if (_mImpactPlayed)
                 return;
-            m_ImpactPlayed = true;
+            _mImpactPlayed = true;
 
             if (NetworkManager.Singleton.IsServer)
             {
                 return;
             }
 
-            if (m_Target && m_Target.TryGetComponent(out ServerCharacter clientCharacter) && clientCharacter.clientCharacter != null)
+            if (_mTarget && _mTarget.TryGetComponent(out ServerCharacter clientCharacter) && clientCharacter.ClientCharacter != null)
             {
-                var hitReact = !string.IsNullOrEmpty(Config.ReactAnim) ? Config.ReactAnim : k_DefaultHitReact;
-                clientCharacter.clientCharacter.OurAnimator.SetTrigger(hitReact);
+                var hitReact = !string.IsNullOrEmpty(Config.ReactAnim) ? Config.ReactAnim : KDefaultHitReact;
+                clientCharacter.ClientCharacter.OurAnimator.SetTrigger(hitReact);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             {
                 // make sure this isn't a friend (or if it is, make sure this is a friendly-fire action)
                 var targetable = targetObject.GetComponent<ITargetable>();
-                if (targetable != null && targetable.IsNpc == (Config.IsFriendly ^ parent.serverCharacter.IsNpc))
+                if (targetable != null && targetable.IsNpc == (Config.IsFriendly ^ parent.ServerCharacter.IsNpc))
                 {
                     // not a valid target
                     return null;
@@ -113,16 +113,16 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         FXProjectile SpawnAndInitializeProjectile(ClientCharacter parent)
         {
-            var projectileGO = Object.Instantiate(Config.Projectiles[0].ProjectilePrefab, parent.transform.position, parent.transform.rotation, null);
+            var projectileGo = Object.Instantiate(Config.Projectiles[0].ProjectilePrefab, parent.transform.position, parent.transform.rotation, null);
 
-            var projectile = projectileGO.GetComponent<FXProjectile>();
+            var projectile = projectileGo.GetComponent<FXProjectile>();
             if (!projectile)
             {
-                throw new System.Exception($"FXProjectileTargetedAction tried to spawn projectile {projectileGO.name}, as dictated for action {name}, but the object doesn't have a FXProjectile component!");
+                throw new System.Exception($"FXProjectileTargetedAction tried to spawn projectile {projectileGo.name}, as dictated for action {name}, but the object doesn't have a FXProjectile component!");
             }
 
             // now that we have our projectile, initialize it so it'll fly at the target appropriately
-            projectile.Initialize(parent.transform.position, m_TargetTransform, Data.Position, m_ProjectileDuration);
+            projectile.Initialize(parent.transform.position, _mTargetTransform, Data.Position, _mProjectileDuration);
             return projectile;
         }
 

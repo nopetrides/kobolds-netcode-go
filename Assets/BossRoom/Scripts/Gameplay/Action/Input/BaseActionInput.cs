@@ -6,24 +6,24 @@ namespace Unity.BossRoom.Gameplay.Actions
 {
     public abstract class BaseActionInput : MonoBehaviour
     {
-        protected ServerCharacter m_PlayerOwner;
-        protected Vector3 m_Origin;
-        protected ActionID m_ActionPrototypeID;
-        protected Action<ActionRequestData> m_SendInput;
-        System.Action m_OnFinished;
+        protected ServerCharacter MPlayerOwner;
+        protected Vector3 MOrigin;
+        protected ActionID MActionPrototypeID;
+        protected Action<ActionRequestData> MSendInput;
+        System.Action _mOnFinished;
 
         public void Initiate(ServerCharacter playerOwner, Vector3 origin, ActionID actionPrototypeID, Action<ActionRequestData> onSendInput, System.Action onFinished)
         {
-            m_PlayerOwner = playerOwner;
-            m_Origin = origin;
-            m_ActionPrototypeID = actionPrototypeID;
-            m_SendInput = onSendInput;
-            m_OnFinished = onFinished;
+            MPlayerOwner = playerOwner;
+            MOrigin = origin;
+            MActionPrototypeID = actionPrototypeID;
+            MSendInput = onSendInput;
+            _mOnFinished = onFinished;
         }
 
         public void OnDestroy()
         {
-            m_OnFinished();
+            _mOnFinished();
         }
 
         public virtual void OnReleaseKey() { }

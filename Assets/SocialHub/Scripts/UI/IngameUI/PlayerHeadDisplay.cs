@@ -6,16 +6,16 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 {
     class PlayerHeadDisplay : VisualElement
     {
-        VivoxParticipant m_Participant;
-        IVisualElementScheduledItem m_Scheduler;
-        VisualElement m_MicIcon;
-        Label m_PlayerNameLabel;
+        VivoxParticipant _mParticipant;
+        IVisualElementScheduledItem _mScheduler;
+        VisualElement _mMicIcon;
+        Label _mPlayerNameLabel;
 
-        internal VivoxParticipant VivoxParticipant => m_Participant;
+        internal VivoxParticipant VivoxParticipant => _mParticipant;
         internal string PlayerId { get; set; }
 
-        const string k_PlayerMutedUSSClass = "player-mic-icon--muted";
-        const string k_PlayerMicIconHidden = "player-mic-icon--disable";
+        const string KPlayerMutedUSSClass = "player-mic-icon--muted";
+        const string KPlayerMicIconHidden = "player-mic-icon--disable";
 
         /// <summary>
         /// Display that is shown above a players head
@@ -25,62 +25,62 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         {
             AddToClassList("player-top-ui");
             Add(asset.CloneTree());
-            m_PlayerNameLabel = this.Q<Label>();
-            m_MicIcon = this.Q<VisualElement>("mic-icon");
+            _mPlayerNameLabel = this.Q<Label>();
+            _mMicIcon = this.Q<VisualElement>("mic-icon");
             ShowMicIcon(false);
         }
 
         internal void AttachVivoxParticipant(VivoxParticipant participant)
         {
-            m_Participant = participant;
+            _mParticipant = participant;
 
-            m_Participant.ParticipantMuteStateChanged -= OnParticipantMuteStateChanged;
-            m_Participant.ParticipantMuteStateChanged += OnParticipantMuteStateChanged;
+            _mParticipant.ParticipantMuteStateChanged -= OnParticipantMuteStateChanged;
+            _mParticipant.ParticipantMuteStateChanged += OnParticipantMuteStateChanged;
 
-            m_Participant.ParticipantSpeechDetected -= OnParticipantSpeechDetected;
-            m_Participant.ParticipantSpeechDetected += OnParticipantSpeechDetected;
+            _mParticipant.ParticipantSpeechDetected -= OnParticipantSpeechDetected;
+            _mParticipant.ParticipantSpeechDetected += OnParticipantSpeechDetected;
         }
 
         internal void RemoveVivoxParticipant()
         {
-            if(m_Participant == null)
+            if(_mParticipant == null)
                 return;
 
-            m_Participant.ParticipantMuteStateChanged -= OnParticipantMuteStateChanged;
-            m_Participant.ParticipantSpeechDetected -= OnParticipantSpeechDetected;
+            _mParticipant.ParticipantMuteStateChanged -= OnParticipantMuteStateChanged;
+            _mParticipant.ParticipantSpeechDetected -= OnParticipantSpeechDetected;
         }
 
         void OnParticipantSpeechDetected()
         {
-            if(m_Participant.IsMuted)
+            if(_mParticipant.IsMuted)
                 return;
 
-            ShowMicIcon(m_Participant.SpeechDetected);
+            ShowMicIcon(_mParticipant.SpeechDetected);
         }
 
         void OnParticipantMuteStateChanged()
         {
-            if (m_Participant.IsMuted)
+            if (_mParticipant.IsMuted)
             {
-                m_MicIcon.AddToClassList(k_PlayerMutedUSSClass);
+                _mMicIcon.AddToClassList(KPlayerMutedUSSClass);
                 ShowMicIcon(true);
                 return;
             }
-            m_MicIcon.RemoveFromClassList(k_PlayerMutedUSSClass);
+            _mMicIcon.RemoveFromClassList(KPlayerMutedUSSClass);
 
         }
 
         internal void SetPlayerName(string playerName)
         {
-            m_PlayerNameLabel.text = playerName;
+            _mPlayerNameLabel.text = playerName;
         }
 
         void ShowMicIcon(bool show)
         {
             if (show)
-                m_MicIcon.RemoveFromClassList(k_PlayerMicIconHidden);
+                _mMicIcon.RemoveFromClassList(KPlayerMicIconHidden);
             else
-                m_MicIcon.AddToClassList(k_PlayerMicIconHidden);
+                _mMicIcon.AddToClassList(KPlayerMicIconHidden);
         }
     }
 }

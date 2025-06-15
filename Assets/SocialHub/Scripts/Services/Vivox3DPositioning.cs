@@ -6,8 +6,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
 {
     class Vivox3DPositioning : NetworkBehaviour
     {
-        bool m_Initialized;
-        float m_NextPosUpdate;
+        bool _mInitialized;
+        float _mNextPosUpdate;
 
         public override void OnNetworkSpawn()
         {
@@ -24,25 +24,25 @@ namespace Unity.Multiplayer.Samples.SocialHub.Services
 
         void OnChatIsReady(bool chatIsReady, string channelName)
         {
-            m_Initialized = chatIsReady;
+            _mInitialized = chatIsReady;
         }
 
         void OnExitSession()
         {
-            m_Initialized = false;
+            _mInitialized = false;
         }
 
         void Update()
         {
-            if (!m_Initialized)
+            if (!_mInitialized)
             {
                 return;
             }
 
-            if (Time.time > m_NextPosUpdate)
+            if (Time.time > _mNextPosUpdate)
             {
                 VivoxManager.Instance.SetPlayer3DPosition(gameObject);
-                m_NextPosUpdate = Time.time + 0.3f;
+                _mNextPosUpdate = Time.time + 0.3f;
             }
         }
 

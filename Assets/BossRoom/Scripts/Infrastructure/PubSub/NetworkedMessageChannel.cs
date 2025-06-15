@@ -13,21 +13,21 @@ namespace Unity.BossRoom.Infrastructure
     /// <typeparam name="T"></typeparam>
     public class NetworkedMessageChannel<T> : MessageChannel<T> where T : unmanaged, INetworkSerializeByMemcpy
     {
-        NetworkManager m_NetworkManager;
+        NetworkManager _mNetworkManager;
 
-        string m_Name;
+        string _mName;
 
         public NetworkedMessageChannel()
         {
-            m_Name = $"{typeof(T).FullName}NetworkMessageChannel";
+            _mName = $"{typeof(T).FullName}NetworkMessageChannel";
         }
 
         [Inject]
         void InjectDependencies(NetworkManager networkManager)
         {
-            m_NetworkManager = networkManager;
-            m_NetworkManager.OnClientConnectedCallback += OnClientConnected;
-            if (m_NetworkManager.IsListening)
+            _mNetworkManager = networkManager;
+            _mNetworkManager.OnClientConnectedCallback += OnClientConnected;
+            if (_mNetworkManager.IsListening)
             {
                 RegisterHandler();
             }
@@ -37,9 +37,9 @@ namespace Unity.BossRoom.Infrastructure
         {
             if (!IsDisposed)
             {
-                if (m_NetworkManager != null && m_NetworkManager.CustomMessagingManager != null)
+                if (_mNetworkManager != null && _mNetworkManager.CustomMessagingManager != null)
                 {
-                    m_NetworkManager.CustomMessagingManager.UnregisterNamedMessageHandler(m_Name);
+                    _mNetworkManager.CustomMessagingManager.UnregisterNamedMessageHandler(_mName);
                 }
             }
             base.Dispose();
@@ -53,15 +53,15 @@ namespace Unity.BossRoom.Infrastructure
         void RegisterHandler()
         {
             // Only register message handler on clients
-            if (!m_NetworkManager.IsServer)
+            if (!_mNetworkManager.IsServer)
             {
-                m_NetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(m_Name, ReceiveMessageThroughNetwork);
+                _mNetworkManager.CustomMessagingManager.RegisterNamedMessageHandler(_mName, ReceiveMessageThroughNetwork);
             }
         }
 
         public override void Publish(T message)
         {
-            if (m_NetworkManager.IsServer)
+            if (_mNetworkManager.IsServer)
             {
                 // send message to clients, then publish locally
                 SendMessageThroughNetwork(message);
@@ -77,13 +77,13 @@ namespace Unity.BossRoom.Infrastructure
         {
             // Avoid throwing an exception if you are in the middle of shutting down and either
             // NetworkManager no longer exists or the CustomMessagingManager no longer exists.
-            if (m_NetworkManager == null || m_NetworkManager.CustomMessagingManager == null)
+            if (_mNetworkManager == null || _mNetworkManager.CustomMessagingManager == null)
             {
                 return;
             }
             var writer = new FastBufferWriter(FastBufferWriter.GetWriteSize<T>(), Allocator.Temp);
             writer.WriteValueSafe(message);
-            m_NetworkManager.CustomMessagingManager.SendNamedMessageToAll(m_Name, writer);
+            _mNetworkManager.CustomMessagingManager.SendNamedMessageToAll(_mName, writer);
         }
 
         void ReceiveMessageThroughNetwork(ulong clientID, FastBufferReader reader)

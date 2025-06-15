@@ -9,8 +9,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
     public enum CharacterTypeEnum
     {
         //heroes
+		Default,
         Tank,
-        Archer,
         Mage,
         Rogue,
 

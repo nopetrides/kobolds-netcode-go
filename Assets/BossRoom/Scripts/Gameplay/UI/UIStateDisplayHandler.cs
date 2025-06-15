@@ -30,11 +30,11 @@ namespace Unity.BossRoom.Gameplay.UI
         UIStateDisplay m_UIStatePrefab;
 
         // spawned in world (only one instance of this)
-        UIStateDisplay m_UIState;
+        UIStateDisplay _mUIState;
 
-        RectTransform m_UIStateRectTransform;
+        RectTransform _mUIStateRectTransform;
 
-        bool m_UIStateActive;
+        bool _mUIStateActive;
 
         [SerializeField]
         NetworkHealthState m_NetworkHealthState;
@@ -42,11 +42,11 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         NetworkNameState m_NetworkNameState;
 
-        ServerCharacter m_ServerCharacter;
+        ServerCharacter _mServerCharacter;
 
-        ClientAvatarGuidHandler m_ClientAvatarGuidHandler;
+        ClientAvatarGuidHandler _mClientAvatarGuidHandler;
 
-        NetworkAvatarGuidState m_NetworkAvatarGuidState;
+        NetworkAvatarGuidState _mNetworkAvatarGuidState;
 
         [SerializeField]
         IntVariable m_BaseHP;
@@ -55,12 +55,12 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         Transform m_TransformToTrack;
 
-        Camera m_Camera;
+        Camera _mCamera;
 
-        Transform m_CanvasTransform;
+        Transform _mCanvasTransform;
 
         // as soon as any HP goes to 0, we wait this long before removing health bar UI object
-        const float k_DurationSeconds = 2f;
+        const float KDurationSeconds = 2f;
 
         [Tooltip("World space vertical offset for positioning.")]
         [SerializeField]
@@ -70,14 +70,14 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         float m_VerticalScreenOffset;
 
-        Vector3 m_VerticalOffset;
+        Vector3 _mVerticalOffset;
 
         // used to compute world position based on target and offsets
-        Vector3 m_WorldPos;
+        Vector3 _mWorldPos;
 
         void Awake()
         {
-            m_ServerCharacter = GetComponent<ServerCharacter>();
+            _mServerCharacter = GetComponent<ServerCharacter>();
         }
 
         public override void OnNetworkSpawn()
@@ -91,16 +91,16 @@ namespace Unity.BossRoom.Gameplay.UI
             var cameraGameObject = GameObject.FindWithTag("MainCamera");
             if (cameraGameObject)
             {
-                m_Camera = cameraGameObject.GetComponent<Camera>();
+                _mCamera = cameraGameObject.GetComponent<Camera>();
             }
-            Assert.IsNotNull(m_Camera);
+            Assert.IsNotNull(_mCamera);
 
             var canvasGameObject = GameObject.FindWithTag("GameCanvas");
             if (canvasGameObject)
             {
-                m_CanvasTransform = canvasGameObject.transform;
+                _mCanvasTransform = canvasGameObject.transform;
             }
-            Assert.IsNotNull(m_CanvasTransform);
+            Assert.IsNotNull(_mCanvasTransform);
 
             Assert.IsTrue(m_DisplayHealth || m_DisplayName, "Neither display fields are toggled on!");
             if (m_DisplayHealth)
@@ -108,20 +108,20 @@ namespace Unity.BossRoom.Gameplay.UI
                 Assert.IsNotNull(m_NetworkHealthState, "A NetworkHealthState component needs to be attached!");
             }
 
-            m_VerticalOffset = new Vector3(0f, m_VerticalScreenOffset, 0f);
+            _mVerticalOffset = new Vector3(0f, m_VerticalScreenOffset, 0f);
 
             // if PC, find our graphics transform and update health through callbacks, if displayed
-            if (TryGetComponent(out m_ClientAvatarGuidHandler) && TryGetComponent(out m_NetworkAvatarGuidState))
+            if (TryGetComponent(out _mClientAvatarGuidHandler) && TryGetComponent(out _mNetworkAvatarGuidState))
             {
-                m_BaseHP = m_NetworkAvatarGuidState.RegisteredAvatar.CharacterClass.BaseHP;
+                m_BaseHP = _mNetworkAvatarGuidState.RegisteredAvatar.CharacterClass.BaseHP;
 
-                if (m_ServerCharacter.clientCharacter)
+                if (_mServerCharacter.ClientCharacter)
                 {
-                    TrackGraphicsTransform(m_ServerCharacter.clientCharacter.gameObject);
+                    TrackGraphicsTransform(_mServerCharacter.ClientCharacter.gameObject);
                 }
                 else
                 {
-                    m_ClientAvatarGuidHandler.AvatarGraphicsSpawned += TrackGraphicsTransform;
+                    _mClientAvatarGuidHandler.AvatarGraphicsSpawned += TrackGraphicsTransform;
                 }
 
                 if (m_DisplayHealth)
@@ -155,9 +155,9 @@ namespace Unity.BossRoom.Gameplay.UI
                 m_NetworkHealthState.HitPointsDepleted -= RemoveUIHealth;
             }
 
-            if (m_ClientAvatarGuidHandler)
+            if (_mClientAvatarGuidHandler)
             {
-                m_ClientAvatarGuidHandler.AvatarGraphicsSpawned -= TrackGraphicsTransform;
+                _mClientAvatarGuidHandler.AvatarGraphicsSpawned -= TrackGraphicsTransform;
             }
         }
 
@@ -168,13 +168,13 @@ namespace Unity.BossRoom.Gameplay.UI
                 return;
             }
 
-            if (m_UIState == null)
+            if (_mUIState == null)
             {
                 SpawnUIState();
             }
 
-            m_UIState.DisplayName(m_NetworkNameState.Name);
-            m_UIStateActive = true;
+            _mUIState.DisplayName(m_NetworkNameState.Name);
+            _mUIStateActive = true;
         }
 
         void DisplayUIHealth()
@@ -184,21 +184,21 @@ namespace Unity.BossRoom.Gameplay.UI
                 return;
             }
 
-            if (m_UIState == null)
+            if (_mUIState == null)
             {
                 SpawnUIState();
             }
 
-            m_UIState.DisplayHealth(m_NetworkHealthState.HitPoints, m_BaseHP.Value);
-            m_UIStateActive = true;
+            _mUIState.DisplayHealth(m_NetworkHealthState.HitPoints, m_BaseHP.Value);
+            _mUIStateActive = true;
         }
 
         void SpawnUIState()
         {
-            m_UIState = Instantiate(m_UIStatePrefab, m_CanvasTransform);
+            _mUIState = Instantiate(m_UIStatePrefab, _mCanvasTransform);
             // make in world UI state draw under other UI elements
-            m_UIState.transform.SetAsFirstSibling();
-            m_UIStateRectTransform = m_UIState.GetComponent<RectTransform>();
+            _mUIState.transform.SetAsFirstSibling();
+            _mUIStateRectTransform = _mUIState.GetComponent<RectTransform>();
         }
 
         void RemoveUIHealth()
@@ -208,9 +208,9 @@ namespace Unity.BossRoom.Gameplay.UI
 
         IEnumerator WaitToHideHealthBar()
         {
-            yield return new WaitForSeconds(k_DurationSeconds);
+            yield return new WaitForSeconds(KDurationSeconds);
 
-            m_UIState.HideHealth();
+            _mUIState.HideHealth();
         }
 
         void TrackGraphicsTransform(GameObject graphicsGameObject)
@@ -223,23 +223,23 @@ namespace Unity.BossRoom.Gameplay.UI
         /// </remarks>
         void LateUpdate()
         {
-            if (m_UIStateActive && m_TransformToTrack)
+            if (_mUIStateActive && m_TransformToTrack)
             {
                 // set world position with world offset added
-                m_WorldPos.Set(m_TransformToTrack.position.x,
+                _mWorldPos.Set(m_TransformToTrack.position.x,
                     m_TransformToTrack.position.y + m_VerticalWorldOffset,
                     m_TransformToTrack.position.z);
 
-                m_UIStateRectTransform.position = m_Camera.WorldToScreenPoint(m_WorldPos) + m_VerticalOffset;
+                _mUIStateRectTransform.position = _mCamera.WorldToScreenPoint(_mWorldPos) + _mVerticalOffset;
             }
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
-            if (m_UIState != null)
+            if (_mUIState != null)
             {
-                Destroy(m_UIState.gameObject);
+                Destroy(_mUIState.gameObject);
             }
         }
     }

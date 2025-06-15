@@ -8,18 +8,18 @@ namespace Unity.BossRoom.Gameplay.Actions
 {
     public static class ActionFactory
     {
-        private static Dictionary<ActionID, ObjectPool<Action>> s_ActionPools = new Dictionary<ActionID, ObjectPool<Action>>();
+        private static Dictionary<ActionID, ObjectPool<Action>> _sActionPools = new Dictionary<ActionID, ObjectPool<Action>>();
 
         private static ObjectPool<Action> GetActionPool(ActionID actionID)
         {
-            if (!s_ActionPools.TryGetValue(actionID, out var actionPool))
+            if (!_sActionPools.TryGetValue(actionID, out var actionPool))
             {
                 actionPool = new ObjectPool<Action>(
                     createFunc: () => Object.Instantiate(GameDataSource.Instance.GetActionPrototypeByID(actionID)),
                     actionOnRelease: action => action.Reset(),
                     actionOnDestroy: Object.Destroy);
 
-                s_ActionPools.Add(actionID, actionPool);
+                _sActionPools.Add(actionID, actionPool);
             }
 
             return actionPool;
@@ -46,7 +46,7 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public static void PurgePooledActions()
         {
-            foreach (var actionPool in s_ActionPools.Values)
+            foreach (var actionPool in _sActionPools.Values)
             {
                 actionPool.Clear();
             }

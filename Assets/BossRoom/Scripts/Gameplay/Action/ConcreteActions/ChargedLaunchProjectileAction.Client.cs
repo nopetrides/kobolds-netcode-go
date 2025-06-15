@@ -15,28 +15,28 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// (like mobile devices), it can lead to major performance problems. On mobile platforms, visual graphics should
         /// use object-pooling (i.e. reusing the same GameObjects repeatedly). But that's outside the scope of this demo.
         /// </remarks>
-        private List<SpecialFXGraphic> m_Graphics = new List<SpecialFXGraphic>();
+        private List<SpecialFXGraphic> _mGraphics = new List<SpecialFXGraphic>();
 
-        private bool m_ChargeEnded;
+        private bool _mChargeEnded;
 
         public override bool OnStartClient(ClientCharacter clientCharacter)
         {
             base.OnStartClient(clientCharacter);
 
-            m_Graphics = InstantiateSpecialFXGraphics(clientCharacter.transform, true);
+            _mGraphics = InstantiateSpecialFXGraphics(clientCharacter.transform, true);
             return true;
         }
 
         public override bool OnUpdateClient(ClientCharacter clientCharacter)
         {
-            return !m_ChargeEnded;
+            return !_mChargeEnded;
         }
 
         public override void CancelClient(ClientCharacter clientCharacter)
         {
-            if (!m_ChargeEnded)
+            if (!_mChargeEnded)
             {
-                foreach (var graphic in m_Graphics)
+                foreach (var graphic in _mGraphics)
                 {
                     if (graphic)
                     {
@@ -48,8 +48,8 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public override void OnStoppedChargingUpClient(ClientCharacter clientCharacter, float finalChargeUpPercentage)
         {
-            m_ChargeEnded = true;
-            foreach (var graphic in m_Graphics)
+            _mChargeEnded = true;
+            foreach (var graphic in _mGraphics)
             {
                 if (graphic)
                 {
@@ -58,7 +58,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             }
 
             // the graphics will now take care of themselves and shutdown, so we can forget about 'em
-            m_Graphics.Clear();
+            _mGraphics.Clear();
         }
     }
 }

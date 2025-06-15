@@ -9,10 +9,10 @@ namespace Unity.BossRoom.Gameplay.UI
     /// Provides logic for a UI HUD Button to slightly shrink scale on pointer down.
     /// Also has an optional code interface for receiving notifications about down/up events (instead of just on-click)
     /// </summary>
-    public class UIHUDButton : Button, IPointerDownHandler, IPointerUpHandler
+    public class UihudButton : Button, IPointerDownHandler, IPointerUpHandler
     {
         // We apply a uniform 95% scale to buttons when pressed
-        static readonly Vector3 k_DownScale = new Vector3(0.95f, 0.95f, 0.95f);
+        static readonly Vector3 KDownScale = new Vector3(0.95f, 0.95f, 0.95f);
 
         /// <summary>
         /// Called when the user clicks down on the button (but hasn't released the button yet)
@@ -28,7 +28,7 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             if (!IsInteractable()) { return; }
             base.OnPointerDown(eventData);
-            transform.localScale = k_DownScale;
+            transform.localScale = KDownScale;
             OnPointerDownEvent?.Invoke();
         }
 

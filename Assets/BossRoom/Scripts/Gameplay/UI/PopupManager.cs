@@ -16,23 +16,23 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         GameObject m_Canvas;
 
-        List<PopupPanel> m_PopupPanels = new List<PopupPanel>();
+        List<PopupPanel> _mPopupPanels = new List<PopupPanel>();
 
-        static PopupManager s_Instance;
+        static PopupManager _sInstance;
 
-        const float k_Offset = 30;
-        const float k_MaxOffset = 200;
+        const float KOffset = 30;
+        const float KMaxOffset = 200;
 
         void Awake()
         {
-            if (s_Instance != null) throw new Exception("Invalid state, instance is not null");
-            s_Instance = this;
+            if (_sInstance != null) throw new Exception("Invalid state, instance is not null");
+            _sInstance = this;
             DontDestroyOnLoad(m_Canvas);
         }
 
         void OnDestroy()
         {
-            s_Instance = null;
+            _sInstance = null;
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace Unity.BossRoom.Gameplay.UI
         /// <param name="closeableByUser"></param>
         public static PopupPanel ShowPopupPanel(string titleText, string mainText, bool closeableByUser = true)
         {
-            if (s_Instance != null)
+            if (_sInstance != null)
             {
-                return s_Instance.DisplayPopupPanel(titleText, mainText, closeableByUser);
+                return _sInstance.DisplayPopupPanel(titleText, mainText, closeableByUser);
             }
 
             Debug.LogError($"No PopupPanel instance found. Cannot display message: {titleText}: {mainText}");
@@ -67,26 +67,26 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             int nextAvailablePopupIndex = 0;
             // Find the index of the first PopupPanel that is not displaying and has no popups after it that are currently displaying
-            for (int i = 0; i < m_PopupPanels.Count; i++)
+            for (int i = 0; i < _mPopupPanels.Count; i++)
             {
-                if (m_PopupPanels[i].IsDisplaying)
+                if (_mPopupPanels[i].IsDisplaying)
                 {
                     nextAvailablePopupIndex = i + 1;
                 }
             }
 
-            if (nextAvailablePopupIndex < m_PopupPanels.Count)
+            if (nextAvailablePopupIndex < _mPopupPanels.Count)
             {
-                return m_PopupPanels[nextAvailablePopupIndex];
+                return _mPopupPanels[nextAvailablePopupIndex];
             }
 
             // None of the current PopupPanels are available, so instantiate a new one
             var popupGameObject = Instantiate(m_PopupPanelPrefab, gameObject.transform);
-            popupGameObject.transform.position += new Vector3(1, -1) * (k_Offset * m_PopupPanels.Count % k_MaxOffset);
+            popupGameObject.transform.position += new Vector3(1, -1) * (KOffset * _mPopupPanels.Count % KMaxOffset);
             var popupPanel = popupGameObject.GetComponent<PopupPanel>();
             if (popupPanel != null)
             {
-                m_PopupPanels.Add(popupPanel);
+                _mPopupPanels.Add(popupPanel);
             }
             else
             {

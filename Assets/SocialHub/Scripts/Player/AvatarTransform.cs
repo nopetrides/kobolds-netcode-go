@@ -20,22 +20,22 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
         [SerializeField]
         PhysicsPlayerController m_PhysicsPlayerController;
 
-        Camera m_MainCamera;
+        Camera _mMainCamera;
 
-        PlayersTopUIController m_TopUIController;
+        PlayersTopUIController _mTopUIController;
 
-        NetworkVariable<FixedString32Bytes> m_PlayerName = new NetworkVariable<FixedString32Bytes>(string.Empty, readPerm: NetworkVariableReadPermission.Everyone, writePerm: NetworkVariableWritePermission.Owner);
-        NetworkVariable<FixedString32Bytes> m_PlayerId = new NetworkVariable<FixedString32Bytes>(string.Empty, readPerm: NetworkVariableReadPermission.Everyone, writePerm: NetworkVariableWritePermission.Owner);
+        NetworkVariable<FixedString32Bytes> _mPlayerName = new NetworkVariable<FixedString32Bytes>(string.Empty, readPerm: NetworkVariableReadPermission.Everyone, writePerm: NetworkVariableWritePermission.Owner);
+        NetworkVariable<FixedString32Bytes> _mPlayerId = new NetworkVariable<FixedString32Bytes>(string.Empty, readPerm: NetworkVariableReadPermission.Everyone, writePerm: NetworkVariableWritePermission.Owner);
 
 
         public override void OnNetworkSpawn()
         {
             gameObject.name = $"[Client-{OwnerClientId}]{name}";
 
-            m_TopUIController = FindFirstObjectByType<PlayersTopUIController>();
-            m_PlayerName.OnValueChanged += OnPlayerNameChanged;
-            m_PlayerId.OnValueChanged += OnPlayerIdChanged;
-            OnPlayerNameChanged(string.Empty, m_PlayerName.Value);
+            _mTopUIController = FindFirstObjectByType<PlayersTopUIController>();
+            _mPlayerName.OnValueChanged += OnPlayerNameChanged;
+            _mPlayerId.OnValueChanged += OnPlayerIdChanged;
+            OnPlayerNameChanged(string.Empty, _mPlayerName.Value);
 
             if (!HasAuthority)
             {
@@ -43,8 +43,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
                 return;
             }
 
-            m_PlayerId.Value = new FixedString32Bytes(AuthenticationService.Instance.PlayerId);
-            m_PlayerName.Value = new FixedString32Bytes(UIUtils.ExtractPlayerNameFromAuthUserName(AuthenticationService.Instance.PlayerName));
+            _mPlayerId.Value = new FixedString32Bytes(AuthenticationService.Instance.PlayerId);
+            _mPlayerName.Value = new FixedString32Bytes(UIUtils.ExtractPlayerNameFromAuthUserName(AuthenticationService.Instance.PlayerName));
             m_PlayerInput.enabled = true;
             GameInput.Actions.Player.Jump.performed += OnJumped;
             m_AvatarInteractions.enabled = true;
@@ -60,7 +60,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
             if (cameraControl != null)
             {
                 cameraControl.SetTransform(transform);
-                m_MainCamera = Camera.main;
+                _mMainCamera = Camera.main;
             }
             else
             {
@@ -84,7 +84,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
                 cameraControl.SetTransform(null);
             }
 
-            m_TopUIController?.RemovePlayer(gameObject);
+            _mTopUIController?.RemovePlayer(gameObject);
         }
 
         void OnJumped(InputAction.CallbackContext _)
@@ -94,10 +94,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
 
         void OnTransformUpdate()
         {
-            if (m_MainCamera != null)
+            if (_mMainCamera != null)
             {
-                var forward = m_MainCamera.transform.forward;
-                var right = m_MainCamera.transform.right;
+                var forward = _mMainCamera.transform.forward;
+                var right = _mMainCamera.transform.right;
 
                 forward.y = 0f;
                 right.y = 0f;
@@ -114,12 +114,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
 
         void OnPlayerNameChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
         {
-            m_TopUIController.AddOrUpdatePlayer(gameObject, newValue.Value,m_PlayerId.Value.Value);
+            _mTopUIController.AddOrUpdatePlayer(gameObject, newValue.Value,_mPlayerId.Value.Value);
         }
 
         void OnPlayerIdChanged(FixedString32Bytes previousValue, FixedString32Bytes newValue)
         {
-            m_TopUIController.AddOrUpdatePlayer(gameObject, m_PlayerName.Value.Value,newValue.Value);
+            _mTopUIController.AddOrUpdatePlayer(gameObject, _mPlayerName.Value.Value,newValue.Value);
         }
 
         public void NetworkUpdate(NetworkUpdateStage updateStage)

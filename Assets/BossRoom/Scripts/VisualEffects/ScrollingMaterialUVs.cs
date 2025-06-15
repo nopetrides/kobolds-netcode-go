@@ -10,14 +10,14 @@ namespace Unity.BossRoom.VisualEffects
         [SerializeField]
         Material m_Material;
 
-        float m_OffsetX;
-        float m_OffsetY;
+        float _mOffsetX;
+        float _mOffsetY;
 
         void Update()
         {
-            m_OffsetX = Time.time * ScrollX;
-            m_OffsetY = Time.time * ScrollY;
-            m_Material.mainTextureOffset = new Vector2(m_OffsetX, m_OffsetY);
+            _mOffsetX = Time.time * ScrollX;
+            _mOffsetY = Time.time * ScrollY;
+            m_Material.mainTextureOffset = new Vector2(_mOffsetX, _mOffsetY);
         }
 
         void OnDestroy()

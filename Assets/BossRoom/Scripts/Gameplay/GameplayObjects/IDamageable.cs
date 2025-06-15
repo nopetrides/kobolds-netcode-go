@@ -2,6 +2,7 @@ using System;
 using Unity.BossRoom.Gameplay.GameplayObjects.Character;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -14,8 +15,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// Receives HP damage or healing.
         /// </summary>
         /// <param name="inflicter">The Character responsible for the damage. May be null.</param>
-        /// <param name="HP">The damage done. Negative value is damage, positive is healing.</param>
-        void ReceiveHP(ServerCharacter inflicter, int HP);
+        /// <param name="hp">The damage done. Negative value is damage, positive is healing.</param>
+        void ReceiveHp(ServerCharacter inflicter, int hp);
 
         /// <summary>
         /// The NetworkId of this object.
@@ -25,7 +26,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// <summary>
         /// The transform of this object.
         /// </summary>
-        Transform transform { get; }
+        Transform Transform { get; }
 
         [Flags]
         public enum SpecialDamageFlags

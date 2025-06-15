@@ -16,21 +16,21 @@ namespace UUnity.BossRoom.ConnectionManagement
     class OfflineState : ConnectionState
     {
         [Inject]
-        LobbyServiceFacade m_LobbyServiceFacade;
+        LobbyServiceFacade _mLobbyServiceFacade;
         [Inject]
-        ProfileManager m_ProfileManager;
+        ProfileManager _mProfileManager;
         [Inject]
-        LocalLobby m_LocalLobby;
+        LocalLobby _mLocalLobby;
 
-        const string k_MainMenuSceneName = "MainMenu";
+        const string KMainMenuSceneName = "MainMenu";
 
         public override void Enter()
         {
-            m_LobbyServiceFacade.EndTracking();
-            m_ConnectionManager.NetworkManager.Shutdown();
-            if (SceneManager.GetActiveScene().name != k_MainMenuSceneName)
+            _mLobbyServiceFacade.EndTracking();
+            MConnectionManager.NetworkManager.Shutdown();
+            if (SceneManager.GetActiveScene().name != KMainMenuSceneName)
             {
-                SceneLoaderWrapper.Instance.LoadScene(k_MainMenuSceneName, useNetworkSceneManager: false);
+                SceneLoaderWrapper.Instance.LoadScene(KMainMenuSceneName, useNetworkSceneManager: false);
             }
         }
 
@@ -38,30 +38,30 @@ namespace UUnity.BossRoom.ConnectionManagement
 
         public override void StartClientIP(string playerName, string ipaddress, int port)
         {
-            var connectionMethod = new ConnectionMethodIP(ipaddress, (ushort)port, m_ConnectionManager, m_ProfileManager, playerName);
-            m_ConnectionManager.m_ClientReconnecting.Configure(connectionMethod);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting.Configure(connectionMethod));
+            var connectionMethod = new ConnectionMethodIP(ipaddress, (ushort)port, MConnectionManager, _mProfileManager, playerName);
+            MConnectionManager.MClientReconnecting.Configure(connectionMethod);
+            MConnectionManager.ChangeState(MConnectionManager.MClientConnecting.Configure(connectionMethod));
         }
 
         // Note: MultiplayerSDK refactoring
         public override void StartClientLobby(string sessionCode, string playerName)
         {
-            var connectionMethod = new ConnectionMethodRelay(sessionCode, m_LobbyServiceFacade, m_LocalLobby, m_ConnectionManager, m_ProfileManager, playerName);
-            m_ConnectionManager.m_ClientReconnecting.Configure(connectionMethod);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting.Configure(connectionMethod));
+            var connectionMethod = new ConnectionMethodRelay(sessionCode, _mLobbyServiceFacade, _mLocalLobby, MConnectionManager, _mProfileManager, playerName);
+            MConnectionManager.MClientReconnecting.Configure(connectionMethod);
+            MConnectionManager.ChangeState(MConnectionManager.MClientConnecting.Configure(connectionMethod));
         }
 
         public override void StartHostIP(string playerName, string ipaddress, int port)
         {
-            var connectionMethod = new ConnectionMethodIP(ipaddress, (ushort)port, m_ConnectionManager, m_ProfileManager, playerName);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost.Configure(connectionMethod));
+            var connectionMethod = new ConnectionMethodIP(ipaddress, (ushort)port, MConnectionManager, _mProfileManager, playerName);
+            MConnectionManager.ChangeState(MConnectionManager.MStartingHost.Configure(connectionMethod));
         }
 
         // Note: MultiplayerSDK refactoring
         public override void StartHostLobby(string sessionCode, string playerName)
         {
-            var connectionMethod = new ConnectionMethodRelay(sessionCode, m_LobbyServiceFacade, m_LocalLobby, m_ConnectionManager, m_ProfileManager, playerName);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost.Configure(connectionMethod));
+            var connectionMethod = new ConnectionMethodRelay(sessionCode, _mLobbyServiceFacade, _mLocalLobby, MConnectionManager, _mProfileManager, playerName);
+            MConnectionManager.ChangeState(MConnectionManager.MStartingHost.Configure(connectionMethod));
         }
     }
 }

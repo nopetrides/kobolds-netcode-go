@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Avatar = Unity.BossRoom.Gameplay.Configuration.Avatar;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     /// <summary>
@@ -20,18 +21,18 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         AvatarRegistry m_AvatarRegistry;
 
-        Avatar m_Avatar;
+        Avatar _mAvatar;
 
         public Avatar RegisteredAvatar
         {
             get
             {
-                if (m_Avatar == null)
+                if (_mAvatar == null)
                 {
                     RegisterAvatar(AvatarGuid.Value.ToGuid());
                 }
 
-                return m_Avatar;
+                return _mAvatar;
             }
         }
 
@@ -55,13 +56,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 return;
             }
 
-            if (m_Avatar != null)
+            if (_mAvatar != null)
             {
                 // already set, this is an idempotent call, we don't want to Instantiate twice
                 return;
             }
 
-            m_Avatar = avatar;
+            _mAvatar = avatar;
 
             if (TryGetComponent<ServerCharacter>(out var serverCharacter))
             {

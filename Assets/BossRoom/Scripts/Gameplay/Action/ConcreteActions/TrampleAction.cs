@@ -33,30 +33,30 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// <summary>
         /// When we begin our charge-attack, anyone within this range is treated as having already been touching us.
         /// </summary>
-        private const float k_PhysicalTouchDistance = 1;
+        private const float KPhysicalTouchDistance = 1;
 
         /// <summary>
         /// Our ActionStage, as of last Update
         /// </summary>
-        private ActionStage m_PreviousStage;
+        private ActionStage _mPreviousStage;
 
         /// <summary>
         /// Keeps track of which Colliders we've already hit, so that our attack doesn't hit the same character twice.
         /// </summary>
-        private HashSet<Collider> m_CollidedAlready = new HashSet<Collider>();
+        private HashSet<Collider> _mCollidedAlready = new HashSet<Collider>();
 
         /// <summary>
         /// Set to true in the special-case scenario where we are stunned by one of the characters we tried to trample
         /// </summary>
-        private bool m_WasStunned;
+        private bool _mWasStunned;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
-            m_PreviousStage = ActionStage.Windup;
+            _mPreviousStage = ActionStage.Windup;
 
-            if (m_Data.TargetIds != null && m_Data.TargetIds.Length > 0)
+            if (MData.TargetIds != null && MData.TargetIds.Length > 0)
             {
-                NetworkObject initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[m_Data.TargetIds[0]];
+                NetworkObject initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[MData.TargetIds[0]];
                 if (initialTarget)
                 {
                     Vector3 lookAtPosition;
@@ -70,32 +70,32 @@ namespace Unity.BossRoom.Gameplay.Actions
                     }
 
                     // snap to face our target! This is the direction we'll attack in
-                    serverCharacter.physicsWrapper.Transform.LookAt(lookAtPosition);
+                    serverCharacter.PhysicsWrapper.Transform.LookAt(lookAtPosition);
                 }
             }
 
             // reset our "stop" trigger (in case the previous run of the trample action was aborted due to e.g. being stunned)
             if (!string.IsNullOrEmpty(Config.Anim2))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.ResetTrigger(Config.Anim2);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.ResetTrigger(Config.Anim2);
             }
             // start the animation sequence!
             if (!string.IsNullOrEmpty(Config.Anim))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
             }
 
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
             return true;
         }
 
         public override void Reset()
         {
             base.Reset();
-            m_PreviousStage = default;
-            m_CollidedAlready.Clear();
-            m_SpawnedGraphics = null;
-            m_WasStunned = false;
+            _mPreviousStage = default;
+            _mCollidedAlready.Clear();
+            _mSpawnedGraphics = null;
+            _mWasStunned = false;
         }
 
         private ActionStage GetCurrentStage()
@@ -115,15 +115,15 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
             ActionStage newState = GetCurrentStage();
-            if (newState != m_PreviousStage && newState == ActionStage.Charging)
+            if (newState != _mPreviousStage && newState == ActionStage.Charging)
             {
                 // we've just started to charge across the screen! Anyone currently touching us gets hit
                 SimulateCollisionWithNearbyFoes(clientCharacter);
                 clientCharacter.Movement.StartForwardCharge(Config.MoveSpeed, Config.DurationSeconds - Config.ExecTimeSeconds);
             }
 
-            m_PreviousStage = newState;
-            return newState != ActionStage.Complete && !m_WasStunned;
+            _mPreviousStage = newState;
+            return newState != ActionStage.Complete && !_mWasStunned;
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Unity.BossRoom.Gameplay.Actions
                 return;
             }
 
-            if (m_WasStunned)
+            if (_mWasStunned)
             {
                 // someone already stunned us, so no further damage can happen
                 return;
@@ -161,7 +161,7 @@ namespace Unity.BossRoom.Gameplay.Actions
 
                 // We deal a certain amount of damage to our "initial" target and a different amount to all other victims.
                 int damage;
-                if (m_Data.TargetIds != null && m_Data.TargetIds.Length > 0 && m_Data.TargetIds[0] == victim.NetworkObjectId)
+                if (MData.TargetIds != null && MData.TargetIds.Length > 0 && MData.TargetIds[0] == victim.NetworkObjectId)
                 {
                     damage = Config.Amount;
                 }
@@ -172,12 +172,12 @@ namespace Unity.BossRoom.Gameplay.Actions
 
                 if (victim.gameObject.TryGetComponent(out IDamageable damageable))
                 {
-                    damageable.ReceiveHP(parent, -damage);
+                    damageable.ReceiveHp(parent, -damage);
                 }
             }
 
             var victimMovement = victim.Movement;
-            victimMovement.StartKnockback(parent.physicsWrapper.Transform.position, Config.KnockbackSpeed, Config.KnockbackDuration);
+            victimMovement.StartKnockback(parent.PhysicsWrapper.Transform.position, Config.KnockbackSpeed, Config.KnockbackDuration);
         }
 
         // called by owning class when parent's Collider collides with stuff
@@ -193,23 +193,23 @@ namespace Unity.BossRoom.Gameplay.Actions
         // here we handle colliding with anything (whether a victim or not)
         private void Collide(ServerCharacter parent, Collider collider)
         {
-            if (m_CollidedAlready.Contains(collider))
+            if (_mCollidedAlready.Contains(collider))
                 return; // already hit them!
 
-            m_CollidedAlready.Add(collider);
+            _mCollidedAlready.Add(collider);
 
             var victim = collider.gameObject.GetComponentInParent<ServerCharacter>();
             if (victim)
             {
                 CollideWithVictim(parent, victim);
             }
-            else if (!m_WasStunned)
+            else if (!_mWasStunned)
             {
                 // they aren't a living, breathing victim, but they might still be destructible...
                 var damageable = collider.gameObject.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
-                    damageable.ReceiveHP(parent, -Config.SplashDamage);
+                    damageable.ReceiveHp(parent, -Config.SplashDamage);
 
                     // lastly, a special case: if the trampler runs into certain breakables, they are stunned!
                     if ((damageable.GetSpecialDamageFlags() & IDamageable.SpecialDamageFlags.StunOnTrample) == IDamageable.SpecialDamageFlags.StunOnTrample)
@@ -226,7 +226,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             // So when we start charging across the screen, we check to see what's already touching us
             // (or close enough) and treat that like a collision.
             RaycastHit[] results;
-            int numResults = ActionUtils.DetectNearbyEntities(true, true, parent.physicsWrapper.DamageCollider, k_PhysicalTouchDistance, out results);
+            int numResults = ActionUtils.DetectNearbyEntities(true, true, parent.PhysicsWrapper.DamageCollider, KPhysicalTouchDistance, out results);
             for (int i = 0; i < numResults; i++)
             {
                 Collide(parent, results[i].collider);
@@ -235,17 +235,17 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         private void StunSelf(ServerCharacter parent)
         {
-            if (!m_WasStunned)
+            if (!_mWasStunned)
             {
                 parent.Movement.CancelMove();
-                parent.clientCharacter.ClientCancelAllActionsRpc();
+                parent.ClientCharacter.ClientCancelAllActionsRpc();
             }
-            m_WasStunned = true;
+            _mWasStunned = true;
         }
 
         public override bool ChainIntoNewAction(ref ActionRequestData newAction)
         {
-            if (m_WasStunned)
+            if (_mWasStunned)
             {
                 newAction = ActionRequestData.Create(StunnedActionPrototype);
                 newAction.ShouldQueue = false;
@@ -258,7 +258,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             if (!string.IsNullOrEmpty(Config.Anim2))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
             }
         }
     }

@@ -14,11 +14,11 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         TextMeshProUGUI m_UINameText;
 
-        NetworkVariable<FixedPlayerName> m_NetworkedNameTag;
+        NetworkVariable<FixedPlayerName> _mNetworkedNameTag;
 
         public void Initialize(NetworkVariable<FixedPlayerName> networkedName)
         {
-            m_NetworkedNameTag = networkedName;
+            _mNetworkedNameTag = networkedName;
 
             m_UINameText.text = networkedName.Value.ToString();
             networkedName.OnValueChanged += NameUpdated;
@@ -31,7 +31,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnDestroy()
         {
-            m_NetworkedNameTag.OnValueChanged -= NameUpdated;
+            _mNetworkedNameTag.OnValueChanged -= NameUpdated;
         }
     }
 }

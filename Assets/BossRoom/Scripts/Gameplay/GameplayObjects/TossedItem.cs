@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     public class TossedItem : NetworkBehaviour
@@ -25,23 +26,23 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         [SerializeField]
         LayerMask m_LayerMask;
 
-        bool m_Started;
+        bool _mStarted;
 
-        const int k_MaxCollisions = 16;
+        const int KMaxCollisions = 16;
 
-        Collider[] m_CollisionCache = new Collider[k_MaxCollisions];
+        Collider[] _mCollisionCache = new Collider[KMaxCollisions];
 
         [SerializeField]
         float m_DetonateAfterSeconds = 5f;
 
-        float m_DetonateTimer;
+        float _mDetonateTimer;
 
         [SerializeField]
         float m_DestroyAfterSeconds = 6f;
 
-        float m_DestroyTimer;
+        float _mDestroyTimer;
 
-        bool m_Detonated;
+        bool _mDetonated;
 
         public UnityEvent detonatedCallback;
 
@@ -50,9 +51,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         [SerializeField]
         Transform m_TossedItemVisualTransform;
 
-        const float k_DisplayHeight = 0.1f;
+        const float KDisplayHeight = 0.1f;
 
-        readonly Quaternion k_TossAttackRadiusDisplayRotation = Quaternion.Euler(90f, 0f, 0f);
+        readonly Quaternion _kTossAttackRadiusDisplayRotation = Quaternion.Euler(90f, 0f, 0f);
 
         [SerializeField]
         GameObject m_TossedObjectGraphics;
@@ -64,11 +65,11 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             if (IsServer)
             {
-                m_Started = true;
-                m_Detonated = false;
+                _mStarted = true;
+                _mDetonated = false;
 
-                m_DetonateTimer = Time.fixedTime + m_DetonateAfterSeconds;
-                m_DestroyTimer = Time.fixedTime + m_DestroyAfterSeconds;
+                _mDetonateTimer = Time.fixedTime + m_DetonateAfterSeconds;
+                _mDestroyTimer = Time.fixedTime + m_DestroyAfterSeconds;
             }
 
             if (IsClient)
@@ -83,8 +84,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             if (IsServer)
             {
-                m_Started = false;
-                m_Detonated = false;
+                _mStarted = false;
+                _mDetonated = false;
             }
 
             if (IsClient)
@@ -96,15 +97,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         void Detonate()
         {
-            var hits = Physics.OverlapSphereNonAlloc(transform.position, m_HitRadius, m_CollisionCache, m_LayerMask);
+            var hits = Physics.OverlapSphereNonAlloc(transform.position, m_HitRadius, _mCollisionCache, m_LayerMask);
 
             for (int i = 0; i < hits; i++)
             {
-                if (m_CollisionCache[i].gameObject.TryGetComponent(out IDamageable damageReceiver))
+                if (_mCollisionCache[i].gameObject.TryGetComponent(out IDamageable damageReceiver))
                 {
-                    damageReceiver.ReceiveHP(null, -m_DamagePoints);
+                    damageReceiver.ReceiveHp(null, -m_DamagePoints);
 
-                    var serverCharacter = m_CollisionCache[i].gameObject.GetComponentInParent<ServerCharacter>();
+                    var serverCharacter = _mCollisionCache[i].gameObject.GetComponentInParent<ServerCharacter>();
                     if (serverCharacter)
                     {
                         serverCharacter.Movement.StartKnockback(transform.position, m_KnockbackSpeed, m_KnockbackDuration);
@@ -115,7 +116,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             // send client RPC to detonate on clients
             ClientDetonateRpc();
 
-            m_Detonated = true;
+            _mDetonated = true;
         }
 
         [Rpc(SendTo.ClientsAndHost)]
@@ -128,17 +129,17 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             if (IsServer)
             {
-                if (!m_Started)
+                if (!_mStarted)
                 {
                     return; //don't do anything before OnNetworkSpawn has run.
                 }
 
-                if (!m_Detonated && m_DetonateTimer < Time.fixedTime)
+                if (!_mDetonated && _mDetonateTimer < Time.fixedTime)
                 {
                     Detonate();
                 }
 
-                if (m_Detonated && m_DestroyTimer < Time.fixedTime)
+                if (_mDetonated && _mDestroyTimer < Time.fixedTime)
                 {
                     // despawn after sending detonate RPC
                     var networkObject = gameObject.GetComponent<NetworkObject>();
@@ -153,8 +154,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             {
                 var tossedItemPosition = transform.position;
                 m_TossedItemVisualTransform.SetPositionAndRotation(
-                    new Vector3(tossedItemPosition.x, k_DisplayHeight, tossedItemPosition.z),
-                    k_TossAttackRadiusDisplayRotation);
+                    new Vector3(tossedItemPosition.x, KDisplayHeight, tossedItemPosition.z),
+                    _kTossAttackRadiusDisplayRotation);
             }
         }
     }

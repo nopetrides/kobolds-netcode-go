@@ -24,7 +24,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         ClientCharacter m_ClientCharacter;
 
-        public ClientCharacter clientCharacter => m_ClientCharacter;
+        public ClientCharacter ClientCharacter => m_ClientCharacter;
 
         [SerializeField]
         CharacterClass m_CharacterClass;
@@ -35,7 +35,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             {
                 if (m_CharacterClass == null)
                 {
-                    m_CharacterClass = m_State.RegisteredAvatar.CharacterClass;
+                    m_CharacterClass = _mState.RegisteredAvatar.CharacterClass;
                 }
 
                 return m_CharacterClass;
@@ -98,13 +98,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// </summary>
         public CharacterTypeEnum CharacterType => CharacterClass.CharacterType;
 
-        private ServerActionPlayer m_ServerActionPlayer;
+        private ServerActionPlayer _mServerActionPlayer;
 
         /// <summary>
         /// The Character's ActionPlayer. This is mainly exposed for use by other Actions. In particular, users are discouraged from
         /// calling 'PlayAction' directly on this, as the ServerCharacter has certain game-level checks it performs in its own wrapper.
         /// </summary>
-        public ServerActionPlayer ActionPlayer => m_ServerActionPlayer;
+        public ServerActionPlayer ActionPlayer => _mServerActionPlayer;
 
         [SerializeField]
         [Tooltip("If set to false, an NPC character will be denied its brain (won't attack or chase players)")]
@@ -130,22 +130,22 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         PhysicsWrapper m_PhysicsWrapper;
 
-        public PhysicsWrapper physicsWrapper => m_PhysicsWrapper;
+        public PhysicsWrapper PhysicsWrapper => m_PhysicsWrapper;
 
         [SerializeField]
         ServerAnimationHandler m_ServerAnimationHandler;
 
-        public ServerAnimationHandler serverAnimationHandler => m_ServerAnimationHandler;
+        public ServerAnimationHandler ServerAnimationHandler => m_ServerAnimationHandler;
 
-        private AIBrain m_AIBrain;
-        NetworkAvatarGuidState m_State;
+        private AIBrain _mAIBrain;
+        NetworkAvatarGuidState _mState;
 
         void Awake()
         {
-            m_ServerActionPlayer = new ServerActionPlayer(this);
+            _mServerActionPlayer = new ServerActionPlayer(this);
             NetLifeState = GetComponent<NetworkLifeState>();
             NetHealthState = GetComponent<NetworkHealthState>();
-            m_State = GetComponent<NetworkAvatarGuidState>();
+            _mState = GetComponent<NetworkAvatarGuidState>();
         }
 
         public override void OnNetworkSpawn()
@@ -154,12 +154,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             else
             {
                 NetLifeState.LifeState.OnValueChanged += OnLifeStateChanged;
-                m_DamageReceiver.DamageReceived += ReceiveHP;
+                m_DamageReceiver.DamageReceived += ReceiveHp;
                 m_DamageReceiver.CollisionEntered += CollisionEntered;
 
                 if (IsNpc)
                 {
-                    m_AIBrain = new AIBrain(this, m_ServerActionPlayer);
+                    _mAIBrain = new AIBrain(this, _mServerActionPlayer);
                 }
 
                 if (m_StartingAction != null)
@@ -177,7 +177,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
             if (m_DamageReceiver)
             {
-                m_DamageReceiver.DamageReceived -= ReceiveHP;
+                m_DamageReceiver.DamageReceived -= ReceiveHp;
                 m_DamageReceiver.CollisionEntered -= CollisionEntered;
             }
         }
@@ -193,15 +193,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             if (LifeState == LifeState.Alive && !m_Movement.IsPerformingForcedMovement())
             {
                 // if we're currently playing an interruptible action, interrupt it!
-                if (m_ServerActionPlayer.GetActiveActionInfo(out ActionRequestData data))
+                if (_mServerActionPlayer.GetActiveActionInfo(out ActionRequestData data))
                 {
                     if (GameDataSource.Instance.GetActionPrototypeByID(data.ActionID).Config.ActionInterruptible)
                     {
-                        m_ServerActionPlayer.ClearActions(false);
+                        _mServerActionPlayer.ClearActions(false);
                     }
                 }
 
-                m_ServerActionPlayer.CancelRunningActionsByLogic(ActionLogic.Target, true); //clear target on move.
+                _mServerActionPlayer.CancelRunningActionsByLogic(ActionLogic.Target, true); //clear target on move.
                 m_Movement.SetMovementTarget(movementTarget);
             }
         }
@@ -233,7 +233,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [Rpc(SendTo.Server)]
         public void ServerStopChargingUpRpc()
         {
-            m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.StoppedChargingUp);
+            _mServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.StoppedChargingUp);
         }
 
         void InitializeHitPoints()
@@ -267,7 +267,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                     m_Movement.CancelMove();
                 }
 
-                m_ServerActionPlayer.PlayAction(ref action);
+                _mServerActionPlayer.PlayAction(ref action);
             }
         }
 
@@ -275,7 +275,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         {
             if (lifeState != LifeState.Alive)
             {
-                m_ServerActionPlayer.ClearActions(true);
+                _mServerActionPlayer.ClearActions(true);
                 m_Movement.CancelMove();
             }
         }
@@ -294,15 +294,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// Receive an HP change from somewhere. Could be healing or damage.
         /// </summary>
         /// <param name="inflicter">Person dishing out this damage/healing. Can be null. </param>
-        /// <param name="HP">The HP to receive. Positive value is healing. Negative is damage.  </param>
-        void ReceiveHP(ServerCharacter inflicter, int HP)
+        /// <param name="hp">The HP to receive. Positive value is healing. Negative is damage.  </param>
+        void ReceiveHp(ServerCharacter inflicter, int hp)
         {
             //to our own effects, and modify the damage or healing as appropriate. But in this game, we just take it straight.
-            if (HP > 0)
+            if (hp > 0)
             {
-                m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.Healed);
-                float healingMod = m_ServerActionPlayer.GetBuffedValue(Action.BuffableValue.PercentHealingReceived);
-                HP = (int)(HP * healingMod);
+                _mServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.Healed);
+                float healingMod = _mServerActionPlayer.GetBuffedValue(Action.BuffableValue.PercentHealingReceived);
+                hp = (int)(hp * healingMod);
             }
             else
             {
@@ -314,19 +314,19 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 }
 #endif
 
-                m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.AttackedByEnemy);
-                float damageMod = m_ServerActionPlayer.GetBuffedValue(Action.BuffableValue.PercentDamageReceived);
-                HP = (int)(HP * damageMod);
+                _mServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.AttackedByEnemy);
+                float damageMod = _mServerActionPlayer.GetBuffedValue(Action.BuffableValue.PercentDamageReceived);
+                hp = (int)(hp * damageMod);
 
-                serverAnimationHandler.NetworkAnimator.SetTrigger("HitReact1");
+                ServerAnimationHandler.NetworkAnimator.SetTrigger("HitReact1");
             }
 
-            HitPoints = Mathf.Clamp(HitPoints + HP, 0, CharacterClass.BaseHP.Value);
+            HitPoints = Mathf.Clamp(HitPoints + hp, 0, CharacterClass.BaseHP.Value);
 
-            if (m_AIBrain != null)
+            if (_mAIBrain != null)
             {
                 //let the brain know about the modified amount of damage we received.
-                m_AIBrain.ReceiveHP(inflicter, HP);
+                _mAIBrain.ReceiveHp(inflicter, hp);
             }
 
             //we can't currently heal a dead character back to Alive state.
@@ -347,7 +347,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                     LifeState = LifeState.Fainted;
                 }
 
-                m_ServerActionPlayer.ClearActions(false);
+                _mServerActionPlayer.ClearActions(false);
             }
         }
 
@@ -359,44 +359,44 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// <returns></returns>
         public float GetBuffedValue(Action.BuffableValue buffType)
         {
-            return m_ServerActionPlayer.GetBuffedValue(buffType);
+            return _mServerActionPlayer.GetBuffedValue(buffType);
         }
 
         /// <summary>
         /// Receive a Life State change that brings Fainted characters back to Alive state.
         /// </summary>
         /// <param name="inflicter">Person reviving the character.</param>
-        /// <param name="HP">The HP to set to a newly revived character.</param>
-        public void Revive(ServerCharacter inflicter, int HP)
+        /// <param name="hp">The HP to set to a newly revived character.</param>
+        public void Revive(ServerCharacter inflicter, int hp)
         {
             if (LifeState == LifeState.Fainted)
             {
-                HitPoints = Mathf.Clamp(HP, 0, CharacterClass.BaseHP.Value);
+                HitPoints = Mathf.Clamp(hp, 0, CharacterClass.BaseHP.Value);
                 NetLifeState.LifeState.Value = LifeState.Alive;
             }
         }
 
         void Update()
         {
-            m_ServerActionPlayer.OnUpdate();
-            if (m_AIBrain != null && LifeState == LifeState.Alive && m_BrainEnabled)
+            _mServerActionPlayer.OnUpdate();
+            if (_mAIBrain != null && LifeState == LifeState.Alive && m_BrainEnabled)
             {
-                m_AIBrain.Update();
+                _mAIBrain.Update();
             }
         }
 
         void CollisionEntered(Collision collision)
         {
-            if (m_ServerActionPlayer != null)
+            if (_mServerActionPlayer != null)
             {
-                m_ServerActionPlayer.CollisionEntered(collision);
+                _mServerActionPlayer.CollisionEntered(collision);
             }
         }
 
         /// <summary>
         /// This character's AIBrain. Will be null if this is not an NPC.
         /// </summary>
-        public AIBrain AIBrain { get { return m_AIBrain; } }
+        public AIBrain AIBrain { get { return _mAIBrain; } }
 
     }
 }

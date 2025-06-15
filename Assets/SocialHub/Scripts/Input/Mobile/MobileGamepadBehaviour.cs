@@ -30,9 +30,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         [InputControl(layout = "Button"), SerializeField]
         string m_MenuAction;
 
-        InputDevice m_Device;
-        Dictionary<string, InputControl> m_ControlMap = new();
-        MobileGamepadState m_RuntimeState;
+        InputDevice _mDevice;
+        Dictionary<string, InputControl> _mControlMap = new();
+        MobileGamepadState _mRuntimeState;
 
         async void OnEnable()
         {
@@ -44,22 +44,22 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
                 return;
 
             SetupControlBindings();
-            m_RuntimeState = MobileGamepadState.GetOrCreate;
-            m_RuntimeState.ButtonStateChanged += SendControlEvent;
-            m_RuntimeState.JoystickStateChanged += SendControlUpdate;
+            _mRuntimeState = MobileGamepadState.GetOrCreate;
+            _mRuntimeState.ButtonStateChanged += SendControlEvent;
+            _mRuntimeState.JoystickStateChanged += SendControlUpdate;
         }
 
         void OnDisable()
         {
-            if (m_Device != null)
+            if (_mDevice != null)
             {
-                if (m_Device.usages.Count == 1 && m_Device.usages[0] == "OnScreen")
-                    InputSystem.RemoveDevice(m_Device);
+                if (_mDevice.usages.Count == 1 && _mDevice.usages[0] == "OnScreen")
+                    InputSystem.RemoveDevice(_mDevice);
 
-                if (m_RuntimeState != null)
+                if (_mRuntimeState != null)
                 {
-                    m_RuntimeState.ButtonStateChanged -= SendControlEvent;
-                    m_RuntimeState.JoystickStateChanged -= SendControlUpdate;
+                    _mRuntimeState.ButtonStateChanged -= SendControlEvent;
+                    _mRuntimeState.JoystickStateChanged -= SendControlUpdate;
                 }
             }
         }
@@ -68,11 +68,11 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         {
             try
             {
-                m_Device = InputSystem.GetDevice<Gamepad>();
-                if (m_Device == null)
+                _mDevice = InputSystem.GetDevice<Gamepad>();
+                if (_mDevice == null)
                 {
-                    m_Device = InputSystem.AddDevice<Gamepad>();
-                    InputSystem.AddDeviceUsage(m_Device, "OnScreen");
+                    _mDevice = InputSystem.AddDevice<Gamepad>();
+                    InputSystem.AddDeviceUsage(_mDevice, "OnScreen");
                 }
             }
             catch (Exception exception)
@@ -88,7 +88,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
 
         void SetupControlBindings()
         {
-            m_ControlMap = new Dictionary<string, InputControl>
+            _mControlMap = new Dictionary<string, InputControl>
             {
                 { nameof(MobileGamepadState.LeftJoystick), MapRuntimeControl(m_MoveAction) },
                 { nameof(MobileGamepadState.RightJoystick), MapRuntimeControl(m_LookAction) },
@@ -106,10 +106,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
             var deviceControl = InputSystem.FindControl(inputControl);
             if (deviceControl != null)
             {
-                if (deviceControl.device == m_Device)
+                if (deviceControl.device == _mDevice)
                     return deviceControl;
             }
-            Debug.LogError($"Cannot find matching control '{inputControl}' on device of type '{m_Device}'");
+            Debug.LogError($"Cannot find matching control '{inputControl}' on device of type '{_mDevice}'");
             return null;
         }
 
@@ -126,7 +126,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         void SendControlUpdate<TValue>(string propertyName, TValue value)
             where TValue : struct
         {
-            if (!m_ControlMap.TryGetValue(propertyName, out var inputControl))
+            if (!_mControlMap.TryGetValue(propertyName, out var inputControl))
             {
                 Debug.LogError($"No InputControl for the property {propertyName} has been registered");
                 return;
@@ -157,7 +157,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         void SendControlEvent<TValue>(string propertyName, TValue value)
             where TValue : struct
         {
-            if (!m_ControlMap.TryGetValue(propertyName, out var inputControl))
+            if (!_mControlMap.TryGetValue(propertyName, out var inputControl))
             {
                 Debug.LogError($"No InputControl for the property {propertyName} has been registered");
                 return;

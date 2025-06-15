@@ -6,12 +6,12 @@ namespace Unity.BossRoom.Infrastructure
 {
     public class MessageChannel<T> : IMessageChannel<T>
     {
-        readonly List<Action<T>> m_MessageHandlers = new List<Action<T>>();
+        readonly List<Action<T>> _mMessageHandlers = new List<Action<T>>();
 
         /// This dictionary of handlers to be either added or removed is used to prevent problems from immediate
         /// modification of the list of subscribers. It could happen if one decides to unsubscribe in a message handler
         /// etc.A true value means this handler should be added, and a false one means it should be removed
-        readonly Dictionary<Action<T>, bool> m_PendingHandlers = new Dictionary<Action<T>, bool>();
+        readonly Dictionary<Action<T>, bool> _mPendingHandlers = new Dictionary<Action<T>, bool>();
 
         public bool IsDisposed { get; private set; } = false;
 
@@ -20,27 +20,27 @@ namespace Unity.BossRoom.Infrastructure
             if (!IsDisposed)
             {
                 IsDisposed = true;
-                m_MessageHandlers.Clear();
-                m_PendingHandlers.Clear();
+                _mMessageHandlers.Clear();
+                _mPendingHandlers.Clear();
             }
         }
 
         public virtual void Publish(T message)
         {
-            foreach (var handler in m_PendingHandlers.Keys)
+            foreach (var handler in _mPendingHandlers.Keys)
             {
-                if (m_PendingHandlers[handler])
+                if (_mPendingHandlers[handler])
                 {
-                    m_MessageHandlers.Add(handler);
+                    _mMessageHandlers.Add(handler);
                 }
                 else
                 {
-                    m_MessageHandlers.Remove(handler);
+                    _mMessageHandlers.Remove(handler);
                 }
             }
-            m_PendingHandlers.Clear();
+            _mPendingHandlers.Clear();
 
-            foreach (var messageHandler in m_MessageHandlers)
+            foreach (var messageHandler in _mMessageHandlers)
             {
                 if (messageHandler != null)
                 {
@@ -53,16 +53,16 @@ namespace Unity.BossRoom.Infrastructure
         {
             Assert.IsTrue(!IsSubscribed(handler), "Attempting to subscribe with the same handler more than once");
 
-            if (m_PendingHandlers.ContainsKey(handler))
+            if (_mPendingHandlers.ContainsKey(handler))
             {
-                if (!m_PendingHandlers[handler])
+                if (!_mPendingHandlers[handler])
                 {
-                    m_PendingHandlers.Remove(handler);
+                    _mPendingHandlers.Remove(handler);
                 }
             }
             else
             {
-                m_PendingHandlers[handler] = true;
+                _mPendingHandlers[handler] = true;
             }
 
             var subscription = new DisposableSubscription<T>(this, handler);
@@ -73,25 +73,25 @@ namespace Unity.BossRoom.Infrastructure
         {
             if (IsSubscribed(handler))
             {
-                if (m_PendingHandlers.ContainsKey(handler))
+                if (_mPendingHandlers.ContainsKey(handler))
                 {
-                    if (m_PendingHandlers[handler])
+                    if (_mPendingHandlers[handler])
                     {
-                        m_PendingHandlers.Remove(handler);
+                        _mPendingHandlers.Remove(handler);
                     }
                 }
                 else
                 {
-                    m_PendingHandlers[handler] = false;
+                    _mPendingHandlers[handler] = false;
                 }
             }
         }
 
         bool IsSubscribed(Action<T> handler)
         {
-            var isPendingRemoval = m_PendingHandlers.ContainsKey(handler) && !m_PendingHandlers[handler];
-            var isPendingAdding = m_PendingHandlers.ContainsKey(handler) && m_PendingHandlers[handler];
-            return m_MessageHandlers.Contains(handler) && !isPendingRemoval || isPendingAdding;
+            var isPendingRemoval = _mPendingHandlers.ContainsKey(handler) && !_mPendingHandlers[handler];
+            var isPendingAdding = _mPendingHandlers.ContainsKey(handler) && _mPendingHandlers[handler];
+            return _mMessageHandlers.Contains(handler) && !isPendingRemoval || isPendingAdding;
         }
     }
 }

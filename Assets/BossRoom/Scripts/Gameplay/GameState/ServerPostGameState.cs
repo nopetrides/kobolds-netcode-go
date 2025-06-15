@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using VContainer;
 
+
 namespace Unity.BossRoom.Gameplay.GameState
 {
     [RequireComponent(typeof(NetcodeHooks))]
@@ -24,10 +25,10 @@ namespace Unity.BossRoom.Gameplay.GameState
         public override GameState ActiveState { get { return GameState.PostGame; } }
 
         [Inject]
-        ConnectionManager m_ConnectionManager;
+        ConnectionManager _mConnectionManager;
 
         [Inject]
-        PersistentGameState m_PersistentGameState;
+        PersistentGameState _mPersistentGameState;
 
         protected override void Awake()
         {
@@ -45,7 +46,7 @@ namespace Unity.BossRoom.Gameplay.GameState
             else
             {
                 SessionManager<SessionPlayerData>.Instance.OnSessionEnded();
-                networkPostGame.WinState.Value = m_PersistentGameState.WinState;
+                networkPostGame.WinState.Value = _mPersistentGameState.WinState;
             }
         }
 
@@ -53,7 +54,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             //clear actions pool
             ActionFactory.PurgePooledActions();
-            m_PersistentGameState.Reset();
+            _mPersistentGameState.Reset();
 
             base.OnDestroy();
 
@@ -67,7 +68,7 @@ namespace Unity.BossRoom.Gameplay.GameState
 
         public void GoToMainMenu()
         {
-            m_ConnectionManager.RequestShutdown();
+            _mConnectionManager.RequestShutdown();
         }
     }
 }

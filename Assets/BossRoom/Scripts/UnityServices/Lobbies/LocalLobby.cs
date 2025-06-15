@@ -11,7 +11,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
     [Serializable]
     public sealed class LocalLobby
     {
-        public event Action<LocalLobby> changed;
+        public event Action<LocalLobby> Changed;
 
         /// <summary>
         /// Create a list of new LocalLobbies from the result of a lobby list query.
@@ -33,8 +33,8 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             return data;
         }
 
-        Dictionary<string, LocalLobbyUser> m_LobbyUsers = new Dictionary<string, LocalLobbyUser>();
-        public Dictionary<string, LocalLobbyUser> LobbyUsers => m_LobbyUsers;
+        Dictionary<string, LocalLobbyUser> _mLobbyUsers = new Dictionary<string, LocalLobbyUser>();
+        public Dictionary<string, LocalLobbyUser> LobbyUsers => _mLobbyUsers;
 
         public struct LobbyData
         {
@@ -66,12 +66,12 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             }
         }
 
-        LobbyData m_Data;
-        public LobbyData Data => new LobbyData(m_Data);
+        LobbyData _mData;
+        public LobbyData Data => new LobbyData(_mData);
 
         public void AddUser(LocalLobbyUser user)
         {
-            if (!m_LobbyUsers.ContainsKey(user.ID))
+            if (!_mLobbyUsers.ContainsKey(user.ID))
             {
                 DoAddUser(user);
                 OnChanged();
@@ -80,8 +80,8 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         void DoAddUser(LocalLobbyUser user)
         {
-            m_LobbyUsers.Add(user.ID, user);
-            user.changed += OnChangedUser;
+            _mLobbyUsers.Add(user.ID, user);
+            user.Changed += OnChangedUser;
         }
 
         public void RemoveUser(LocalLobbyUser user)
@@ -92,14 +92,14 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         void DoRemoveUser(LocalLobbyUser user)
         {
-            if (!m_LobbyUsers.ContainsKey(user.ID))
+            if (!_mLobbyUsers.ContainsKey(user.ID))
             {
                 Debug.LogWarning($"Player {user.DisplayName}({user.ID}) does not exist in lobby: {LobbyID}");
                 return;
             }
 
-            m_LobbyUsers.Remove(user.ID);
-            user.changed -= OnChangedUser;
+            _mLobbyUsers.Remove(user.ID);
+            user.Changed -= OnChangedUser;
         }
 
         void OnChangedUser(LocalLobbyUser user)
@@ -109,83 +109,83 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         void OnChanged()
         {
-            changed?.Invoke(this);
+            Changed?.Invoke(this);
         }
 
         public string LobbyID
         {
-            get => m_Data.LobbyID;
+            get => _mData.LobbyID;
             set
             {
-                m_Data.LobbyID = value;
+                _mData.LobbyID = value;
                 OnChanged();
             }
         }
 
         public string LobbyCode
         {
-            get => m_Data.LobbyCode;
+            get => _mData.LobbyCode;
             set
             {
-                m_Data.LobbyCode = value;
+                _mData.LobbyCode = value;
                 OnChanged();
             }
         }
 
         public string RelayJoinCode
         {
-            get => m_Data.RelayJoinCode;
+            get => _mData.RelayJoinCode;
             set
             {
-                m_Data.RelayJoinCode = value;
+                _mData.RelayJoinCode = value;
                 OnChanged();
             }
         }
 
         public string LobbyName
         {
-            get => m_Data.LobbyName;
+            get => _mData.LobbyName;
             set
             {
-                m_Data.LobbyName = value;
+                _mData.LobbyName = value;
                 OnChanged();
             }
         }
 
         public bool Private
         {
-            get => m_Data.Private;
+            get => _mData.Private;
             set
             {
-                m_Data.Private = value;
+                _mData.Private = value;
                 OnChanged();
             }
         }
 
-        public int PlayerCount => m_LobbyUsers.Count;
+        public int PlayerCount => _mLobbyUsers.Count;
 
         public int MaxPlayerCount
         {
-            get => m_Data.MaxPlayerCount;
+            get => _mData.MaxPlayerCount;
             set
             {
-                m_Data.MaxPlayerCount = value;
+                _mData.MaxPlayerCount = value;
                 OnChanged();
             }
         }
 
         public void CopyDataFrom(LobbyData data, Dictionary<string, LocalLobbyUser> currUsers)
         {
-            m_Data = data;
+            _mData = data;
 
             if (currUsers == null)
             {
-                m_LobbyUsers = new Dictionary<string, LocalLobbyUser>();
+                _mLobbyUsers = new Dictionary<string, LocalLobbyUser>();
             }
             else
             {
                 List<LocalLobbyUser> toRemove = new List<LocalLobbyUser>();
-                foreach (var oldUser in m_LobbyUsers)
+                foreach (var oldUser in _mLobbyUsers)
                 {
                     if (currUsers.ContainsKey(oldUser.Key))
                     {
@@ -204,7 +204,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
                 foreach (var currUser in currUsers)
                 {
-                    if (!m_LobbyUsers.ContainsKey(currUser.Key))
+                    if (!_mLobbyUsers.ContainsKey(currUser.Key))
                     {
                         DoAddUser(currUser.Value);
                     }

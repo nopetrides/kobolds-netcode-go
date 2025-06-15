@@ -27,37 +27,37 @@ namespace Unity.BossRoom.Editor
     [InitializeOnLoad]
     public class SceneBootstrapper
     {
-        const string k_PreviousSceneKey = "PreviousScene";
-        const string k_ShouldLoadBootstrapSceneKey = "LoadBootstrapScene";
+        const string KPreviousSceneKey = "PreviousScene";
+        const string KShouldLoadBootstrapSceneKey = "LoadBootstrapScene";
 
-        const string k_LoadBootstrapSceneOnPlay = "Boss Room/Load Bootstrap Scene On Play";
-        const string k_DoNotLoadBootstrapSceneOnPlay = "Boss Room/Don't Load Bootstrap Scene On Play";
+        const string KLoadBootstrapSceneOnPlay = "Boss Room/Load Bootstrap Scene On Play";
+        const string KDoNotLoadBootstrapSceneOnPlay = "Boss Room/Don't Load Bootstrap Scene On Play";
 
-        const string k_TestRunnerSceneName = "InitTestScene";
+        const string KTestRunnerSceneName = "InitTestScene";
 
-        static bool s_RestartingToSwitchScene;
+        static bool _sRestartingToSwitchScene;
 
         static string BootstrapScene => EditorBuildSettings.scenes[0].path;
 
         // to track where to go back to
         static string PreviousScene
         {
-            get => EditorPrefs.GetString(k_PreviousSceneKey);
-            set => EditorPrefs.SetString(k_PreviousSceneKey, value);
+            get => EditorPrefs.GetString(KPreviousSceneKey);
+            set => EditorPrefs.SetString(KPreviousSceneKey, value);
         }
 
         static bool ShouldLoadBootstrapScene
         {
             get
             {
-                if (!EditorPrefs.HasKey(k_ShouldLoadBootstrapSceneKey))
+                if (!EditorPrefs.HasKey(KShouldLoadBootstrapSceneKey))
                 {
-                    EditorPrefs.SetBool(k_ShouldLoadBootstrapSceneKey, true);
+                    EditorPrefs.SetBool(KShouldLoadBootstrapSceneKey, true);
                 }
 
-                return EditorPrefs.GetBool(k_ShouldLoadBootstrapSceneKey, true);
+                return EditorPrefs.GetBool(KShouldLoadBootstrapSceneKey, true);
             }
-            set => EditorPrefs.SetBool(k_ShouldLoadBootstrapSceneKey, value);
+            set => EditorPrefs.SetBool(KShouldLoadBootstrapSceneKey, value);
         }
 
         static SceneBootstrapper()
@@ -65,25 +65,25 @@ namespace Unity.BossRoom.Editor
             EditorApplication.playModeStateChanged += EditorApplicationOnplayModeStateChanged;
         }
 
-        [MenuItem(k_LoadBootstrapSceneOnPlay, true)]
+        [MenuItem(KLoadBootstrapSceneOnPlay, true)]
         static bool ShowLoadBootstrapSceneOnPlay()
         {
             return !ShouldLoadBootstrapScene;
         }
 
-        [MenuItem(k_LoadBootstrapSceneOnPlay)]
+        [MenuItem(KLoadBootstrapSceneOnPlay)]
         static void EnableLoadBootstrapSceneOnPlay()
         {
             ShouldLoadBootstrapScene = true;
         }
 
-        [MenuItem(k_DoNotLoadBootstrapSceneOnPlay, true)]
+        [MenuItem(KDoNotLoadBootstrapSceneOnPlay, true)]
         static bool ShowDoNotLoadBootstrapSceneOnPlay()
         {
             return ShouldLoadBootstrapScene;
         }
 
-        [MenuItem(k_DoNotLoadBootstrapSceneOnPlay)]
+        [MenuItem(KDoNotLoadBootstrapSceneOnPlay)]
         static void DisableDoNotLoadBootstrapSceneOnPlay()
         {
             ShouldLoadBootstrapScene = false;
@@ -101,14 +101,14 @@ namespace Unity.BossRoom.Editor
                 return;
             }
 
-            if (s_RestartingToSwitchScene)
+            if (_sRestartingToSwitchScene)
             {
                 if (playModeStateChange == PlayModeStateChange.EnteredPlayMode)
                 {
                     // for some reason there's multiple start and stops events happening while restarting the editor playmode. We're making sure to
                     // set stoppingAndStarting only when we're done and we've entered playmode. This way we won't corrupt "activeScene" with the multiple
                     // start and stop and will be able to return to the scene we were editing at first
-                    s_RestartingToSwitchScene = false;
+                    _sRestartingToSwitchScene = false;
                 }
                 return;
             }
@@ -127,11 +127,11 @@ namespace Unity.BossRoom.Editor
                     {
                         var activeScene = EditorSceneManager.GetActiveScene();
 
-                        s_RestartingToSwitchScene = activeScene.path == string.Empty || !BootstrapScene.Contains(activeScene.path);
+                        _sRestartingToSwitchScene = activeScene.path == string.Empty || !BootstrapScene.Contains(activeScene.path);
 
                         // we only manually inject Bootstrap scene if we are in a blank empty scene,
                         // or if the active scene is not already BootstrapScene
-                        if (s_RestartingToSwitchScene)
+                        if (_sRestartingToSwitchScene)
                         {
                             EditorApplication.isPlaying = false;
 
@@ -159,7 +159,7 @@ namespace Unity.BossRoom.Editor
 
         static bool IsTestRunnerActive()
         {
-            return EditorSceneManager.GetActiveScene().name.StartsWith(k_TestRunnerSceneName);
+            return EditorSceneManager.GetActiveScene().name.StartsWith(KTestRunnerSceneName);
         }
     }
 }

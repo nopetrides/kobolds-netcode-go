@@ -19,63 +19,63 @@ namespace Unity.BossRoom.UnityServices.Lobbies
     /// </summary>
     public class LobbyServiceFacade : IDisposable, IStartable
     {
-        [Inject] LifetimeScope m_ParentScope;
-        [Inject] UpdateRunner m_UpdateRunner;
-        [Inject] LocalLobby m_LocalLobby;
-        [Inject] LocalLobbyUser m_LocalUser;
-        [Inject] IPublisher<UnityServiceErrorMessage> m_UnityServiceErrorMessagePub;
-        [Inject] IPublisher<LobbyListFetchedMessage> m_LobbyListFetchedPub;
+        [Inject] LifetimeScope _mParentScope;
+        [Inject] UpdateRunner _mUpdateRunner;
+        [Inject] LocalLobby _mLocalLobby;
+        [Inject] LocalLobbyUser _mLocalUser;
+        [Inject] IPublisher<UnityServiceErrorMessage> _mUnityServiceErrorMessagePub;
+        [Inject] IPublisher<LobbyListFetchedMessage> _mLobbyListFetchedPub;
 
-        const float k_HeartbeatPeriod = 8; // The heartbeat must be rate-limited to 5 calls per 30 seconds. We'll aim for longer in case periods don't align.
-        float m_HeartbeatTime = 0;
+        const float KHeartbeatPeriod = 8; // The heartbeat must be rate-limited to 5 calls per 30 seconds. We'll aim for longer in case periods don't align.
+        float _mHeartbeatTime = 0;
 
-        LifetimeScope m_ServiceScope;
-        LobbyAPIInterface m_LobbyApiInterface;
+        LifetimeScope _mServiceScope;
+        LobbyAPIInterface _mLobbyApiInterface;
 
-        RateLimitCooldown m_RateLimitQuery;
-        RateLimitCooldown m_RateLimitJoin;
-        RateLimitCooldown m_RateLimitQuickJoin;
-        RateLimitCooldown m_RateLimitHost;
+        RateLimitCooldown _mRateLimitQuery;
+        RateLimitCooldown _mRateLimitJoin;
+        RateLimitCooldown _mRateLimitQuickJoin;
+        RateLimitCooldown _mRateLimitHost;
 
         public Lobby CurrentUnityLobby { get; private set; }
 
-        ILobbyEvents m_LobbyEvents;
+        ILobbyEvents _mLobbyEvents;
 
-        bool m_IsTracking = false;
+        bool _mIsTracking = false;
 
-        LobbyEventConnectionState m_LobbyEventConnectionState = LobbyEventConnectionState.Unknown;
+        LobbyEventConnectionState _mLobbyEventConnectionState = LobbyEventConnectionState.Unknown;
 
         public ISession CurrentSession;
 
         public void Start()
         {
-            m_ServiceScope = m_ParentScope.CreateChild(builder =>
+            _mServiceScope = _mParentScope.CreateChild(builder =>
             {
                 builder.Register<LobbyAPIInterface>(Lifetime.Singleton);
             });
 
-            m_LobbyApiInterface = m_ServiceScope.Container.Resolve<LobbyAPIInterface>();
+            _mLobbyApiInterface = _mServiceScope.Container.Resolve<LobbyAPIInterface>();
 
             //See https://docs.unity.com/lobby/rate-limits.html
-            m_RateLimitQuery = new RateLimitCooldown(1f);
-            m_RateLimitJoin = new RateLimitCooldown(3f);
-            m_RateLimitQuickJoin = new RateLimitCooldown(10f);
-            m_RateLimitHost = new RateLimitCooldown(3f);
+            _mRateLimitQuery = new RateLimitCooldown(1f);
+            _mRateLimitJoin = new RateLimitCooldown(3f);
+            _mRateLimitQuickJoin = new RateLimitCooldown(10f);
+            _mRateLimitHost = new RateLimitCooldown(3f);
         }
 
         public void Dispose()
         {
             EndTracking();
-            if (m_ServiceScope != null)
+            if (_mServiceScope != null)
             {
-                m_ServiceScope.Dispose();
+                _mServiceScope.Dispose();
             }
         }
 
         public void SetRemoteLobby(Lobby lobby)
         {
             CurrentUnityLobby = lobby;
-            m_LocalLobby.ApplyRemoteData(lobby);
+            _mLocalLobby.ApplyRemoteData(lobby);
         }
 
         /// <summary>
@@ -83,16 +83,16 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public void BeginTracking()
         {
-            if (!m_IsTracking)
+            if (!_mIsTracking)
             {
-                m_IsTracking = true;
+                _mIsTracking = true;
                 SubscribeToJoinedLobbyAsync();
 
                 // Only the host sends heartbeat pings to the service to keep the lobby alive
-                if (m_LocalUser.IsHost)
+                if (_mLocalUser.IsHost)
                 {
-                    m_HeartbeatTime = 0;
-                    m_UpdateRunner.Subscribe(DoLobbyHeartbeat, 1.5f);
+                    _mHeartbeatTime = 0;
+                    _mUpdateRunner.Subscribe(DoLobbyHeartbeat, 1.5f);
                 }
             }
         }
@@ -102,21 +102,21 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public void EndTracking()
         {
-            if (m_IsTracking)
+            if (_mIsTracking)
             {
-                m_IsTracking = false;
+                _mIsTracking = false;
                 UnsubscribeToJoinedLobbyAsync();
 
                 // Only the host sends heartbeat pings to the service to keep the lobby alive
-                if (m_LocalUser.IsHost)
+                if (_mLocalUser.IsHost)
                 {
-                    m_UpdateRunner.Unsubscribe(DoLobbyHeartbeat);
+                    _mUpdateRunner.Unsubscribe(DoLobbyHeartbeat);
                 }
             }
 
             if (CurrentUnityLobby != null)
             {
-                if (m_LocalUser.IsHost)
+                if (_mLocalUser.IsHost)
                 {
                     DeleteLobbyAsync();
                 }
@@ -133,7 +133,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public async Task<(bool Success, ISession Lobby)> TryCreateLobbyAsync(string lobbyName, int maxPlayers, bool isPrivate)
         {
-            if (!m_RateLimitHost.CanCall)
+            if (!_mRateLimitHost.CanCall)
             {
                 Debug.LogWarning("Create Lobby hit the rate limit.");
                 return (false, null);
@@ -156,7 +156,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             {
                 if (e.Reason == LobbyExceptionReason.RateLimited)
                 {
-                    m_RateLimitHost.PutOnCooldown();
+                    _mRateLimitHost.PutOnCooldown();
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public async Task<(bool Success, ISession Lobby)> TryJoinLobbyAsync(string lobbyId/*, string lobbyCode*/)
         {
-            if (!m_RateLimitJoin.CanCall ||
+            if (!_mRateLimitJoin.CanCall ||
                 (lobbyId == null/* && lobbyCode == null*/))
             {
                 Debug.LogWarning("Join Lobby hit the rate limit.");
@@ -206,7 +206,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             {
                 if (e.Reason == LobbyExceptionReason.RateLimited)
                 {
-                    m_RateLimitJoin.PutOnCooldown();
+                    _mRateLimitJoin.PutOnCooldown();
                 }
                 else
                 {
@@ -222,7 +222,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public async Task<(bool Success, Lobby Lobby)> TryQuickJoinLobbyAsync()
         {
-            if (!m_RateLimitQuickJoin.CanCall)
+            if (!_mRateLimitQuickJoin.CanCall)
             {
                 Debug.LogWarning("Quick Join Lobby hit the rate limit.");
                 return (false, null);
@@ -230,14 +230,14 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
             try
             {
-                var lobby = await m_LobbyApiInterface.QuickJoinLobby(AuthenticationService.Instance.PlayerId, m_LocalUser.GetDataForUnityServices());
+                var lobby = await _mLobbyApiInterface.QuickJoinLobby(AuthenticationService.Instance.PlayerId, _mLocalUser.GetDataForUnityServices());
                 return (true, lobby);
             }
             catch (LobbyServiceException e)
             {
                 if (e.Reason == LobbyExceptionReason.RateLimited)
                 {
-                    m_RateLimitQuickJoin.PutOnCooldown();
+                    _mRateLimitQuickJoin.PutOnCooldown();
                 }
                 else
                 {
@@ -251,13 +251,13 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         void ResetLobby()
         {
             CurrentUnityLobby = null;
-            if (m_LocalUser != null)
+            if (_mLocalUser != null)
             {
-                m_LocalUser.ResetState();
+                _mLocalUser.ResetState();
             }
-            if (m_LocalLobby != null)
+            if (_mLocalLobby != null)
             {
-                m_LocalLobby.Reset(m_LocalUser);
+                _mLocalLobby.Reset(_mLocalUser);
             }
 
             // no need to disconnect Netcode, it should already be handled by Netcode's callback to disconnect
@@ -275,12 +275,12 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             {
                 Debug.Log("Lobby updated");
                 changes.ApplyToLobby(CurrentUnityLobby);
-                m_LocalLobby.ApplyRemoteData(CurrentUnityLobby);
+                _mLocalLobby.ApplyRemoteData(CurrentUnityLobby);
 
                 // as client, check if host is still in lobby
-                if (!m_LocalUser.IsHost)
+                if (!_mLocalUser.IsHost)
                 {
-                    foreach (var lobbyUser in m_LocalLobby.LobbyUsers)
+                    foreach (var lobbyUser in _mLocalLobby.LobbyUsers)
                     {
                         if (lobbyUser.Value.IsHost)
                         {
@@ -288,7 +288,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
                         }
                     }
 
-                    m_UnityServiceErrorMessagePub.Publish(new UnityServiceErrorMessage("Host left the lobby", "Disconnecting.", UnityServiceErrorMessage.Service.Lobby));
+                    _mUnityServiceErrorMessagePub.Publish(new UnityServiceErrorMessage("Host left the lobby", "Disconnecting.", UnityServiceErrorMessage.Service.Lobby));
                     EndTracking();
                     // no need to disconnect Netcode, it should already be handled by Netcode's callback to disconnect
                 }
@@ -304,7 +304,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         void OnLobbyEventConnectionStateChanged(LobbyEventConnectionState lobbyEventConnectionState)
         {
-            m_LobbyEventConnectionState = lobbyEventConnectionState;
+            _mLobbyEventConnectionState = lobbyEventConnectionState;
             Debug.Log($"LobbyEventConnectionState changed to {lobbyEventConnectionState}");
         }
 
@@ -316,17 +316,17 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             lobbyEventCallbacks.LobbyEventConnectionStateChanged += OnLobbyEventConnectionStateChanged;
             // The LobbyEventCallbacks object created here will now be managed by the Lobby SDK. The callbacks will be
             // unsubscribed from when we call UnsubscribeAsync on the ILobbyEvents object we receive and store here.
-            m_LobbyEvents = await m_LobbyApiInterface.SubscribeToLobby(m_LocalLobby.LobbyID, lobbyEventCallbacks);
+            _mLobbyEvents = await _mLobbyApiInterface.SubscribeToLobby(_mLocalLobby.LobbyID, lobbyEventCallbacks);
         }
 
         async void UnsubscribeToJoinedLobbyAsync()
         {
-            if (m_LobbyEvents != null && m_LobbyEventConnectionState != LobbyEventConnectionState.Unsubscribed)
+            if (_mLobbyEvents != null && _mLobbyEventConnectionState != LobbyEventConnectionState.Unsubscribed)
             {
 #if UNITY_EDITOR
                 try
                 {
-                    await m_LobbyEvents.UnsubscribeAsync();
+                    await _mLobbyEvents.UnsubscribeAsync();
                 }
                 catch (WebSocketException e)
                 {
@@ -335,7 +335,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
                     Debug.Log(e.Message);
                 }
 #else
-                await m_LobbyEvents.UnsubscribeAsync();
+                await _mLobbyEvents.UnsubscribeAsync();
 #endif
             }
         }
@@ -346,7 +346,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public async Task RetrieveAndPublishLobbyListAsync()
         {
-            if (!m_RateLimitQuery.CanCall)
+            if (!_mRateLimitQuery.CanCall)
             {
                 Debug.LogWarning("Retrieve Lobby list hit the rate limit. Will try again soon...");
                 return;
@@ -358,13 +358,13 @@ namespace Unity.BossRoom.UnityServices.Lobbies
                 var queryResults = await MultiplayerService.Instance.QuerySessionsAsync(new()
                 {
                 });
-                m_LobbyListFetchedPub.Publish(new LobbyListFetchedMessage(queryResults.Sessions/*LocalLobby.CreateLocalLobbies(response)*/));
+                _mLobbyListFetchedPub.Publish(new LobbyListFetchedMessage(queryResults.Sessions/*LocalLobby.CreateLocalLobbies(response)*/));
             }
             catch (LobbyServiceException e)
             {
                 if (e.Reason == LobbyExceptionReason.RateLimited)
                 {
-                    m_RateLimitQuery.PutOnCooldown();
+                    _mRateLimitQuery.PutOnCooldown();
                 }
                 else
                 {
@@ -377,12 +377,12 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         {
             try
             {
-                return await m_LobbyApiInterface.ReconnectToLobby(m_LocalLobby.LobbyID);
+                return await _mLobbyApiInterface.ReconnectToLobby(_mLocalLobby.LobbyID);
             }
             catch (LobbyServiceException e)
             {
                 // If Lobby is not found and if we are not the host, it has already been deleted. No need to publish the error here.
-                if (e.Reason != LobbyExceptionReason.LobbyNotFound && !m_LocalUser.IsHost)
+                if (e.Reason != LobbyExceptionReason.LobbyNotFound && !_mLocalUser.IsHost)
                 {
                     PublishError(e);
                 }
@@ -399,12 +399,12 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             string uasId = AuthenticationService.Instance.PlayerId;
             try
             {
-                await m_LobbyApiInterface.RemovePlayerFromLobby(uasId, m_LocalLobby.LobbyID);
+                await _mLobbyApiInterface.RemovePlayerFromLobby(uasId, _mLocalLobby.LobbyID);
             }
             catch (LobbyServiceException e)
             {
                 // If Lobby is not found and if we are not the host, it has already been deleted. No need to publish the error here.
-                if (e.Reason != LobbyExceptionReason.LobbyNotFound && !m_LocalUser.IsHost)
+                if (e.Reason != LobbyExceptionReason.LobbyNotFound && !_mLocalUser.IsHost)
                 {
                     PublishError(e);
                 }
@@ -418,11 +418,11 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         public async void RemovePlayerFromLobbyAsync(string uasId)
         {
-            if (m_LocalUser.IsHost)
+            if (_mLocalUser.IsHost)
             {
                 try
                 {
-                    await m_LobbyApiInterface.RemovePlayerFromLobby(uasId, m_LocalLobby.LobbyID);
+                    await _mLobbyApiInterface.RemovePlayerFromLobby(uasId, _mLocalLobby.LobbyID);
                 }
                 catch (LobbyServiceException e)
                 {
@@ -437,11 +437,11 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
         async void DeleteLobbyAsync()
         {
-            if (m_LocalUser.IsHost)
+            if (_mLocalUser.IsHost)
             {
                 try
                 {
-                    await m_LobbyApiInterface.DeleteLobby(m_LocalLobby.LobbyID);
+                    await _mLobbyApiInterface.DeleteLobby(_mLocalLobby.LobbyID);
                 }
                 catch (LobbyServiceException e)
                 {
@@ -465,14 +465,14 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public async Task UpdatePlayerDataAsync(string allocationId, string connectionInfo)
         {
-            if (!m_RateLimitQuery.CanCall)
+            if (!_mRateLimitQuery.CanCall)
             {
                 return;
             }
 
             try
             {
-                var result = await m_LobbyApiInterface.UpdatePlayer(CurrentUnityLobby.Id, AuthenticationService.Instance.PlayerId, m_LocalUser.GetDataForUnityServices(), allocationId, connectionInfo);
+                var result = await _mLobbyApiInterface.UpdatePlayer(CurrentUnityLobby.Id, AuthenticationService.Instance.PlayerId, _mLocalUser.GetDataForUnityServices(), allocationId, connectionInfo);
 
                 if (result != null)
                 {
@@ -483,9 +483,9 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             {
                 if (e.Reason == LobbyExceptionReason.RateLimited)
                 {
-                    m_RateLimitQuery.PutOnCooldown();
+                    _mRateLimitQuery.PutOnCooldown();
                 }
-                else if (e.Reason != LobbyExceptionReason.LobbyNotFound && !m_LocalUser.IsHost) // If Lobby is not found and if we are not the host, it has already been deleted. No need to publish the error here.
+                else if (e.Reason != LobbyExceptionReason.LobbyNotFound && !_mLocalUser.IsHost) // If Lobby is not found and if we are not the host, it has already been deleted. No need to publish the error here.
                 {
                     PublishError(e);
                 }
@@ -497,12 +497,12 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         public async Task UpdateLobbyDataAndUnlockAsync()
         {
-            if (!m_RateLimitQuery.CanCall)
+            if (!_mRateLimitQuery.CanCall)
             {
                 return;
             }
 
-            var localData = m_LocalLobby.GetDataForUnityServices();
+            var localData = _mLocalLobby.GetDataForUnityServices();
 
             var dataCurr = CurrentUnityLobby.Data;
             if (dataCurr == null)
@@ -524,7 +524,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
 
             try
             {
-                var result = await m_LobbyApiInterface.UpdateLobby(CurrentUnityLobby.Id, dataCurr, shouldLock: false);
+                var result = await _mLobbyApiInterface.UpdateLobby(CurrentUnityLobby.Id, dataCurr, shouldLock: false);
 
                 if (result != null)
                 {
@@ -535,7 +535,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             {
                 if (e.Reason == LobbyExceptionReason.RateLimited)
                 {
-                    m_RateLimitQuery.PutOnCooldown();
+                    _mRateLimitQuery.PutOnCooldown();
                 }
                 else
                 {
@@ -549,18 +549,18 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         /// </summary>
         void DoLobbyHeartbeat(float dt)
         {
-            m_HeartbeatTime += dt;
-            if (m_HeartbeatTime > k_HeartbeatPeriod)
+            _mHeartbeatTime += dt;
+            if (_mHeartbeatTime > KHeartbeatPeriod)
             {
-                m_HeartbeatTime -= k_HeartbeatPeriod;
+                _mHeartbeatTime -= KHeartbeatPeriod;
                 try
                 {
-                    m_LobbyApiInterface.SendHeartbeatPing(CurrentUnityLobby.Id);
+                    _mLobbyApiInterface.SendHeartbeatPing(CurrentUnityLobby.Id);
                 }
                 catch (LobbyServiceException e)
                 {
                     // If Lobby is not found and if we are not the host, it has already been deleted. No need to publish the error here.
-                    if (e.Reason != LobbyExceptionReason.LobbyNotFound && !m_LocalUser.IsHost)
+                    if (e.Reason != LobbyExceptionReason.LobbyNotFound && !_mLocalUser.IsHost)
                     {
                         PublishError(e);
                     }
@@ -571,7 +571,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         void PublishError(LobbyServiceException e)
         {
             var reason = e.InnerException == null ? e.Message : $"{e.Message} ({e.InnerException.Message})"; // Lobby error type, then HTTP error type.
-            m_UnityServiceErrorMessagePub.Publish(new UnityServiceErrorMessage("Lobby Error", reason, UnityServiceErrorMessage.Service.Lobby, e));
+            _mUnityServiceErrorMessagePub.Publish(new UnityServiceErrorMessage("Lobby Error", reason, UnityServiceErrorMessage.Service.Lobby, e));
         }
     }
 }

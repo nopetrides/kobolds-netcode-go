@@ -44,7 +44,7 @@ namespace Unity.BossRoom.Gameplay.UI
         [Multiline]
         private string m_TooltipFormat = "<b>{0}</b>\n\n{1}";
 
-        private bool m_IsLockedIn = false;
+        private bool _mIsLockedIn = false;
 
         public void OnSetPlayerNumber(int playerNumber)
         {
@@ -60,7 +60,7 @@ namespace Unity.BossRoom.Gameplay.UI
         public void SetLockedIn(bool lockedIn)
         {
             m_ReadyButtonImage.color = lockedIn ? Color.green : Color.white;
-            m_IsLockedIn = lockedIn;
+            _mIsLockedIn = lockedIn;
             m_Checkmark.SetActive(lockedIn);
         }
 
@@ -68,7 +68,7 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             m_HideWhenNoClassSelected.SetActive(true);
 
-            m_Checkmark.SetActive(m_IsLockedIn);
+            m_Checkmark.SetActive(_mIsLockedIn);
 
             m_ClassLabel.text = characterClass.DisplayedName;
             m_ClassBanner.sprite = characterClass.ClassBannerLit;

@@ -14,12 +14,12 @@ namespace Unity.BossRoom.Utils.Editor
         [SerializeField]
         NetworkSimulator m_NetworkSimulator;
 
-        TextMeshProUGUI m_LatencyText;
-        bool m_LatencyTextCreated;
+        TextMeshProUGUI _mLatencyText;
+        bool _mLatencyTextCreated;
 
-        Color m_TextColor = Color.red;
+        Color _mTextColor = Color.red;
 
-        bool m_ArtificialLatencyEnabled;
+        bool _mArtificialLatencyEnabled;
 
         void Update()
         {
@@ -30,37 +30,37 @@ namespace Unity.BossRoom.Utils.Editor
                 // adding this preprocessor directive check since UnityTransport's simulator tools only inject latency in #UNITY_EDITOR or in #DEVELOPMENT_BUILD
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 var currentSimulationPreset = m_NetworkSimulator.CurrentPreset;
-                m_ArtificialLatencyEnabled = currentSimulationPreset.PacketDelayMs > 0 ||
+                _mArtificialLatencyEnabled = currentSimulationPreset.PacketDelayMs > 0 ||
                     currentSimulationPreset.PacketJitterMs > 0 ||
                     currentSimulationPreset.PacketLossInterval > 0 ||
                     currentSimulationPreset.PacketLossPercent > 0;
 #else
-                m_ArtificialLatencyEnabled = false;
+				_mArtificialLatencyEnabled = false;
 #endif
 
-                if (m_ArtificialLatencyEnabled)
+                if (_mArtificialLatencyEnabled)
                 {
-                    if (!m_LatencyTextCreated)
+                    if (!_mLatencyTextCreated)
                     {
-                        m_LatencyTextCreated = true;
+                        _mLatencyTextCreated = true;
                         CreateLatencyText();
                     }
 
-                    m_TextColor.a = Mathf.PingPong(Time.time, 1f);
-                    m_LatencyText.color = m_TextColor;
+                    _mTextColor.a = Mathf.PingPong(Time.time, 1f);
+                    _mLatencyText.color = _mTextColor;
                 }
             }
             else
             {
-                m_ArtificialLatencyEnabled = false;
+                _mArtificialLatencyEnabled = false;
             }
 
-            if (!m_ArtificialLatencyEnabled)
+            if (!_mArtificialLatencyEnabled)
             {
-                if (m_LatencyTextCreated)
+                if (_mLatencyTextCreated)
                 {
-                    m_LatencyTextCreated = false;
-                    Destroy(m_LatencyText);
+                    _mLatencyTextCreated = false;
+                    Destroy(_mLatencyText);
                 }
             }
         }
@@ -71,7 +71,7 @@ namespace Unity.BossRoom.Utils.Editor
             Assert.IsNotNull(NetworkOverlay.Instance,
                 "No NetworkOverlay object part of scene. Add NetworkOverlay prefab to bootstrap scene!");
 
-            NetworkOverlay.Instance.AddTextToUI("UI Latency Warning Text", "Network Latency Enabled", out m_LatencyText);
+            NetworkOverlay.Instance.AddTextToUI("UI Latency Warning Text", "Network Latency Enabled", out _mLatencyText);
         }
     }
 }

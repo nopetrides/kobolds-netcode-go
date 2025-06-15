@@ -14,10 +14,10 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     public abstract class ConnectionMethodBase
     {
-        protected ConnectionManager m_ConnectionManager;
-        readonly ProfileManager m_ProfileManager;
-        protected readonly string m_PlayerName;
-        protected const string k_DtlsConnType = "dtls";
+        protected ConnectionManager MConnectionManager;
+        readonly ProfileManager _mProfileManager;
+        protected readonly string MPlayerName;
+        protected const string KDtlsConnType = "dtls";
 
         /// <summary>
         /// Setup the host connection prior to starting the NetworkManager
@@ -43,9 +43,9 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public ConnectionMethodBase(ConnectionManager connectionManager, ProfileManager profileManager, string playerName)
         {
-            m_ConnectionManager = connectionManager;
-            m_ProfileManager = profileManager;
-            m_PlayerName = playerName;
+            MConnectionManager = connectionManager;
+            _mProfileManager = profileManager;
+            MPlayerName = playerName;
         }
 
         protected void SetConnectionPayload(string playerId, string playerName)
@@ -59,7 +59,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
             var payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
 
-            m_ConnectionManager.NetworkManager.NetworkConfig.ConnectionData = payloadBytes;
+            MConnectionManager.NetworkManager.NetworkConfig.ConnectionData = payloadBytes;
         }
 
         /// Using authentication, this makes sure your session is associated with your account and not your device. This means you could reconnect
@@ -73,10 +73,10 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             if (Services.Core.UnityServices.State != ServicesInitializationState.Initialized)
             {
-                return ClientPrefs.GetGuid() + m_ProfileManager.Profile;
+                return ClientPrefs.GetGuid() + _mProfileManager.Profile;
             }
 
-            return AuthenticationService.Instance.IsSignedIn ? AuthenticationService.Instance.PlayerId : ClientPrefs.GetGuid() + m_ProfileManager.Profile;
+            return AuthenticationService.Instance.IsSignedIn ? AuthenticationService.Instance.PlayerId : ClientPrefs.GetGuid() + _mProfileManager.Profile;
         }
     }
 
@@ -85,22 +85,22 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class ConnectionMethodIP : ConnectionMethodBase
     {
-        string m_Ipaddress;
-        ushort m_Port;
+        string _mIpaddress;
+        ushort _mPort;
 
         public ConnectionMethodIP(string ip, ushort port, ConnectionManager connectionManager, ProfileManager profileManager, string playerName)
             : base(connectionManager, profileManager, playerName)
         {
-            m_Ipaddress = ip;
-            m_Port = port;
-            m_ConnectionManager = connectionManager;
+            _mIpaddress = ip;
+            _mPort = port;
+            MConnectionManager = connectionManager;
         }
 
         public override async Task SetupClientConnectionAsync()
         {
-            SetConnectionPayload(GetPlayerId(), m_PlayerName);
-            var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
-            utp.SetConnectionData(m_Ipaddress, m_Port);
+            SetConnectionPayload(GetPlayerId(), MPlayerName);
+            var utp = (UnityTransport)MConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
+            utp.SetConnectionData(_mIpaddress, _mPort);
         }
 
         public override async Task<(bool success, bool shouldTryAgain)> SetupClientReconnectionAsync()
@@ -111,9 +111,9 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override async Task SetupHostConnectionAsync()
         {
-            SetConnectionPayload(GetPlayerId(), m_PlayerName); // Need to set connection payload for host as well, as host is a client too
-            var utp = (UnityTransport)m_ConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
-            utp.SetConnectionData(m_Ipaddress, m_Port);
+            SetConnectionPayload(GetPlayerId(), MPlayerName); // Need to set connection payload for host as well, as host is a client too
+            var utp = (UnityTransport)MConnectionManager.NetworkManager.NetworkConfig.NetworkTransport;
+            utp.SetConnectionData(_mIpaddress, _mPort);
         }
     }
 
@@ -123,19 +123,19 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class ConnectionMethodRelay : ConnectionMethodBase
     {
-        LobbyServiceFacade m_LobbyServiceFacade;
+        LobbyServiceFacade _mLobbyServiceFacade;
         /*LocalLobby m_LocalLobby;*/
 
-        string m_SessionName;
-        bool m_IsPrivate = true;
+        string _mSessionName;
+        bool _mIsPrivate = true;
 
         public ConnectionMethodRelay(string sessionName, LobbyServiceFacade lobbyServiceFacade, LocalLobby localLobby, ConnectionManager connectionManager, ProfileManager profileManager, string playerName)
             : base(connectionManager, profileManager, playerName)
         {
-            m_SessionName = sessionName;
-            m_LobbyServiceFacade = lobbyServiceFacade;
+            _mSessionName = sessionName;
+            _mLobbyServiceFacade = lobbyServiceFacade;
             /*m_LocalLobby = localLobby;*/
-            m_ConnectionManager = connectionManager;
+            MConnectionManager = connectionManager;
         }
 
         // Note: MultiplayerSDK refactoring
@@ -144,7 +144,7 @@ namespace Unity.BossRoom.ConnectionManagement
             Debug.Log("Setting up Unity Relay client");
 
             // TODO: where to grab name
-            SetConnectionPayload(GetPlayerId(), m_PlayerName);
+            SetConnectionPayload(GetPlayerId(), MPlayerName);
 
             // don't need this either?
             /*if (m_LobbyServiceFacade.CurrentUnityLobby == null)
@@ -162,7 +162,7 @@ namespace Unity.BossRoom.ConnectionManagement
                 $"client: {joinedAllocation.AllocationId}");*/
 
             /*await m_LobbyServiceFacade.UpdatePlayerDataAsync(joinedAllocation.AllocationId.ToString(), m_LocalLobby.RelayJoinCode);*/
-            await m_LobbyServiceFacade.TryJoinLobbyAsync(m_SessionName/*, lobbyCode*/);
+            await _mLobbyServiceFacade.TryJoinLobbyAsync(_mSessionName/*, lobbyCode*/);
             
             // TODO: do we need this?
             // Configure UTP with allocation
@@ -172,7 +172,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override async Task<(bool success, bool shouldTryAgain)> SetupClientReconnectionAsync()
         {
-            if (m_LobbyServiceFacade.CurrentUnityLobby == null)
+            if (_mLobbyServiceFacade.CurrentUnityLobby == null)
             {
                 Debug.Log("Lobby does not exist anymore, stopping reconnection attempts.");
                 return (false, false);
@@ -183,7 +183,7 @@ namespace Unity.BossRoom.ConnectionManagement
             // some time to attempt to reconnect (defined by the "Disconnect removal time" parameter on the dashboard),
             // after which they will be removed from the lobby completely.
             // See https://docs.unity.com/lobby/reconnect-to-lobby.html
-            var lobby = await m_LobbyServiceFacade.ReconnectToLobbyAsync();
+            var lobby = await _mLobbyServiceFacade.ReconnectToLobbyAsync();
             var success = lobby != null;
             Debug.Log(success ? "Successfully reconnected to Lobby." : "Failed to reconnect to Lobby.");
             return (success, true); // return a success if reconnecting to lobby returns a lobby
@@ -194,7 +194,7 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             Debug.Log("Setting up Unity Relay host");
 
-            SetConnectionPayload(GetPlayerId(), m_PlayerName); // Need to set connection payload for host as well, as host is a client too
+            SetConnectionPayload(GetPlayerId(), MPlayerName); // Need to set connection payload for host as well, as host is a client too
 
             /*// Create relay allocation
             Allocation hostAllocation = await RelayService.Instance.CreateAllocationAsync(m_ConnectionManager.MaxConnectedPlayers, region: null);
@@ -216,7 +216,7 @@ namespace Unity.BossRoom.ConnectionManagement
 
             Debug.Log($"Created relay allocation with join code {m_LocalLobby.RelayJoinCode}");*/
             
-            var lobbyCreationAttempt = await m_LobbyServiceFacade.TryCreateLobbyAsync(m_SessionName, m_ConnectionManager.MaxConnectedPlayers, m_IsPrivate);
+            var lobbyCreationAttempt = await _mLobbyServiceFacade.TryCreateLobbyAsync(_mSessionName, MConnectionManager.MaxConnectedPlayers, _mIsPrivate);
 
             Debug.Log($"{lobbyCreationAttempt.Success} lobbyCreationAttempt.Lobby.Id: {lobbyCreationAttempt.Lobby.Id} lobbyCreationAttempt.Lobby.Code {lobbyCreationAttempt.Lobby.Code}");
         }

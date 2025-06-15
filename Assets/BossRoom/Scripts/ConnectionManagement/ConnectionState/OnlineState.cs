@@ -8,14 +8,14 @@ namespace Unity.BossRoom.ConnectionManagement
         public override void OnUserRequestedShutdown()
         {
             // This behaviour will be the same for every online state
-            m_ConnectStatusPublisher.Publish(ConnectStatus.UserRequestedDisconnect);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+            MConnectStatusPublisher.Publish(ConnectStatus.UserRequestedDisconnect);
+            MConnectionManager.ChangeState(MConnectionManager.MOffline);
         }
 
         public override void OnTransportFailure()
         {
             // This behaviour will be the same for every online state
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+            MConnectionManager.ChangeState(MConnectionManager.MOffline);
         }
     }
 }

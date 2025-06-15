@@ -10,17 +10,17 @@ namespace Unity.BossRoom.Gameplay.Actions
     public partial class MeleeAction
     {
         //have we actually played an impact? This won't necessarily happen for all swings. Sometimes you're just swinging at space.
-        private bool m_ImpactPlayed;
+        private bool _mImpactPlayed;
 
         /// <summary>
         /// When we detect if our original target is still around, we use a bit of padding on the range check.
         /// </summary>
-        private const float k_RangePadding = 3f;
+        private const float KRangePadding = 3f;
 
         /// <summary>
         /// List of active special graphics playing on the target.
         /// </summary>
-        private List<SpecialFXGraphic> m_SpawnedGraphics = null;
+        private List<SpecialFXGraphic> _mSpawnedGraphics = null;
 
         public override bool OnStartClient(ClientCharacter clientCharacter)
         {
@@ -33,7 +33,7 @@ namespace Unity.BossRoom.Gameplay.Actions
                 && NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(Data.TargetIds[0], out var targetNetworkObj)
                 && targetNetworkObj != null)
             {
-                float padRange = Config.Range + k_RangePadding;
+                float padRange = Config.Range + KRangePadding;
 
                 Vector3 targetPosition;
                 if (PhysicsWrapper.TryGetPhysicsWrapper(Data.TargetIds[0], out var physicsWrapper))
@@ -48,7 +48,7 @@ namespace Unity.BossRoom.Gameplay.Actions
                 if ((clientCharacter.transform.position - targetPosition).sqrMagnitude < (padRange * padRange))
                 {
                     // target is in range! Play the graphics
-                    m_SpawnedGraphics = InstantiateSpecialFXGraphics(physicsWrapper ? physicsWrapper.Transform : targetNetworkObj.transform, true);
+                    _mSpawnedGraphics = InstantiateSpecialFXGraphics(physicsWrapper ? physicsWrapper.Transform : targetNetworkObj.transform, true);
                 }
             }
 
@@ -62,7 +62,7 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public override void OnAnimEventClient(ClientCharacter clientCharacter, string id)
         {
-            if (id == "impact" && !m_ImpactPlayed)
+            if (id == "impact" && !_mImpactPlayed)
             {
                 PlayHitReact(clientCharacter);
             }
@@ -79,9 +79,9 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void CancelClient(ClientCharacter clientCharacter)
         {
             // if we had any special target graphics, tell them we're done
-            if (m_SpawnedGraphics != null)
+            if (_mSpawnedGraphics != null)
             {
-                foreach (var spawnedGraphic in m_SpawnedGraphics)
+                foreach (var spawnedGraphic in _mSpawnedGraphics)
                 {
                     if (spawnedGraphic)
                     {
@@ -93,9 +93,9 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         void PlayHitReact(ClientCharacter parent)
         {
-            if (m_ImpactPlayed) { return; }
+            if (_mImpactPlayed) { return; }
 
-            m_ImpactPlayed = true;
+            _mImpactPlayed = true;
 
             if (NetworkManager.Singleton.IsServer)
             {
@@ -108,7 +108,7 @@ namespace Unity.BossRoom.Gameplay.Actions
                 NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(Data.TargetIds[0], out var targetNetworkObj)
                 && targetNetworkObj != null)
             {
-                float padRange = Config.Range + k_RangePadding;
+                float padRange = Config.Range + KRangePadding;
 
                 Vector3 targetPosition;
                 if (PhysicsWrapper.TryGetPhysicsWrapper(Data.TargetIds[0], out var movementContainer))
@@ -125,13 +125,13 @@ namespace Unity.BossRoom.Gameplay.Actions
                     if (targetNetworkObj.NetworkObjectId != parent.NetworkObjectId)
                     {
                         string hitAnim = Config.ReactAnim;
-                        if (string.IsNullOrEmpty(hitAnim)) { hitAnim = k_DefaultHitReact; }
+                        if (string.IsNullOrEmpty(hitAnim)) { hitAnim = KDefaultHitReact; }
 
                         if (targetNetworkObj.TryGetComponent<ServerCharacter>(out var serverCharacter)
-                            && serverCharacter.clientCharacter != null
-                            && serverCharacter.clientCharacter.OurAnimator)
+                            && serverCharacter.ClientCharacter != null
+                            && serverCharacter.ClientCharacter.OurAnimator)
                         {
-                            serverCharacter.clientCharacter.OurAnimator.SetTrigger(hitAnim);
+                            serverCharacter.ClientCharacter.OurAnimator.SetTrigger(hitAnim);
                         }
                     }
                 }

@@ -35,9 +35,9 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void Reset()
         {
             base.Reset();
-            m_TargetReticule = null;
-            m_CurrentTarget = 0;
-            m_NewTarget = 0;
+            _mTargetReticule = null;
+            _mCurrentTarget = 0;
+            _mNewTarget = 0;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
@@ -75,19 +75,19 @@ namespace Unity.BossRoom.Gameplay.Actions
 
                 if (targetObject.TryGetComponent(out ServerCharacter serverCharacter))
                 {
-                    targetObjectPosition = serverCharacter.physicsWrapper.Transform.position;
+                    targetObjectPosition = serverCharacter.PhysicsWrapper.Transform.position;
                 }
                 else
                 {
                     targetObjectPosition = targetObject.transform.position;
                 }
 
-                Vector3 diff = targetObjectPosition - parent.physicsWrapper.Transform.position;
+                Vector3 diff = targetObjectPosition - parent.PhysicsWrapper.Transform.position;
 
                 diff.y = 0;
                 if (diff != Vector3.zero)
                 {
-                    parent.physicsWrapper.Transform.forward = diff;
+                    parent.PhysicsWrapper.Transform.forward = diff;
                 }
             }
         }

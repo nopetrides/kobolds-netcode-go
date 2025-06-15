@@ -13,27 +13,27 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Launch Projectile Action")]
     public class LaunchProjectileAction : Action
     {
-        private bool m_Launched = false;
+        private bool _mLaunched = false;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
             //snap to face the direction we're firing, and then broadcast the animation, which we do immediately.
-            serverCharacter.physicsWrapper.Transform.forward = Data.Direction;
+            serverCharacter.PhysicsWrapper.Transform.forward = Data.Direction;
 
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
             return true;
         }
 
         public override void Reset()
         {
-            m_Launched = false;
+            _mLaunched = false;
             base.Reset();
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (TimeRunning >= Config.ExecTimeSeconds && !m_Launched)
+            if (TimeRunning >= Config.ExecTimeSeconds && !_mLaunched)
             {
                 LaunchProjectile(clientCharacter);
             }
@@ -64,19 +64,19 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </remarks>
         protected void LaunchProjectile(ServerCharacter parent)
         {
-            if (!m_Launched)
+            if (!_mLaunched)
             {
-                m_Launched = true;
+                _mLaunched = true;
 
                 var projectileInfo = GetProjectileInfo();
 
                 NetworkObject no = NetworkObjectPool.Singleton.GetNetworkObject(projectileInfo.ProjectilePrefab, projectileInfo.ProjectilePrefab.transform.position, projectileInfo.ProjectilePrefab.transform.rotation);
                 // point the projectile the same way we're facing
-                no.transform.forward = parent.physicsWrapper.Transform.forward;
+                no.transform.forward = parent.PhysicsWrapper.Transform.forward;
 
                 //this way, you just need to "place" the arrow by moving it in the prefab, and that will control
                 //where it appears next to the player.
-                no.transform.position = parent.physicsWrapper.Transform.localToWorldMatrix.MultiplyPoint(no.transform.position);
+                no.transform.position = parent.PhysicsWrapper.Transform.localToWorldMatrix.MultiplyPoint(no.transform.position);
 
                 no.GetComponent<PhysicsProjectile>().Initialize(parent.NetworkObjectId, projectileInfo);
 
@@ -94,7 +94,7 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             if (!string.IsNullOrEmpty(Config.Anim2))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
             }
         }
 

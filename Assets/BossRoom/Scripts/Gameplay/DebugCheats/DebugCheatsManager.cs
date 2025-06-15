@@ -32,30 +32,30 @@ namespace Unity.BossRoom.DebugCheats
         [SerializeField]
         KeyCode m_OpenWindowKeyCode = KeyCode.Slash;
 
-        SwitchedDoor m_SwitchedDoor;
+        SwitchedDoor _mSwitchedDoor;
 
         SwitchedDoor SwitchedDoor
         {
             get
             {
-                if (m_SwitchedDoor == null)
+                if (_mSwitchedDoor == null)
                 {
-                    m_SwitchedDoor = FindObjectOfType<SwitchedDoor>();
+                    _mSwitchedDoor = FindObjectOfType<SwitchedDoor>();
                 }
-                return m_SwitchedDoor;
+                return _mSwitchedDoor;
             }
         }
 
-        const int k_NbTouchesToOpenWindow = 4;
+        const int KNbTouchesToOpenWindow = 4;
 
-        bool m_DestroyPortalsOnNextToggle = true;
+        bool _mDestroyPortalsOnNextToggle = true;
 
         [Inject]
-        IPublisher<CheatUsedMessage> m_CheatUsedMessagePublisher;
+        IPublisher<CheatUsedMessage> _mCheatUsedMessagePublisher;
 
         void Update()
         {
-            if (Input.touchCount == k_NbTouchesToOpenWindow && AnyTouchDown() ||
+            if (Input.touchCount == KNbTouchesToOpenWindow && AnyTouchDown() ||
                 m_OpenWindowKeyCode != KeyCode.None && Input.GetKeyDown(m_OpenWindowKeyCode))
             {
                 m_DebugCheatsPanel.SetActive(!m_DebugCheatsPanel.activeSelf);
@@ -158,7 +158,7 @@ namespace Unity.BossRoom.DebugCheats
                     var damageable = obj.GetComponent<IDamageable>();
                     if (damageable != null && damageable.IsDamageable())
                     {
-                        damageable.ReceiveHP(playerServerCharacter, int.MinValue);
+                        damageable.ReceiveHp(playerServerCharacter, int.MinValue);
                         PublishCheatUsedMessage(serverRpcParams.Receive.SenderClientId, "KillTarget");
                     }
                     else
@@ -179,7 +179,7 @@ namespace Unity.BossRoom.DebugCheats
                 {
                     if (serverCharacter.gameObject.TryGetComponent(out IDamageable damageable))
                     {
-                        damageable.ReceiveHP(null, -serverCharacter.HitPoints);
+                        damageable.ReceiveHp(null, -serverCharacter.HitPoints);
                     }
                 }
             }
@@ -214,7 +214,7 @@ namespace Unity.BossRoom.DebugCheats
                 {
                     if (playerServerCharacter.gameObject.TryGetComponent(out IDamageable damageable))
                     {
-                        damageable.ReceiveHP(null, baseHp);
+                        damageable.ReceiveHp(null, baseHp);
                     }
                 }
                 PublishCheatUsedMessage(serverRpcParams.Receive.SenderClientId, "HealPlayer");
@@ -270,7 +270,7 @@ namespace Unity.BossRoom.DebugCheats
         {
             foreach (var portal in FindObjectsOfType<EnemyPortal>())
             {
-                if (m_DestroyPortalsOnNextToggle)
+                if (_mDestroyPortalsOnNextToggle)
                 {
                     // This will only affect portals that are currently active in a scene and are currently loaded.
                     // Portals that are already destroyed will not be affected by this, and won't have their cooldown
@@ -283,7 +283,7 @@ namespace Unity.BossRoom.DebugCheats
                 }
             }
 
-            m_DestroyPortalsOnNextToggle = !m_DestroyPortalsOnNextToggle;
+            _mDestroyPortalsOnNextToggle = !_mDestroyPortalsOnNextToggle;
             PublishCheatUsedMessage(serverRpcParams.Receive.SenderClientId, "TogglePortals");
         }
 
@@ -299,7 +299,7 @@ namespace Unity.BossRoom.DebugCheats
             var playerData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(clientId);
             if (playerData.HasValue)
             {
-                m_CheatUsedMessagePublisher.Publish(new CheatUsedMessage(cheatUsed, playerData.Value.PlayerName));
+                _mCheatUsedMessagePublisher.Publish(new CheatUsedMessage(cheatUsed, playerData.Value.PlayerName));
             }
         }
 

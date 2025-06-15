@@ -13,15 +13,15 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Toss Action")]
     public class TossAction : Action
     {
-        bool m_Launched;
+        bool _mLaunched;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
             // snap to face the direction we're firing
 
-            if (m_Data.TargetIds != null && m_Data.TargetIds.Length > 0)
+            if (MData.TargetIds != null && MData.TargetIds.Length > 0)
             {
-                var initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[m_Data.TargetIds[0]];
+                var initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[MData.TargetIds[0]];
                 if (initialTarget)
                 {
                     Vector3 lookAtPosition;
@@ -35,24 +35,24 @@ namespace Unity.BossRoom.Gameplay.Actions
                     }
 
                     // snap to face our target! This is the direction we'll attack in
-                    serverCharacter.physicsWrapper.Transform.LookAt(lookAtPosition);
+                    serverCharacter.PhysicsWrapper.Transform.LookAt(lookAtPosition);
                 }
             }
 
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
             return true;
         }
 
         public override void Reset()
         {
             base.Reset();
-            m_Launched = false;
+            _mLaunched = false;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (TimeRunning >= Config.ExecTimeSeconds && !m_Launched)
+            if (TimeRunning >= Config.ExecTimeSeconds && !_mLaunched)
             {
                 Throw(clientCharacter);
             }
@@ -85,9 +85,9 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// </remarks>
         void Throw(ServerCharacter parent)
         {
-            if (!m_Launched)
+            if (!_mLaunched)
             {
-                m_Launched = true;
+                _mLaunched = true;
 
                 var projectileInfo = GetProjectileInfo();
 
@@ -96,9 +96,9 @@ namespace Unity.BossRoom.Gameplay.Actions
                 var networkObjectTransform = no.transform;
 
                 // point the thrown object the same way we're facing
-                networkObjectTransform.forward = parent.physicsWrapper.Transform.forward;
+                networkObjectTransform.forward = parent.PhysicsWrapper.Transform.forward;
 
-                networkObjectTransform.position = parent.physicsWrapper.Transform.localToWorldMatrix.MultiplyPoint(networkObjectTransform.position) +
+                networkObjectTransform.position = parent.PhysicsWrapper.Transform.localToWorldMatrix.MultiplyPoint(networkObjectTransform.position) +
                     networkObjectTransform.forward + (Vector3.up * 2f);
 
                 no.Spawn(true);

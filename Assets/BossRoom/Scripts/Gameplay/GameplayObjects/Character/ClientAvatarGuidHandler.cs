@@ -2,6 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     /// <summary>
@@ -17,7 +18,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         NetworkAvatarGuidState m_NetworkAvatarGuidState;
 
-        public Animator graphicsAnimator => m_GraphicsAnimator;
+        public Animator GraphicsAnimator => m_GraphicsAnimator;
 
         public event Action<GameObject> AvatarGraphicsSpawned;
 

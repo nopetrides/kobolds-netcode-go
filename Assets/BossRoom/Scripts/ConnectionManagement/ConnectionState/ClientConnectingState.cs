@@ -10,11 +10,11 @@ namespace Unity.BossRoom.ConnectionManagement
     /// </summary>
     class ClientConnectingState : OnlineState
     {
-        protected ConnectionMethodBase m_ConnectionMethod;
+        protected ConnectionMethodBase MConnectionMethod;
 
         public ClientConnectingState Configure(ConnectionMethodBase baseConnectionMethod)
         {
-            m_ConnectionMethod = baseConnectionMethod;
+            MConnectionMethod = baseConnectionMethod;
             return this;
         }
 
@@ -29,8 +29,8 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override void OnClientConnected(ulong _)
         {
-            m_ConnectStatusPublisher.Publish(ConnectStatus.Success);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnected);
+            MConnectStatusPublisher.Publish(ConnectStatus.Success);
+            MConnectionManager.ChangeState(MConnectionManager.MClientConnected);
         }
 
         public override void OnClientDisconnect(ulong _)
@@ -41,17 +41,17 @@ namespace Unity.BossRoom.ConnectionManagement
 
         void StartingClientFailed()
         {
-            var disconnectReason = m_ConnectionManager.NetworkManager.DisconnectReason;
+            var disconnectReason = MConnectionManager.NetworkManager.DisconnectReason;
             if (string.IsNullOrEmpty(disconnectReason))
             {
-                m_ConnectStatusPublisher.Publish(ConnectStatus.StartClientFailed);
+                MConnectStatusPublisher.Publish(ConnectStatus.StartClientFailed);
             }
             else
             {
                 var connectStatus = JsonUtility.FromJson<ConnectStatus>(disconnectReason);
-                m_ConnectStatusPublisher.Publish(connectStatus);
+                MConnectStatusPublisher.Publish(connectStatus);
             }
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+            MConnectionManager.ChangeState(MConnectionManager.MOffline);
         }
 
 
@@ -60,7 +60,7 @@ namespace Unity.BossRoom.ConnectionManagement
             try
             {
                 // Setup NGO with current connection method
-                await m_ConnectionMethod.SetupClientConnectionAsync();
+                await MConnectionMethod.SetupClientConnectionAsync();
 
                 // Note: MultiplayerSDK refactoring
                 // NGO's StartClient launches everything

@@ -6,6 +6,7 @@ using Unity.BossRoom.Gameplay.GameplayObjects.Character;
 using UnityEngine;
 using Action = Unity.BossRoom.Gameplay.Actions.Action;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     public class GameDataSource : MonoBehaviour
@@ -20,7 +21,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         [SerializeField]
         private CharacterClass[] m_CharacterData;
 
-        Dictionary<CharacterTypeEnum, CharacterClass> m_CharacterDataMap;
+        Dictionary<CharacterTypeEnum, CharacterClass> _mCharacterDataMap;
 
         //Actions that are directly listed here will get automatically assigned ActionIDs and they don't need to be a part of m_ActionPrototypes array
         [Header("Common action prototypes")]
@@ -77,20 +78,20 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         public Action DropActionPrototype => m_DropActionPrototype;
         public Action PickUpActionPrototype => m_PickUpActionPrototype;
 
-        List<Action> m_AllActions;
+        List<Action> _mAllActions;
 
         public Action GetActionPrototypeByID(ActionID index)
         {
-            return m_AllActions[index.ID];
+            return _mAllActions[index.ID];
         }
 
         public bool TryGetActionPrototypeByID(ActionID index, out Action action)
         {
-            for (int i = 0; i < m_AllActions.Count; i++)
+            for (int i = 0; i < _mAllActions.Count; i++)
             {
-                if (m_AllActions[i].ActionID == index)
+                if (_mAllActions[i].ActionID == index)
                 {
-                    action = m_AllActions[i];
+                    action = _mAllActions[i];
                     return true;
                 }
             }
@@ -106,19 +107,19 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             get
             {
-                if (m_CharacterDataMap == null)
+                if (_mCharacterDataMap == null)
                 {
-                    m_CharacterDataMap = new Dictionary<CharacterTypeEnum, CharacterClass>();
+                    _mCharacterDataMap = new Dictionary<CharacterTypeEnum, CharacterClass>();
                     foreach (CharacterClass data in m_CharacterData)
                     {
-                        if (m_CharacterDataMap.ContainsKey(data.CharacterType))
+                        if (_mCharacterDataMap.ContainsKey(data.CharacterType))
                         {
                             throw new System.Exception($"Duplicate character definition detected: {data.CharacterType}");
                         }
-                        m_CharacterDataMap[data.CharacterType] = data;
+                        _mCharacterDataMap[data.CharacterType] = data;
                     }
                 }
-                return m_CharacterDataMap;
+                return _mCharacterDataMap;
             }
         }
 
@@ -149,13 +150,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             uniqueActions.Add(DropActionPrototype);
             uniqueActions.Add(PickUpActionPrototype);
 
-            m_AllActions = new List<Action>(uniqueActions.Count);
+            _mAllActions = new List<Action>(uniqueActions.Count);
 
             int i = 0;
             foreach (var uniqueAction in uniqueActions)
             {
                 uniqueAction.ActionID = new ActionID { ID = i };
-                m_AllActions.Add(uniqueAction);
+                _mAllActions.Add(uniqueAction);
                 i++;
             }
         }

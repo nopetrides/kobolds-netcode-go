@@ -78,7 +78,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
         /// <summary>
         /// contains the shortNameHash of all the active animation nodes right now
         /// </summary>
-        private HashSet<int> m_ActiveNodes = new HashSet<int>();
+        private HashSet<int> _mActiveNodes = new HashSet<int>();
 
         [FormerlySerializedAs("m_ClientCharacterVisualization")]
         [SerializeField]
@@ -100,7 +100,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
         {
             Debug.Assert(m_Animator == animator); // just a sanity check
 
-            m_ActiveNodes.Add(stateInfo.shortNameHash);
+            _mActiveNodes.Add(stateInfo.shortNameHash);
 
             // figure out which of our on-node-enter events (if any) should be triggered, and trigger it
             foreach (var info in m_EventsOnNodeEntry)
@@ -125,7 +125,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
             if (eventInfo.m_PrefabSpawnDelaySeconds > 0)
                 yield return new WaitForSeconds(eventInfo.m_PrefabSpawnDelaySeconds);
 
-            if (!m_ActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash))
+            if (!_mActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash))
                 yield break;
 
             Transform parent = eventInfo.m_PrefabParent != null ? eventInfo.m_PrefabParent : m_ClientCharacter.transform;
@@ -147,7 +147,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
                 {
                     yield return new WaitForFixedUpdate();
                     timeRemaining -= Time.fixedDeltaTime;
-                    if (!m_ActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash))
+                    if (!_mActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash))
                     {
                         // the node we were in has ended! Shut down the FX
                         if (instantiatedFX)
@@ -165,7 +165,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
             if (eventInfo.m_SoundStartDelaySeconds > 0)
                 yield return new WaitForSeconds(eventInfo.m_SoundStartDelaySeconds);
 
-            if (!m_ActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash))
+            if (!_mActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash))
                 yield break;
 
             if (!eventInfo.m_LoopSound)
@@ -181,7 +181,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
                 audioSource.loop = true;
                 audioSource.clip = eventInfo.m_SoundEffect;
                 audioSource.Play();
-                while (m_ActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash) && audioSource.isPlaying)
+                while (_mActiveNodes.Contains(eventInfo.m_AnimatorNodeNameHash) && audioSource.isPlaying)
                 {
                     yield return new WaitForFixedUpdate();
                 }
@@ -207,7 +207,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
         {
             Debug.Assert(m_Animator == animator); // just a sanity check
 
-            m_ActiveNodes.Remove(stateInfo.shortNameHash);
+            _mActiveNodes.Remove(stateInfo.shortNameHash);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
     [CanEditMultipleObjects]
     public class AnimatorTriggeredSpecialFXEditor : UnityEditor.Editor
     {
-        private GUIStyle m_ErrorStyle = null;
+        private GUIStyle _mErrorStyle = null;
         public override void OnInspectorGUI()
         {
             // let Unity do all the normal Inspector stuff...
@@ -268,13 +268,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
 
         private GUIStyle GetErrorStyle()
         {
-            if (m_ErrorStyle == null)
+            if (_mErrorStyle == null)
             {
-                m_ErrorStyle = new GUIStyle(EditorStyles.boldLabel);
-                m_ErrorStyle.normal.textColor = Color.red;
-                m_ErrorStyle.fontSize += 5;
+                _mErrorStyle = new GUIStyle(EditorStyles.boldLabel);
+                _mErrorStyle.normal.textColor = Color.red;
+                _mErrorStyle.fontSize += 5;
             }
-            return m_ErrorStyle;
+            return _mErrorStyle;
         }
 
         private bool HasAudioSource(AnimatorTriggeredSpecialFX fx)

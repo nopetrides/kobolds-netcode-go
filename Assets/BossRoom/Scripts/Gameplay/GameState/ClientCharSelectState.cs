@@ -9,6 +9,7 @@ using UnityEngine;
 using VContainer;
 using Avatar = Unity.BossRoom.Gameplay.Configuration.Avatar;
 
+
 namespace Unity.BossRoom.Gameplay.GameState
 {
     /// <summary>
@@ -85,14 +86,14 @@ namespace Unity.BossRoom.Gameplay.GameState
         [SerializeField]
         Transform m_CharacterGraphicsParent;
 
-        int m_LastSeatSelected = -1;
-        bool m_HasLocalPlayerLockedIn = false;
+        int _mLastSeatSelected = -1;
+        bool _mHasLocalPlayerLockedIn = false;
 
-        GameObject m_CurrentCharacterGraphics;
+        GameObject _mCurrentCharacterGraphics;
 
-        Animator m_CurrentCharacterGraphicsAnimator;
+        Animator _mCurrentCharacterGraphicsAnimator;
 
-        Dictionary<Guid, GameObject> m_SpawnedCharacterGraphics = new Dictionary<Guid, GameObject>();
+        Dictionary<Guid, GameObject> _mSpawnedCharacterGraphics = new Dictionary<Guid, GameObject>();
 
         /// <summary>
         /// Conceptual modes or stages that the lobby can be in. We don't actually
@@ -108,10 +109,10 @@ namespace Unity.BossRoom.Gameplay.GameState
             FatalError, // "Fatal Error" stage
         }
 
-        Dictionary<LobbyMode, List<GameObject>> m_LobbyUIElementsByMode;
+        Dictionary<LobbyMode, List<GameObject>> _mLobbyUIElementsByMode;
 
         [Inject]
-        ConnectionManager m_ConnectionManager;
+        ConnectionManager _mConnectionManager;
 
         protected override void Awake()
         {
@@ -121,7 +122,7 @@ namespace Unity.BossRoom.Gameplay.GameState
             m_NetcodeHooks.OnNetworkSpawnHook += OnNetworkSpawn;
             m_NetcodeHooks.OnNetworkDespawnHook += OnNetworkDespawn;
 
-            m_LobbyUIElementsByMode = new Dictionary<LobbyMode, List<GameObject>>()
+            _mLobbyUIElementsByMode = new Dictionary<LobbyMode, List<GameObject>>()
             {
                 { LobbyMode.ChooseSeat, m_UIElementsForNoSeatChosen },
                 { LobbyMode.SeatChosen, m_UIElementsForSeatChosen },
@@ -238,14 +239,14 @@ namespace Unity.BossRoom.Gameplay.GameState
         /// <param name="seatIdx">Which seat we're sitting in, or -1 if SeatState is Inactive</param>
         void UpdateCharacterSelection(NetworkCharSelection.SeatState state, int seatIdx = -1)
         {
-            bool isNewSeat = m_LastSeatSelected != seatIdx;
+            bool isNewSeat = _mLastSeatSelected != seatIdx;
 
-            m_LastSeatSelected = seatIdx;
+            _mLastSeatSelected = seatIdx;
             if (state == NetworkCharSelection.SeatState.Inactive)
             {
-                if (m_CurrentCharacterGraphics)
+                if (_mCurrentCharacterGraphics)
                 {
-                    m_CurrentCharacterGraphics.SetActive(false);
+                    _mCurrentCharacterGraphics.SetActive(false);
                 }
 
                 m_ClassInfoBox.ConfigureForNoSelection();
@@ -259,39 +260,39 @@ namespace Unity.BossRoom.Gameplay.GameState
                     {
                         var selectedCharacterGraphics = GetCharacterGraphics(m_NetworkCharSelection.AvatarConfiguration[seatIdx]);
 
-                        if (m_CurrentCharacterGraphics)
+                        if (_mCurrentCharacterGraphics)
                         {
-                            m_CurrentCharacterGraphics.SetActive(false);
+                            _mCurrentCharacterGraphics.SetActive(false);
                         }
 
                         selectedCharacterGraphics.SetActive(true);
-                        m_CurrentCharacterGraphics = selectedCharacterGraphics;
-                        m_CurrentCharacterGraphicsAnimator = m_CurrentCharacterGraphics.GetComponent<Animator>();
+                        _mCurrentCharacterGraphics = selectedCharacterGraphics;
+                        _mCurrentCharacterGraphicsAnimator = _mCurrentCharacterGraphics.GetComponent<Animator>();
 
                         m_ClassInfoBox.ConfigureForClass(m_NetworkCharSelection.AvatarConfiguration[seatIdx].CharacterClass);
                     }
                 }
-                if (state == NetworkCharSelection.SeatState.LockedIn && !m_HasLocalPlayerLockedIn)
+                if (state == NetworkCharSelection.SeatState.LockedIn && !_mHasLocalPlayerLockedIn)
                 {
                     // the local player has locked in their seat choice! Rearrange the UI appropriately
                     // the character should act excited
-                    m_CurrentCharacterGraphicsAnimator.SetTrigger(m_AnimationTriggerOnCharChosen);
+                    _mCurrentCharacterGraphicsAnimator.SetTrigger(m_AnimationTriggerOnCharChosen);
                     ConfigureUIForLobbyMode(m_NetworkCharSelection.IsLobbyClosed.Value ? LobbyMode.LobbyEnding : LobbyMode.SeatChosen);
-                    m_HasLocalPlayerLockedIn = true;
+                    _mHasLocalPlayerLockedIn = true;
                 }
-                else if (m_HasLocalPlayerLockedIn && state == NetworkCharSelection.SeatState.Active)
+                else if (_mHasLocalPlayerLockedIn && state == NetworkCharSelection.SeatState.Active)
                 {
                     // reset character seats if locked in choice was unselected
-                    if (m_HasLocalPlayerLockedIn)
+                    if (_mHasLocalPlayerLockedIn)
                     {
                         ConfigureUIForLobbyMode(LobbyMode.ChooseSeat);
                         m_ClassInfoBox.SetLockedIn(false);
-                        m_HasLocalPlayerLockedIn = false;
+                        _mHasLocalPlayerLockedIn = false;
                     }
                 }
                 else if (state == NetworkCharSelection.SeatState.Active && isNewSeat)
                 {
-                    m_CurrentCharacterGraphicsAnimator.SetTrigger(m_AnimationTriggerOnCharSelect);
+                    _mCurrentCharacterGraphicsAnimator.SetTrigger(m_AnimationTriggerOnCharSelect);
                 }
             }
         }
@@ -336,14 +337,14 @@ namespace Unity.BossRoom.Gameplay.GameState
             }
             else
             {
-                if (m_LastSeatSelected == -1)
+                if (_mLastSeatSelected == -1)
                 {
                     ConfigureUIForLobbyMode(LobbyMode.ChooseSeat);
                 }
                 else
                 {
                     ConfigureUIForLobbyMode(LobbyMode.SeatChosen);
-                    m_ClassInfoBox.ConfigureForClass(m_NetworkCharSelection.AvatarConfiguration[m_LastSeatSelected].CharacterClass);
+                    m_ClassInfoBox.ConfigureForClass(m_NetworkCharSelection.AvatarConfiguration[_mLastSeatSelected].CharacterClass);
                 }
             }
         }
@@ -356,7 +357,7 @@ namespace Unity.BossRoom.Gameplay.GameState
         void ConfigureUIForLobbyMode(LobbyMode mode)
         {
             // first the easy bit: turn off all the inappropriate ui elements, and turn the appropriate ones on!
-            foreach (var list in m_LobbyUIElementsByMode.Values)
+            foreach (var list in _mLobbyUIElementsByMode.Values)
             {
                 foreach (var uiElement in list)
                 {
@@ -364,7 +365,7 @@ namespace Unity.BossRoom.Gameplay.GameState
                 }
             }
 
-            foreach (var uiElement in m_LobbyUIElementsByMode[mode])
+            foreach (var uiElement in _mLobbyUIElementsByMode[mode])
             {
                 uiElement.SetActive(true);
             }
@@ -374,11 +375,11 @@ namespace Unity.BossRoom.Gameplay.GameState
             switch (mode)
             {
                 case LobbyMode.ChooseSeat:
-                    if (m_LastSeatSelected == -1)
+                    if (_mLastSeatSelected == -1)
                     {
-                        if (m_CurrentCharacterGraphics)
+                        if (_mCurrentCharacterGraphics)
                         {
-                            m_CurrentCharacterGraphics.gameObject.SetActive(false);
+                            _mCurrentCharacterGraphics.gameObject.SetActive(false);
                         }
                         m_ClassInfoBox.ConfigureForNoSelection();
                     }
@@ -428,16 +429,16 @@ namespace Unity.BossRoom.Gameplay.GameState
             if (m_NetworkCharSelection.IsSpawned)
             {
                 // request to lock in or unlock if already locked in
-                m_NetworkCharSelection.ServerChangeSeatRpc(NetworkManager.Singleton.LocalClientId, m_LastSeatSelected, !m_HasLocalPlayerLockedIn);
+                m_NetworkCharSelection.ServerChangeSeatRpc(NetworkManager.Singleton.LocalClientId, _mLastSeatSelected, !_mHasLocalPlayerLockedIn);
             }
         }
 
         GameObject GetCharacterGraphics(Avatar avatar)
         {
-            if (!m_SpawnedCharacterGraphics.TryGetValue(avatar.Guid, out GameObject characterGraphics))
+            if (!_mSpawnedCharacterGraphics.TryGetValue(avatar.Guid, out GameObject characterGraphics))
             {
                 characterGraphics = Instantiate(avatar.GraphicsCharacterSelect, m_CharacterGraphicsParent);
-                m_SpawnedCharacterGraphics.Add(avatar.Guid, characterGraphics);
+                _mSpawnedCharacterGraphics.Add(avatar.Guid, characterGraphics);
             }
 
             return characterGraphics;

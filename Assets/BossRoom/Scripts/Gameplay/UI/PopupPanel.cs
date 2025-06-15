@@ -20,11 +20,11 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         CanvasGroup m_CanvasGroup;
 
-        public bool IsDisplaying => m_IsDisplaying;
+        public bool IsDisplaying => _mIsDisplaying;
 
-        bool m_IsDisplaying;
+        bool _mIsDisplaying;
 
-        bool m_ClosableByUser;
+        bool _mClosableByUser;
 
         void Awake()
         {
@@ -33,7 +33,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void OnConfirmClick()
         {
-            if (m_ClosableByUser)
+            if (_mClosableByUser)
             {
                 Hide();
             }
@@ -43,9 +43,9 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             m_TitleText.text = titleText;
             m_MainText.text = mainText;
-            m_ClosableByUser = closeableByUser;
-            m_ConfirmButton.SetActive(m_ClosableByUser);
-            m_LoadingSpinner.SetActive(!m_ClosableByUser);
+            _mClosableByUser = closeableByUser;
+            m_ConfirmButton.SetActive(_mClosableByUser);
+            m_LoadingSpinner.SetActive(!_mClosableByUser);
             Show();
         }
 
@@ -53,14 +53,14 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             m_CanvasGroup.alpha = 1f;
             m_CanvasGroup.blocksRaycasts = true;
-            m_IsDisplaying = true;
+            _mIsDisplaying = true;
         }
 
         public void Hide()
         {
             m_CanvasGroup.alpha = 0f;
             m_CanvasGroup.blocksRaycasts = false;
-            m_IsDisplaying = false;
+            _mIsDisplaying = false;
         }
     }
 }

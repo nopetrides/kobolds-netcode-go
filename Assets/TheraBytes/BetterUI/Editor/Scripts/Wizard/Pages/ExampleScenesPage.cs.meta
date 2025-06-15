@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: a53b879ed637b7a479f74b24c5ecec12
+timeCreated: 1632341065
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Editor/Scripts/Wizard/Pages/ExampleScenesPage.cs
+  uploadId: 759928

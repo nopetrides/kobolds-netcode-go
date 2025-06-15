@@ -42,7 +42,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         ServerWaveSpawner m_WaveSpawner;
 
         // currently active "wait X seconds and then restart" coroutine
-        Coroutine m_CoroDormant;
+        Coroutine _mCoroDormant;
 
         public override void OnNetworkSpawn()
         {
@@ -62,8 +62,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         public override void OnNetworkDespawn()
         {
-            if (m_CoroDormant != null)
-                StopCoroutine(m_CoroDormant);
+            if (_mCoroDormant != null)
+                StopCoroutine(_mCoroDormant);
 
             foreach (var breakable in m_BreakableElements)
             {
@@ -92,9 +92,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
             m_Breakable.IsBroken.Value = !hasUnbrokenBreakables;
             m_WaveSpawner.SetSpawnerEnabled(hasUnbrokenBreakables);
-            if (!hasUnbrokenBreakables && m_CoroDormant == null)
+            if (!hasUnbrokenBreakables && _mCoroDormant == null)
             {
-                m_CoroDormant = StartCoroutine(CoroGoDormantAndThenRestart());
+                _mCoroDormant = StartCoroutine(CoroGoDormantAndThenRestart());
             }
         }
 
@@ -119,15 +119,15 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
             m_Breakable.IsBroken.Value = false;
             m_WaveSpawner.SetSpawnerEnabled(true);
-            m_CoroDormant = null;
+            _mCoroDormant = null;
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public void ForceRestart()
         {
-            if (m_CoroDormant != null)
+            if (_mCoroDormant != null)
             {
-                StopCoroutine(m_CoroDormant);
+                StopCoroutine(_mCoroDormant);
             }
             Restart();
         }
@@ -140,7 +140,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 {
                     var serverComponent = state.GetComponent<Breakable>();
                     Assert.IsNotNull(serverComponent);
-                    serverComponent.ReceiveHP(null, Int32.MinValue);
+                    serverComponent.ReceiveHp(null, Int32.MinValue);
                 }
             }
         }

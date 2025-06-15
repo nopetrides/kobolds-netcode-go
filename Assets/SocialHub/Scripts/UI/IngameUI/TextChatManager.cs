@@ -20,44 +20,44 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         [SerializeField, HideInInspector]
         List<ChatMessage> m_Messages = new();
 
-        ListView m_MessageView;
-        TextField m_MessageInputField;
-        Button m_SendButton;
-        VisualElement m_Root;
-        VisualElement m_TextChatView;
+        ListView _mMessageView;
+        TextField _mMessageInputField;
+        Button _mSendButton;
+        VisualElement _mRoot;
+        VisualElement _mTextChatView;
 
-        const int k_FocusDelay = 10;
-        bool m_IsChatActive;
+        const int KFocusDelay = 10;
+        bool _mIsChatActive;
 
         void OnEnable()
         {
-            m_Root = m_UIDocument.rootVisualElement.Q<VisualElement>("textchat-container");
-            m_Asset.CloneTree(m_Root);
+            _mRoot = m_UIDocument.rootVisualElement.Q<VisualElement>("textchat-container");
+            m_Asset.CloneTree(_mRoot);
 
-            m_Root.Q<Button>("visibility-button").clicked += ToggleChat;
-            m_TextChatView = m_Root.Q<VisualElement>("text-chat");
+            _mRoot.Q<Button>("visibility-button").clicked += ToggleChat;
+            _mTextChatView = _mRoot.Q<VisualElement>("text-chat");
 
-            m_SendButton = m_Root.Q<Button>("submit");
-            m_SendButton.clicked += SendMessage;
+            _mSendButton = _mRoot.Q<Button>("submit");
+            _mSendButton.clicked += SendMessage;
 
-            m_MessageInputField = m_Root.Q<TextField>("input-text");
+            _mMessageInputField = _mRoot.Q<TextField>("input-text");
 
 #if !UNITY_IOS && !UNITY_ANDROID
-            m_MessageInputField.RegisterCallback<FocusInEvent>(OnTextfieldFocusIn);
-            m_MessageInputField.RegisterCallback<FocusOutEvent>(OnTextfieldFocusOut);
-            m_MessageInputField.RegisterCallback<KeyDownEvent>(OnTextEnter, TrickleDown.TrickleDown);
+            _mMessageInputField.RegisterCallback<FocusInEvent>(OnTextfieldFocusIn);
+            _mMessageInputField.RegisterCallback<FocusOutEvent>(OnTextfieldFocusOut);
+            _mMessageInputField.RegisterCallback<KeyDownEvent>(OnTextEnter, TrickleDown.TrickleDown);
 #endif
 
-            m_MessageView = m_Root.Q<ListView>("message-list");
-            m_MessageView.dataSource = this;
-            m_MessageView.SetBinding("itemsSource", new DataBinding
+            _mMessageView = _mRoot.Q<ListView>("message-list");
+            _mMessageView.dataSource = this;
+            _mMessageView.SetBinding("itemsSource", new DataBinding
             {
                 dataSourcePath = new PropertyPath("m_Messages"),
                 bindingMode = BindingMode.TwoWay
             });
 
-            SetViewFocusable(m_IsChatActive);
-            m_TextChatView.SetEnabled(false);
+            SetViewFocusable(_mIsChatActive);
+            _mTextChatView.SetEnabled(false);
             BindSessionEvents(true);
 
             m_Messages.Clear();
@@ -69,7 +69,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
             if (evt.keyCode is KeyCode.Return or KeyCode.KeypadEnter)
             {
                 SendMessage();
-                m_MessageInputField.schedule.Execute(() => m_MessageInputField.Focus()).ExecuteLater(k_FocusDelay);
+                _mMessageInputField.schedule.Execute(() => _mMessageInputField.Focus()).ExecuteLater(KFocusDelay);
             }
         }
 
@@ -95,41 +95,41 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void OnDisable()
         {
-            m_SendButton.clicked -= SendMessage;
-            m_MessageInputField.UnregisterCallback<FocusInEvent>(OnTextfieldFocusIn);
-            m_MessageInputField.UnregisterCallback<FocusOutEvent>(OnTextfieldFocusOut);
-            m_MessageInputField.UnregisterCallback<KeyDownEvent>(OnTextEnter, TrickleDown.TrickleDown);
+            _mSendButton.clicked -= SendMessage;
+            _mMessageInputField.UnregisterCallback<FocusInEvent>(OnTextfieldFocusIn);
+            _mMessageInputField.UnregisterCallback<FocusOutEvent>(OnTextfieldFocusOut);
+            _mMessageInputField.UnregisterCallback<KeyDownEvent>(OnTextEnter, TrickleDown.TrickleDown);
             BindSessionEvents(false);
         }
 
         void ToggleChat()
         {
-            m_IsChatActive = !m_IsChatActive;
-            SetViewFocusable(m_IsChatActive);
+            _mIsChatActive = !_mIsChatActive;
+            SetViewFocusable(_mIsChatActive);
 
-            if (m_IsChatActive)
+            if (_mIsChatActive)
             {
-                m_TextChatView.AddToClassList("text-chat--visible");
+                _mTextChatView.AddToClassList("text-chat--visible");
                 return;
             }
 
-            m_TextChatView.RemoveFromClassList("text-chat--visible");
+            _mTextChatView.RemoveFromClassList("text-chat--visible");
         }
 
         void SetViewFocusable(bool focusable)
         {
-            m_TextChatView.focusable = m_IsChatActive;
-            m_MessageInputField.focusable = focusable;
-            m_SendButton.focusable = focusable;
-            m_MessageView.focusable = focusable;
+            _mTextChatView.focusable = _mIsChatActive;
+            _mMessageInputField.focusable = focusable;
+            _mSendButton.focusable = focusable;
+            _mMessageView.focusable = focusable;
         }
 
         void SendMessage()
         {
-            if (!string.IsNullOrEmpty(m_MessageInputField.text))
+            if (!string.IsNullOrEmpty(_mMessageInputField.text))
             {
-                SendTextMessage(m_MessageInputField.value);
-                m_MessageInputField.value = "";
+                SendTextMessage(_mMessageInputField.value);
+                _mMessageInputField.value = "";
             }
         }
 
@@ -150,7 +150,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void OnOnChatIsReady(bool isReady, string channelName)
         {
-            m_TextChatView.SetEnabled(isReady);
+            _mTextChatView.SetEnabled(isReady);
         }
 
         void OnChannelMessageReceived(string sender, string message, bool fromSelf)

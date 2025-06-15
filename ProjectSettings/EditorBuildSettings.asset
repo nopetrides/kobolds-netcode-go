@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Kobolds/Scenes/KoboldsBoot.unity
+    guid: 328ecebcbaa7b42498f358d4bdabc02d
+  - enabled: 1
+    path: Assets/_Kobolds/Scenes/KoboldsMenu.unity
+    guid: f1d4404bd4a8d68418e4044a598b61be
+  - enabled: 1
     path: Assets/SocialHub/Scenes/Bootstrap.unity
     guid: 7534441b329644ec98e40c12ec5e3575
   - enabled: 1

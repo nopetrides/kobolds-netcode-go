@@ -19,20 +19,20 @@ namespace Unity.BossRoom.Gameplay.UI
         QuitMode m_QuitMode = QuitMode.ReturnToMenu;
 
         [Inject]
-        ConnectionManager m_ConnectionManager;
+        ConnectionManager _mConnectionManager;
 
         [Inject]
-        IPublisher<QuitApplicationMessage> m_QuitApplicationPub;
+        IPublisher<QuitApplicationMessage> _mQuitApplicationPub;
 
         public void Quit()
         {
             switch (m_QuitMode)
             {
                 case QuitMode.ReturnToMenu:
-                    m_ConnectionManager.RequestShutdown();
+                    _mConnectionManager.RequestShutdown();
                     break;
                 case QuitMode.QuitApplication:
-                    m_QuitApplicationPub.Publish(new QuitApplicationMessage());
+                    _mQuitApplicationPub.Publish(new QuitApplicationMessage());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

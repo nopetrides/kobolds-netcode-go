@@ -16,9 +16,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
     class MobileGamepadState : INotifyBindablePropertyChanged
     {
         // UI Y axis is inversed compared to a gamepad joystick, invert it by default
-        static readonly Vector2 k_InvertY = new(1, -1);
+        static readonly Vector2 KInvertY = new(1, -1);
 
-        static MobileGamepadState s_Instance;
+        static MobileGamepadState _sInstance;
         /// <summary>
         /// The instance is only created when used at runtime.
         /// </summary>
@@ -26,8 +26,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         {
             get
             {
-                s_Instance ??= new MobileGamepadState();
-                return s_Instance;
+                _sInstance ??= new MobileGamepadState();
+                return _sInstance;
             }
         }
 
@@ -35,7 +35,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         /// This initialization is required in the Editor to avoid the instance from a previous Playmode to stay alive in the next session.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void InitializeOnLoad() => s_Instance = null;
+        static void InitializeOnLoad() => _sInstance = null;
 
         /// <summary>
         /// Private constructor.
@@ -89,7 +89,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
             JoystickStateChanged?.Invoke(property, value);
         }
 
-        Vector2 m_LeftJoystick;
+        Vector2 _mLeftJoystick;
         /// <summary>
         /// The current position of the left joystick.
         /// </summary>
@@ -107,15 +107,15 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         {
             set
             {
-                var oldValue = m_LeftJoystick;
-                m_LeftJoystick = value;
-                NotifyInput(value * k_InvertY);
+                var oldValue = _mLeftJoystick;
+                _mLeftJoystick = value;
+                NotifyInput(value * KInvertY);
 
-                if (m_LeftJoystick.x != oldValue.x)
+                if (_mLeftJoystick.x != oldValue.x)
                 {
                     NotifyUI(nameof(LeftJoystickLeft));
                 }
-                if (m_LeftJoystick.y != oldValue.y)
+                if (_mLeftJoystick.y != oldValue.y)
                 {
                     NotifyUI(nameof(LeftJoystickTop));
                 }
@@ -124,12 +124,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
 
         internal string LeftJoystickTopName => nameof(LeftJoystickTop);
         [CreateProperty]
-        StyleLength LeftJoystickTop => ConvertJoystickRangeToUIPosition(m_LeftJoystick.y);
+        StyleLength LeftJoystickTop => ConvertJoystickRangeToUIPosition(_mLeftJoystick.y);
         internal string LeftJoystickLeftName => nameof(LeftJoystickLeft);
         [CreateProperty]
-        StyleLength LeftJoystickLeft => ConvertJoystickRangeToUIPosition(m_LeftJoystick.x);
+        StyleLength LeftJoystickLeft => ConvertJoystickRangeToUIPosition(_mLeftJoystick.x);
 
-        Vector2 m_RightJoystick;
+        Vector2 _mRightJoystick;
         /// <summary>
         /// The current position of the right joystick.
         /// </summary>
@@ -144,15 +144,15 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         {
             set
             {
-                var oldValue = m_RightJoystick;
-                m_RightJoystick = value;
-                NotifyInput(value * k_InvertY);
+                var oldValue = _mRightJoystick;
+                _mRightJoystick = value;
+                NotifyInput(value * KInvertY);
 
-                if (m_RightJoystick.x != oldValue.x)
+                if (_mRightJoystick.x != oldValue.x)
                 {
                     NotifyUI(nameof(RightJoystickLeft));
                 }
-                if (m_RightJoystick.y != oldValue.y)
+                if (_mRightJoystick.y != oldValue.y)
                 {
                     NotifyUI(nameof(RightJoystickTop));
                 }
@@ -160,12 +160,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         }
         internal string RightJoystickTopName => nameof(RightJoystickTop);
         [CreateProperty]
-        StyleLength RightJoystickTop => ConvertJoystickRangeToUIPosition(m_RightJoystick.y);
+        StyleLength RightJoystickTop => ConvertJoystickRangeToUIPosition(_mRightJoystick.y);
         internal string RightJoystickLeftName => nameof(RightJoystickLeft);
         [CreateProperty]
-        StyleLength RightJoystickLeft => ConvertJoystickRangeToUIPosition(m_RightJoystick.x);
+        StyleLength RightJoystickLeft => ConvertJoystickRangeToUIPosition(_mRightJoystick.x);
 
-        bool m_ButtonMenu;
+        bool _mButtonMenu;
         /// <summary>
         /// The current state of the menu button.
         /// </summary>
@@ -176,19 +176,19 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         [CreateProperty]
         internal bool ButtonMenu
         {
-            get => m_ButtonMenu;
+            get => _mButtonMenu;
             set
             {
-                if (m_ButtonMenu == value)
+                if (_mButtonMenu == value)
                     return;
 
-                m_ButtonMenu = value;
+                _mButtonMenu = value;
                 NotifyUI();
                 NotifyInput(value ? 1f : 0f);
             }
         }
 
-        bool m_ButtonInteract;
+        bool _mButtonInteract;
         /// <summary>
         /// The current state of the shoot button.
         /// </summary>
@@ -199,19 +199,19 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         [CreateProperty]
         internal bool ButtonInteract
         {
-            get => m_ButtonInteract;
+            get => _mButtonInteract;
             set
             {
-                if (m_ButtonInteract == value)
+                if (_mButtonInteract == value)
                     return;
 
-                m_ButtonInteract = value;
+                _mButtonInteract = value;
                 NotifyUI();
                 NotifyInput(value ? 1f : 0f);
             }
         }
 
-        bool m_ButtonSprint;
+        bool _mButtonSprint;
         /// <summary>
         /// The current state of the aim button.
         /// </summary>
@@ -222,19 +222,19 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         [CreateProperty]
         internal bool ButtonSprint
         {
-            get => m_ButtonSprint;
+            get => _mButtonSprint;
             set
             {
-                if (m_ButtonSprint == value)
+                if (_mButtonSprint == value)
                     return;
 
-                m_ButtonSprint = value;
+                _mButtonSprint = value;
                 NotifyUI();
                 NotifyInput(value ? 1f : 0f);
             }
         }
 
-        bool m_ButtonJump;
+        bool _mButtonJump;
         /// <summary>
         /// The current state of the jump button.
         /// </summary>
@@ -245,13 +245,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         [CreateProperty]
         internal bool ButtonJump
         {
-            get => m_ButtonJump;
+            get => _mButtonJump;
             set
             {
-                if (m_ButtonJump == value)
+                if (_mButtonJump == value)
                     return;
 
-                m_ButtonJump = value;
+                _mButtonJump = value;
                 NotifyUI();
                 NotifyInput(value ? 1f : 0f);
             }

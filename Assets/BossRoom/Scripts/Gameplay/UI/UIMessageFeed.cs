@@ -25,7 +25,7 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         VerticalLayoutGroup m_VerticalLayoutGroup;
 
-        DisposableGroup m_Subscriptions;
+        DisposableGroup _mSubscriptions;
 
         [Inject]
         void InjectDependencies(
@@ -37,13 +37,13 @@ namespace Unity.BossRoom.Gameplay.UI
             ISubscriber<LifeStateChangedEventMessage> lifeStateChangedEventSubscriber
         )
         {
-            m_Subscriptions = new DisposableGroup();
+            _mSubscriptions = new DisposableGroup();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            m_Subscriptions.Add(cheatUsedMessageSubscriber.Subscribe(OnCheatUsedEvent));
+            _mSubscriptions.Add(cheatUsedMessageSubscriber.Subscribe(OnCheatUsedEvent));
 #endif
-            m_Subscriptions.Add(doorStateChangedSubscriber.Subscribe(OnDoorStateChangedEvent));
-            m_Subscriptions.Add(connectionEventSubscriber.Subscribe(OnConnectionEvent));
-            m_Subscriptions.Add(lifeStateChangedEventSubscriber.Subscribe(OnLifeStateChangedEvent));
+            _mSubscriptions.Add(doorStateChangedSubscriber.Subscribe(OnDoorStateChangedEvent));
+            _mSubscriptions.Add(connectionEventSubscriber.Subscribe(OnConnectionEvent));
+            _mSubscriptions.Add(lifeStateChangedEventSubscriber.Subscribe(OnLifeStateChangedEvent));
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -80,8 +80,8 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             switch (eventMessage.CharacterType)
             {
+                case CharacterTypeEnum.Default:
                 case CharacterTypeEnum.Tank:
-                case CharacterTypeEnum.Archer:
                 case CharacterTypeEnum.Mage:
                 case CharacterTypeEnum.Rogue:
                 case CharacterTypeEnum.ImpBoss:
@@ -124,9 +124,9 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnDestroy()
         {
-            if (m_Subscriptions != null)
+            if (_mSubscriptions != null)
             {
-                m_Subscriptions.Dispose();
+                _mSubscriptions.Dispose();
             }
         }
 

@@ -5,22 +5,22 @@ namespace Unity.BossRoom.UnityServices
 {
     public class RateLimitCooldown
     {
-        public float CooldownTimeLength => m_CooldownTimeLength;
+        public float CooldownTimeLength => _mCooldownTimeLength;
 
-        readonly float m_CooldownTimeLength;
-        private float m_CooldownFinishedTime;
+        readonly float _mCooldownTimeLength;
+        private float _mCooldownFinishedTime;
 
         public RateLimitCooldown(float cooldownTimeLength)
         {
-            m_CooldownTimeLength = cooldownTimeLength;
-            m_CooldownFinishedTime = -1f;
+            _mCooldownTimeLength = cooldownTimeLength;
+            _mCooldownFinishedTime = -1f;
         }
 
-        public bool CanCall => Time.unscaledTime > m_CooldownFinishedTime;
+        public bool CanCall => Time.unscaledTime > _mCooldownFinishedTime;
 
         public void PutOnCooldown()
         {
-            m_CooldownFinishedTime = Time.unscaledTime + m_CooldownTimeLength;
+            _mCooldownFinishedTime = Time.unscaledTime + _mCooldownTimeLength;
         }
     }
 }

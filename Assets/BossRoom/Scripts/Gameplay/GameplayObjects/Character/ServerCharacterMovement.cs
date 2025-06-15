@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     public enum MovementState
@@ -28,28 +29,28 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [SerializeField]
         Rigidbody m_Rigidbody;
 
-        private NavigationSystem m_NavigationSystem;
+        private NavigationSystem _mNavigationSystem;
 
-        private DynamicNavPath m_NavPath;
+        private DynamicNavPath _mNavPath;
 
-        private MovementState m_MovementState;
+        private MovementState _mMovementState;
 
-        MovementStatus m_PreviousState;
+        MovementStatus _mPreviousState;
 
         [SerializeField]
         private ServerCharacter m_CharLogic;
 
         // when we are in charging and knockback mode, we use these additional variables
-        private float m_ForcedSpeed;
-        private float m_SpecialModeDurationRemaining;
+        private float _mForcedSpeed;
+        private float _mSpecialModeDurationRemaining;
 
         // this one is specific to knockback mode
-        private Vector3 m_KnockbackVector;
+        private Vector3 _mKnockbackVector;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public bool TeleportModeActivated { get; set; }
 
-        const float k_CheatSpeed = 20;
+        const float KCheatSpeed = 20;
 
         public bool SpeedCheatActivated { get; set; }
 #endif
@@ -69,8 +70,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
                 // On the server enable navMeshAgent and initialize
                 m_NavMeshAgent.enabled = true;
-                m_NavigationSystem = GameObject.FindGameObjectWithTag(NavigationSystem.NavigationSystemTag).GetComponent<NavigationSystem>();
-                m_NavPath = new DynamicNavPath(m_NavMeshAgent, m_NavigationSystem);
+                _mNavigationSystem = GameObject.FindGameObjectWithTag(NavigationSystem.NavigationSystemTag).GetComponent<NavigationSystem>();
+                _mNavPath = new DynamicNavPath(m_NavMeshAgent, _mNavigationSystem);
             }
         }
 
@@ -87,25 +88,25 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 return;
             }
 #endif
-            m_MovementState = MovementState.PathFollowing;
-            m_NavPath.SetTargetPosition(position);
+            _mMovementState = MovementState.PathFollowing;
+            _mNavPath.SetTargetPosition(position);
         }
 
         public void StartForwardCharge(float speed, float duration)
         {
-            m_NavPath.Clear();
-            m_MovementState = MovementState.Charging;
-            m_ForcedSpeed = speed;
-            m_SpecialModeDurationRemaining = duration;
+            _mNavPath.Clear();
+            _mMovementState = MovementState.Charging;
+            _mForcedSpeed = speed;
+            _mSpecialModeDurationRemaining = duration;
         }
 
         public void StartKnockback(Vector3 knocker, float speed, float duration)
         {
-            m_NavPath.Clear();
-            m_MovementState = MovementState.Knockback;
-            m_KnockbackVector = transform.position - knocker;
-            m_ForcedSpeed = speed;
-            m_SpecialModeDurationRemaining = duration;
+            _mNavPath.Clear();
+            _mMovementState = MovementState.Knockback;
+            _mKnockbackVector = transform.position - knocker;
+            _mForcedSpeed = speed;
+            _mSpecialModeDurationRemaining = duration;
         }
 
         /// <summary>
@@ -114,8 +115,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// <param name="followTransform">The transform to follow</param>
         public void FollowTransform(Transform followTransform)
         {
-            m_MovementState = MovementState.PathFollowing;
-            m_NavPath.FollowTransform(followTransform);
+            _mMovementState = MovementState.PathFollowing;
+            _mNavPath.FollowTransform(followTransform);
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// <returns></returns>
         public bool IsPerformingForcedMovement()
         {
-            return m_MovementState == MovementState.Knockback || m_MovementState == MovementState.Charging;
+            return _mMovementState == MovementState.Knockback || _mMovementState == MovementState.Charging;
         }
 
         /// <summary>
@@ -133,7 +134,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// <returns></returns>
         public bool IsMoving()
         {
-            return m_MovementState != MovementState.Idle;
+            return _mMovementState != MovementState.Idle;
         }
 
         /// <summary>
@@ -141,11 +142,11 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// </summary>
         public void CancelMove()
         {
-            if (m_NavPath != null)
+            if (_mNavPath != null)
             {
-                m_NavPath.Clear();
+                _mNavPath.Clear();
             }
-            m_MovementState = MovementState.Idle;
+            _mMovementState = MovementState.Idle;
         }
 
         /// <summary>
@@ -174,19 +175,19 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         {
             PerformMovement();
 
-            var currentState = GetMovementStatus(m_MovementState);
-            if (m_PreviousState != currentState)
+            var currentState = GetMovementStatus(_mMovementState);
+            if (_mPreviousState != currentState)
             {
                 m_CharLogic.MovementStatus.Value = currentState;
-                m_PreviousState = currentState;
+                _mPreviousState = currentState;
             }
         }
 
         public override void OnNetworkDespawn()
         {
-            if (m_NavPath != null)
+            if (_mNavPath != null)
             {
-                m_NavPath.Dispose();
+                _mNavPath.Dispose();
             }
             if (IsServer)
             {
@@ -198,45 +199,45 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         private void PerformMovement()
         {
-            if (m_MovementState == MovementState.Idle)
+            if (_mMovementState == MovementState.Idle)
                 return;
 
             Vector3 movementVector;
 
-            if (m_MovementState == MovementState.Charging)
+            if (_mMovementState == MovementState.Charging)
             {
                 // if we're done charging, stop moving
-                m_SpecialModeDurationRemaining -= Time.fixedDeltaTime;
-                if (m_SpecialModeDurationRemaining <= 0)
+                _mSpecialModeDurationRemaining -= Time.fixedDeltaTime;
+                if (_mSpecialModeDurationRemaining <= 0)
                 {
-                    m_MovementState = MovementState.Idle;
+                    _mMovementState = MovementState.Idle;
                     return;
                 }
 
-                var desiredMovementAmount = m_ForcedSpeed * Time.fixedDeltaTime;
+                var desiredMovementAmount = _mForcedSpeed * Time.fixedDeltaTime;
                 movementVector = transform.forward * desiredMovementAmount;
             }
-            else if (m_MovementState == MovementState.Knockback)
+            else if (_mMovementState == MovementState.Knockback)
             {
-                m_SpecialModeDurationRemaining -= Time.fixedDeltaTime;
-                if (m_SpecialModeDurationRemaining <= 0)
+                _mSpecialModeDurationRemaining -= Time.fixedDeltaTime;
+                if (_mSpecialModeDurationRemaining <= 0)
                 {
-                    m_MovementState = MovementState.Idle;
+                    _mMovementState = MovementState.Idle;
                     return;
                 }
 
-                var desiredMovementAmount = m_ForcedSpeed * Time.fixedDeltaTime;
-                movementVector = m_KnockbackVector * desiredMovementAmount;
+                var desiredMovementAmount = _mForcedSpeed * Time.fixedDeltaTime;
+                movementVector = _mKnockbackVector * desiredMovementAmount;
             }
             else
             {
                 var desiredMovementAmount = GetBaseMovementSpeed() * Time.fixedDeltaTime;
-                movementVector = m_NavPath.MoveAlongPath(desiredMovementAmount);
+                movementVector = _mNavPath.MoveAlongPath(desiredMovementAmount);
 
                 // If we didn't move stop moving.
                 if (movementVector == Vector3.zero)
                 {
-                    m_MovementState = MovementState.Idle;
+                    _mMovementState = MovementState.Idle;
                     return;
                 }
             }
@@ -257,7 +258,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (SpeedCheatActivated)
             {
-                return k_CheatSpeed;
+                return KCheatSpeed;
             }
 #endif
             CharacterClass characterClass = GameDataSource.Instance.CharacterDataByType[m_CharLogic.CharacterType];

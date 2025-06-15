@@ -40,18 +40,18 @@ namespace Unity.BossRoom.Gameplay.UI
         private Image[] m_PartyHealthGodModeImages;
 
         // track a list of hero (slot 0) + allies
-        private ulong[] m_PartyIds;
+        private ulong[] _mPartyIds;
 
         // track Hero's target to show when it is the Hero or an ally
-        private ulong m_CurrentTarget;
+        private ulong _mCurrentTarget;
 
-        ServerCharacter m_OwnedServerCharacter;
+        ServerCharacter _mOwnedServerCharacter;
 
-        ClientPlayerAvatar m_OwnedPlayerAvatar;
+        ClientPlayerAvatar _mOwnedPlayerAvatar;
 
-        private Dictionary<ulong, ServerCharacter> m_TrackedAllies = new Dictionary<ulong, ServerCharacter>();
+        private Dictionary<ulong, ServerCharacter> _mTrackedAllies = new Dictionary<ulong, ServerCharacter>();
 
-        private ClientInputSender m_ClientSender;
+        private ClientInputSender _mClientSender;
 
         void Awake()
         {
@@ -76,46 +76,46 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void PlayerAvatarRemoved(ClientPlayerAvatar clientPlayerAvatar)
         {
-            if (m_OwnedPlayerAvatar == clientPlayerAvatar)
+            if (_mOwnedPlayerAvatar == clientPlayerAvatar)
             {
                 RemoveHero();
             }
-            else if (m_TrackedAllies.ContainsKey(clientPlayerAvatar.NetworkObjectId))
+            else if (_mTrackedAllies.ContainsKey(clientPlayerAvatar.NetworkObjectId))
             {
                 RemoveAlly(clientPlayerAvatar.NetworkObjectId);
-                m_TrackedAllies.Remove(clientPlayerAvatar.NetworkObjectId);
+                _mTrackedAllies.Remove(clientPlayerAvatar.NetworkObjectId);
             }
         }
 
         void SetHeroData(ClientPlayerAvatar clientPlayerAvatar)
         {
-            m_OwnedServerCharacter = clientPlayerAvatar.GetComponent<ServerCharacter>();
+            _mOwnedServerCharacter = clientPlayerAvatar.GetComponent<ServerCharacter>();
 
-            Assert.IsTrue(m_OwnedServerCharacter, "ServerCharacter component not found on ClientPlayerAvatar");
+            Assert.IsTrue(_mOwnedServerCharacter, "ServerCharacter component not found on ClientPlayerAvatar");
 
-            m_OwnedPlayerAvatar = clientPlayerAvatar;
+            _mOwnedPlayerAvatar = clientPlayerAvatar;
 
             // Hero is always our slot 0
-            m_PartyIds[0] = m_OwnedServerCharacter.NetworkObject.NetworkObjectId;
+            _mPartyIds[0] = _mOwnedServerCharacter.NetworkObject.NetworkObjectId;
 
             // set hero portrait
-            if (m_OwnedServerCharacter.TryGetComponent(out NetworkAvatarGuidState avatarGuidState))
+            if (_mOwnedServerCharacter.TryGetComponent(out NetworkAvatarGuidState avatarGuidState))
             {
                 m_HeroPortrait.sprite = avatarGuidState.RegisteredAvatar.Portrait;
             }
 
-            SetUIFromSlotData(0, m_OwnedServerCharacter);
+            SetUIFromSlotData(0, _mOwnedServerCharacter);
 
-            m_OwnedServerCharacter.NetHealthState.HitPoints.OnValueChanged += SetHeroHealth;
+            _mOwnedServerCharacter.NetHealthState.HitPoints.OnValueChanged += SetHeroHealth;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            m_OwnedServerCharacter.NetLifeState.IsGodMode.OnValueChanged += SetHeroGodModeStatus;
+            _mOwnedServerCharacter.NetLifeState.IsGodMode.OnValueChanged += SetHeroGodModeStatus;
 #endif
 
             // plus we track their target
-            m_OwnedServerCharacter.TargetId.OnValueChanged += OnHeroSelectionChanged;
+            _mOwnedServerCharacter.TargetId.OnValueChanged += OnHeroSelectionChanged;
 
-            m_ClientSender = m_OwnedServerCharacter.GetComponent<ClientInputSender>();
+            _mClientSender = _mOwnedServerCharacter.GetComponent<ClientInputSender>();
         }
 
         void SetHeroHealth(int previousValue, int newValue)
@@ -170,7 +170,7 @@ namespace Unity.BossRoom.Gameplay.UI
             };
 #endif
 
-            m_TrackedAllies.Add(serverCharacter.NetworkObjectId, serverCharacter);
+            _mTrackedAllies.Add(serverCharacter.NetworkObjectId, serverCharacter);
         }
 
         void SetUIFromSlotData(int slot, ServerCharacter serverCharacter)
@@ -213,7 +213,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         private void OnHeroSelectionChanged(ulong prevTarget, ulong newTarget)
         {
-            SetHeroSelectFX(m_CurrentTarget, false);
+            SetHeroSelectFX(_mCurrentTarget, false);
             SetHeroSelectFX(newTarget, true);
         }
 
@@ -228,33 +228,33 @@ namespace Unity.BossRoom.Gameplay.UI
                 m_PartyNames[slot].color = selected ? Color.green : Color.white;
                 if (selected)
                 {
-                    m_CurrentTarget = target;
+                    _mCurrentTarget = target;
                 }
                 else
                 {
-                    m_CurrentTarget = 0;
+                    _mCurrentTarget = 0;
                 }
             }
         }
 
         public void SelectPartyMember(int slot)
         {
-            m_ClientSender.RequestAction(GameDataSource.Instance.GeneralTargetActionPrototype.ActionID,
-                ClientInputSender.SkillTriggerStyle.UI, m_PartyIds[slot]);
+            _mClientSender.RequestAction(GameDataSource.Instance.GeneralTargetActionPrototype.ActionID,
+                ClientInputSender.SkillTriggerStyle.UI, _mPartyIds[slot]);
         }
 
         // helper to initialize the Allies array - safe to call multiple times
         private void InitPartyArrays()
         {
-            if (m_PartyIds == null)
+            if (_mPartyIds == null)
             {
                 // clear party ID array
-                m_PartyIds = new ulong[m_PartyHealthSliders.Length];
+                _mPartyIds = new ulong[m_PartyHealthSliders.Length];
 
                 for (int i = 0; i < m_PartyHealthSliders.Length; i++)
                 {
                     // initialize all IDs positions to 0 and HP to 1000 on sliders
-                    m_PartyIds[i] = 0;
+                    _mPartyIds[i] = 0;
                     m_PartyHealthSliders[i].maxValue = 1000;
                 }
             }
@@ -268,12 +268,12 @@ namespace Unity.BossRoom.Gameplay.UI
             InitPartyArrays();
 
             int openslot = -1;
-            for (int i = 0; i < m_PartyIds.Length; i++)
+            for (int i = 0; i < _mPartyIds.Length; i++)
             {
                 // if this ID is in the list, return the slot index
-                if (m_PartyIds[i] == id) { return i; }
+                if (_mPartyIds[i] == id) { return i; }
                 // otherwise, record the first open slot (not slot 0 thats for the Hero)
-                if (openslot == -1 && i > 0 && m_PartyIds[i] == 0)
+                if (openslot == -1 && i > 0 && _mPartyIds[i] == 0)
                 {
                     openslot = i;
                 }
@@ -288,7 +288,7 @@ namespace Unity.BossRoom.Gameplay.UI
                 // activeate the correct ally panel
                 m_AllyPanel[openslot - 1].SetActive(true);
                 // and save ally ID to party array
-                m_PartyIds[openslot] = id;
+                _mPartyIds[openslot] = id;
                 return openslot;
             }
 
@@ -298,15 +298,15 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void RemoveHero()
         {
-            if (m_OwnedServerCharacter && m_OwnedServerCharacter.NetHealthState)
+            if (_mOwnedServerCharacter && _mOwnedServerCharacter.NetHealthState)
             {
-                m_OwnedServerCharacter.NetHealthState.HitPoints.OnValueChanged -= SetHeroHealth;
+                _mOwnedServerCharacter.NetHealthState.HitPoints.OnValueChanged -= SetHeroHealth;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                m_OwnedServerCharacter.NetLifeState.IsGodMode.OnValueChanged -= SetHeroGodModeStatus;
+                _mOwnedServerCharacter.NetLifeState.IsGodMode.OnValueChanged -= SetHeroGodModeStatus;
 #endif
             }
 
-            m_OwnedServerCharacter = null;
+            _mOwnedServerCharacter = null;
         }
 
         /// <summary>
@@ -315,19 +315,19 @@ namespace Unity.BossRoom.Gameplay.UI
         /// <param name="id"> NetworkObjectID of the ally. </param>
         void RemoveAlly(ulong id)
         {
-            for (int i = 0; i < m_PartyIds.Length; i++)
+            for (int i = 0; i < _mPartyIds.Length; i++)
             {
                 // if this ID is in the list, return the slot index
-                if (m_PartyIds[i] == id)
+                if (_mPartyIds[i] == id)
                 {
                     m_AllyPanel[i - 1].SetActive(false);
                     // and save ally ID to party array
-                    m_PartyIds[i] = 0;
+                    _mPartyIds[i] = 0;
                     return;
                 }
             }
 
-            if (m_TrackedAllies.TryGetValue(id, out ServerCharacter serverCharacter))
+            if (_mTrackedAllies.TryGetValue(id, out ServerCharacter serverCharacter))
             {
                 serverCharacter.NetHealthState.HitPoints.OnValueChanged -= (int previousValue, int newValue) =>
                 {
@@ -348,7 +348,7 @@ namespace Unity.BossRoom.Gameplay.UI
             m_PlayerAvatars.ItemRemoved -= PlayerAvatarRemoved;
 
             RemoveHero();
-            foreach (var kvp in m_TrackedAllies)
+            foreach (var kvp in _mTrackedAllies)
             {
                 RemoveAlly(kvp.Key);
             }

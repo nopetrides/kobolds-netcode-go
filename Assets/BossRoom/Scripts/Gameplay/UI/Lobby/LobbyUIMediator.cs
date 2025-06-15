@@ -1,5 +1,4 @@
-using System;
-using PlasticGui.WorkspaceWindow.Topbar;
+
 using Unity.BossRoom.Gameplay.Configuration;
 using TMPro;
 using Unity.BossRoom.ConnectionManagement;
@@ -26,15 +25,15 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField] TextMeshProUGUI m_PlayerNameLabel;
         [SerializeField] GameObject m_LoadingSpinner;
 
-        AuthenticationServiceFacade m_AuthenticationServiceFacade;
-        LobbyServiceFacade m_LobbyServiceFacade;
-        LocalLobbyUser m_LocalUser;
-        LocalLobby m_LocalLobby;
-        NameGenerationData m_NameGenerationData;
-        ConnectionManager m_ConnectionManager;
-        ISubscriber<ConnectStatus> m_ConnectStatusSubscriber;
+        AuthenticationServiceFacade _mAuthenticationServiceFacade;
+        LobbyServiceFacade _mLobbyServiceFacade;
+        LocalLobbyUser _mLocalUser;
+        LocalLobby _mLocalLobby;
+        NameGenerationData _mNameGenerationData;
+        ConnectionManager _mConnectionManager;
+        ISubscriber<ConnectStatus> _mConnectStatusSubscriber;
 
-        const string k_DefaultLobbyName = "no-name";
+        const string KDefaultLobbyName = "no-name";
         
         ISession _session;
 
@@ -49,16 +48,16 @@ namespace Unity.BossRoom.Gameplay.UI
             ConnectionManager connectionManager
         )
         {
-            m_AuthenticationServiceFacade = authenticationServiceFacade;
-            m_NameGenerationData = nameGenerationData;
-            m_LocalUser = localUser;
-            m_LobbyServiceFacade = lobbyServiceFacade;
-            m_LocalLobby = localLobby;
-            m_ConnectionManager = connectionManager;
-            m_ConnectStatusSubscriber = connectStatusSub;
+            _mAuthenticationServiceFacade = authenticationServiceFacade;
+            _mNameGenerationData = nameGenerationData;
+            _mLocalUser = localUser;
+            _mLobbyServiceFacade = lobbyServiceFacade;
+            _mLocalLobby = localLobby;
+            _mConnectionManager = connectionManager;
+            _mConnectStatusSubscriber = connectStatusSub;
             RegenerateName();
 
-            m_ConnectStatusSubscriber.Subscribe(OnConnectStatus);
+            _mConnectStatusSubscriber.Subscribe(OnConnectStatus);
         }
 
         void OnConnectStatus(ConnectStatus status)
@@ -71,9 +70,9 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnDestroy()
         {
-            if (m_ConnectStatusSubscriber != null)
+            if (_mConnectStatusSubscriber != null)
             {
-                m_ConnectStatusSubscriber.Unsubscribe(OnConnectStatus);
+                _mConnectStatusSubscriber.Unsubscribe(OnConnectStatus);
             }
         }
 
@@ -84,12 +83,12 @@ namespace Unity.BossRoom.Gameplay.UI
             // before sending request to lobby service, populate an empty lobby name, if necessary
             if (string.IsNullOrEmpty(lobbyName))
             {
-                lobbyName = k_DefaultLobbyName;
+                lobbyName = KDefaultLobbyName;
             }
 
             BlockUIWhileLoadingIsInProgress();
 
-            bool playerIsAuthorized = await m_AuthenticationServiceFacade.EnsurePlayerIsAuthorized();
+            bool playerIsAuthorized = await _mAuthenticationServiceFacade.EnsurePlayerIsAuthorized();
 
             if (!playerIsAuthorized)
             {
@@ -100,7 +99,7 @@ namespace Unity.BossRoom.Gameplay.UI
             // don't create lobby here just yet, advance state machine instead
             /*// create lobby
             var lobbyCreationAttempt = await m_LobbyServiceFacade.TryCreateLobbyAsync(lobbyName, m_ConnectionManager.MaxConnectedPlayers, isPrivate);*/
-            m_ConnectionManager.StartHostLobby(lobbyName, m_LocalUser.DisplayName);
+            _mConnectionManager.StartHostLobby(lobbyName, _mLocalUser.DisplayName);
             
             UnblockUIAfterLoadingIsComplete();
             return;
@@ -132,7 +131,7 @@ namespace Unity.BossRoom.Gameplay.UI
                 BlockUIWhileLoadingIsInProgress();
             }
 
-            bool playerIsAuthorized = await m_AuthenticationServiceFacade.EnsurePlayerIsAuthorized();
+            bool playerIsAuthorized = await _mAuthenticationServiceFacade.EnsurePlayerIsAuthorized();
 
             if (blockUI && !playerIsAuthorized)
             {
@@ -140,7 +139,7 @@ namespace Unity.BossRoom.Gameplay.UI
                 return;
             }
 
-            await m_LobbyServiceFacade.RetrieveAndPublishLobbyListAsync();
+            await _mLobbyServiceFacade.RetrieveAndPublishLobbyListAsync();
 
             if (blockUI)
             {
@@ -153,7 +152,7 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             BlockUIWhileLoadingIsInProgress();
 
-            bool playerIsAuthorized = await m_AuthenticationServiceFacade.EnsurePlayerIsAuthorized();
+            bool playerIsAuthorized = await _mAuthenticationServiceFacade.EnsurePlayerIsAuthorized();
 
             if (!playerIsAuthorized)
             {
@@ -163,7 +162,7 @@ namespace Unity.BossRoom.Gameplay.UI
             
             // TODO: need to unblock the UI elsewhere?
             
-            m_ConnectionManager.StartClientLobby(lobbyCode, m_LocalUser.DisplayName);
+            _mConnectionManager.StartClientLobby(lobbyCode, _mLocalUser.DisplayName);
             return;
             
             /*var result = await m_LobbyServiceFacade.TryJoinLobbyAsync(null, lobbyCode);
@@ -183,7 +182,7 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             BlockUIWhileLoadingIsInProgress();
 
-            bool playerIsAuthorized = await m_AuthenticationServiceFacade.EnsurePlayerIsAuthorized();
+            bool playerIsAuthorized = await _mAuthenticationServiceFacade.EnsurePlayerIsAuthorized();
 
             if (!playerIsAuthorized)
             {
@@ -210,7 +209,7 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             BlockUIWhileLoadingIsInProgress();
 
-            bool playerIsAuthorized = await m_AuthenticationServiceFacade.EnsurePlayerIsAuthorized();
+            bool playerIsAuthorized = await _mAuthenticationServiceFacade.EnsurePlayerIsAuthorized();
 
             if (!playerIsAuthorized)
             {
@@ -218,7 +217,7 @@ namespace Unity.BossRoom.Gameplay.UI
                 return;
             }
 
-            var result = await m_LobbyServiceFacade.TryQuickJoinLobbyAsync();
+            var result = await _mLobbyServiceFacade.TryQuickJoinLobbyAsync();
 
             if (result.Success)
             {
@@ -232,10 +231,10 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void OnJoinedLobby(Unity.Services.Lobbies.Models.Lobby remoteLobby)
         {
-            m_LobbyServiceFacade.SetRemoteLobby(remoteLobby);
+            _mLobbyServiceFacade.SetRemoteLobby(remoteLobby);
 
-            Debug.Log($"Joined lobby with code: {m_LocalLobby.LobbyCode}, Internal Relay Join Code{m_LocalLobby.RelayJoinCode}");
-            m_ConnectionManager.StartClientLobby(string.Empty, m_LocalUser.DisplayName);
+            Debug.Log($"Joined lobby with code: {_mLocalLobby.LobbyCode}, Internal Relay Join Code{_mLocalLobby.RelayJoinCode}");
+            _mConnectionManager.StartClientLobby(string.Empty, _mLocalUser.DisplayName);
         }
 
         //show/hide UI
@@ -276,8 +275,8 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void RegenerateName()
         {
-            m_LocalUser.DisplayName = m_NameGenerationData.GenerateName();
-            m_PlayerNameLabel.text = m_LocalUser.DisplayName;
+            _mLocalUser.DisplayName = _mNameGenerationData.GenerateName();
+            m_PlayerNameLabel.text = _mLocalUser.DisplayName;
         }
 
         void BlockUIWhileLoadingIsInProgress()

@@ -10,38 +10,38 @@ namespace Unity.BossRoom.Infrastructure
     [CreateAssetMenu]
     public class GameEvent : ScriptableObject
     {
-        List<IGameEventListenable> m_Listeners = new List<IGameEventListenable>();
+        List<IGameEventListenable> _mListeners = new List<IGameEventListenable>();
 
         public void Raise()
         {
-            for (int i = m_Listeners.Count - 1; i >= 0; i--)
+            for (int i = _mListeners.Count - 1; i >= 0; i--)
             {
-                if (m_Listeners[i] == null)
+                if (_mListeners[i] == null)
                 {
-                    m_Listeners.RemoveAt(i);
+                    _mListeners.RemoveAt(i);
                     continue;
                 }
 
-                m_Listeners[i].EventRaised();
+                _mListeners[i].EventRaised();
             }
         }
 
         public void RegisterListener(IGameEventListenable listener)
         {
-            for (int i = 0; i < m_Listeners.Count; i++)
+            for (int i = 0; i < _mListeners.Count; i++)
             {
-                if (m_Listeners[i] == listener)
+                if (_mListeners[i] == listener)
                 {
                     return;
                 }
             }
 
-            m_Listeners.Add(listener);
+            _mListeners.Add(listener);
         }
 
         public void DeregisterListener(IGameEventListenable listener)
         {
-            m_Listeners.Remove(listener);
+            _mListeners.Remove(listener);
         }
     }
 }

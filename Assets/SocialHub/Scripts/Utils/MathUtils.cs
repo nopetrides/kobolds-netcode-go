@@ -7,7 +7,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Utils
 {
     static class MathUtils
     {
-        const float k_DefaultThreshold = 0.0025f;
+        const float KDefaultThreshold = 0.0025f;
 
         /// <summary>
         ///
@@ -52,19 +52,19 @@ namespace Unity.Multiplayer.Samples.SocialHub.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool Approximately(float a, float b, float threshold = k_DefaultThreshold)
+        internal static bool Approximately(float a, float b, float threshold = KDefaultThreshold)
         {
             return Math.Round(Mathf.Abs(a - b), 4) <= threshold;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool Approximately(Vector3 a, Vector3 b, float threshold = k_DefaultThreshold)
+        internal static bool Approximately(Vector3 a, Vector3 b, float threshold = KDefaultThreshold)
         {
             return Approximately(a.x, b.x) && Approximately(a.y, b.y) && Approximately(a.z, b.z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool Approximately(Quaternion a, Quaternion b, float threshold = k_DefaultThreshold)
+        internal static bool Approximately(Quaternion a, Quaternion b, float threshold = KDefaultThreshold)
         {
             return Approximately(a.x, b.x) && Approximately(a.y, b.y) && Approximately(a.z, b.z) && Approximately(a.w, b.w);
         }
@@ -76,13 +76,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.Utils
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool ApproximatelyEuler(float a, float b, float threshold = k_DefaultThreshold)
+        internal static bool ApproximatelyEuler(float a, float b, float threshold = KDefaultThreshold)
         {
             return Mathf.Abs(EulerDelta(a, b)) <= threshold;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool ApproximatelyEuler(Vector3 a, Vector3 b, float threshold = k_DefaultThreshold)
+        internal static bool ApproximatelyEuler(Vector3 a, Vector3 b, float threshold = KDefaultThreshold)
         {
             return ApproximatelyEuler(a.x, b.x, threshold) && ApproximatelyEuler(a.y, b.y, threshold) && ApproximatelyEuler(a.z, b.z, threshold);
         }

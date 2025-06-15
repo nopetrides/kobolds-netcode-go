@@ -15,7 +15,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
     /// <summary>
     /// Implement your Tutorial callbacks here.
     /// </summary>
-    [CreateAssetMenu(fileName = k_DefaultFileName, menuName = "Tutorials/" + k_DefaultFileName + " Instance")]
+    [CreateAssetMenu(fileName = KDefaultFileName, menuName = "Tutorials/" + KDefaultFileName + " Instance")]
     public class TutorialCallbacks : ScriptableObject
     {
         [SerializeField] SceneAsset m_BootstrapScene;
@@ -23,21 +23,21 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
         /// <summary>
         /// The default file name used to create asset of this class type.
         /// </summary>
-        const string k_DefaultFileName = "TutorialCallbacks";
+        const string KDefaultFileName = "TutorialCallbacks";
 
-        const string k_SystemDataPath = "../Library/VP/SystemData.json";
+        const string KSystemDataPath = "../Library/VP/SystemData.json";
 
-        bool m_IsEditorWindowFocused;
+        bool _mIsEditorWindowFocused;
 
-        const float k_QuerySessionsInterval = 5f;
+        const float KQuerySessionsInterval = 5f;
 
-        bool m_IsSessionCreatedByVirtualPlayer;
+        bool _mIsSessionCreatedByVirtualPlayer;
 
-        bool m_IsSessionJoinedByEditor;
+        bool _mIsSessionJoinedByEditor;
 
-        float m_TimeSinceLastSessionUpdate;
+        float _mTimeSinceLastSessionUpdate;
 
-        ISession m_JoinedSession;
+        ISession _mJoinedSession;
 
         /// <summary>
         /// Creates a TutorialCallbacks asset and shows it in the Project window.
@@ -48,7 +48,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
         /// <returns>The created asset</returns>
         public static ScriptableObject CreateAndShowAsset(string assetPath = null)
         {
-            assetPath = assetPath ?? $"{TutorialEditorUtils.GetActiveFolderPath()}/{k_DefaultFileName}.asset";
+            assetPath = assetPath ?? $"{TutorialEditorUtils.GetActiveFolderPath()}/{KDefaultFileName}.asset";
             var asset = CreateInstance<TutorialCallbacks>();
             AssetDatabase.CreateAsset(asset, AssetDatabase.GenerateUniqueAssetPath(assetPath));
             EditorUtility.FocusProjectWindow(); // needed in order to make the selection of newly created asset to really work
@@ -89,7 +89,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
 
         public bool IsVirtualPlayerCreated()
         {
-            var path = Path.Combine(Application.dataPath, k_SystemDataPath);
+            var path = Path.Combine(Application.dataPath, KSystemDataPath);
 
             if (File.Exists(path))
             {
@@ -110,40 +110,40 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
         public void OnOpenMultiplayerToolsWindowTutorialStarted()
         {
             MultiplayerToolsWindow.Open();
-            m_IsEditorWindowFocused = false;
+            _mIsEditorWindowFocused = false;
         }
 
         public bool IsSceneViewFocused()
         {
             if (EditorWindow.focusedWindow != null && EditorWindow.focusedWindow.titleContent.text == "Scene")
             {
-                m_IsEditorWindowFocused = true;
+                _mIsEditorWindowFocused = true;
             }
 
-            return m_IsEditorWindowFocused;
+            return _mIsEditorWindowFocused;
         }
 
-        VisualElement m_SceneRoot;
+        VisualElement _mSceneRoot;
 
         public void OnEnableNetSceneVisTutorialStarted()
         {
-            m_SceneRoot = EditorWindow.GetWindow<SceneView>().rootVisualElement;
-            while (m_SceneRoot.parent != null)
+            _mSceneRoot = EditorWindow.GetWindow<SceneView>().rootVisualElement;
+            while (_mSceneRoot.parent != null)
             {
-                m_SceneRoot = m_SceneRoot.parent;
+                _mSceneRoot = _mSceneRoot.parent;
             }
         }
 
         public bool IsNetworkVisualizationOverlayDisplayed()
         {
-            return m_SceneRoot != null && m_SceneRoot.Q<VisualElement>("NetVisToolbarOverlay") != null;
+            return _mSceneRoot != null && _mSceneRoot.Q<VisualElement>("NetVisToolbarOverlay") != null;
         }
 
         public void ForceNetworkVisualizationOverlayDisplayed()
         {
-            if (m_SceneRoot.Q<VisualElement>("NetVisToolbarOverlay") == null)
+            if (_mSceneRoot.Q<VisualElement>("NetVisToolbarOverlay") == null)
             {
-                var netSceneVis = m_SceneRoot.Q<VisualElement>("Network Visualization");
+                var netSceneVis = _mSceneRoot.Q<VisualElement>("Network Visualization");
                 var netSceneVisButton = netSceneVis.Q<Button>();
                 using (var e = new NavigationSubmitEvent())
                 {
@@ -155,13 +155,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
 
         public bool IsVirtualPlayerSessionCreated()
         {
-            return m_IsSessionCreatedByVirtualPlayer;
+            return _mIsSessionCreatedByVirtualPlayer;
         }
 
         public void OnCreatingSessionTutorialStarted()
         {
-            m_IsSessionCreatedByVirtualPlayer = false;
-            m_TimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
+            _mIsSessionCreatedByVirtualPlayer = false;
+            _mTimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
         }
 
         public void QuerySessions()
@@ -171,9 +171,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
                 return;
             }
 
-            if (Time.realtimeSinceStartup - m_TimeSinceLastSessionUpdate > k_QuerySessionsInterval)
+            if (Time.realtimeSinceStartup - _mTimeSinceLastSessionUpdate > KQuerySessionsInterval)
             {
-                m_TimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
+                _mTimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
                 QuerySessionsAsync();
             }
         }
@@ -185,19 +185,19 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
             if (task.IsCompleted)
             {
                 // todo: add more criteria here
-                m_IsSessionCreatedByVirtualPlayer = task.Result.Sessions.Count > 0;
+                _mIsSessionCreatedByVirtualPlayer = task.Result.Sessions.Count > 0;
             }
         }
 
         public bool IsSessionJoinedByEditor()
         {
-            return m_IsSessionJoinedByEditor;
+            return _mIsSessionJoinedByEditor;
         }
 
         public void OnJoiningSessionTutorialStarted()
         {
-            m_IsSessionJoinedByEditor = false;
-            m_TimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
+            _mIsSessionJoinedByEditor = false;
+            _mTimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
         }
 
         public void QueryJoinedSessions()
@@ -207,9 +207,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
                 return;
             }
 
-            if (Time.realtimeSinceStartup - m_TimeSinceLastSessionUpdate > k_QuerySessionsInterval)
+            if (Time.realtimeSinceStartup - _mTimeSinceLastSessionUpdate > KQuerySessionsInterval)
             {
-                m_TimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
+                _mTimeSinceLastSessionUpdate = Time.realtimeSinceStartup;
                 QueryJoinedSessionsAsync();
             }
         }
@@ -223,12 +223,12 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
                 if (task.Result.Count > 0)
                 {
                     var joinedSessionId = task.Result[0];
-                    m_IsSessionJoinedByEditor = true;
+                    _mIsSessionJoinedByEditor = true;
                     foreach (var session in MultiplayerService.Instance.Sessions)
                     {
                         if (session.Value.Id == joinedSessionId)
                         {
-                            m_JoinedSession = session.Value;
+                            _mJoinedSession = session.Value;
                             break;
                         }
                     }
@@ -238,7 +238,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Editor.Tutorials
 
         public bool IsOnlyEditorInSession()
         {
-            return m_JoinedSession != null && m_JoinedSession.Players.Count == 1 && m_JoinedSession.IsHost;
+            return _mJoinedSession != null && _mJoinedSession.Players.Count == 1 && _mJoinedSession.IsHost;
         }
     }
 }

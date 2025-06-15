@@ -54,7 +54,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         public bool IsValidTarget { get { return !IsBroken.Value; } }
 
-        private GameObject m_CurrentBrokenVisualization;
+        private GameObject _mCurrentBrokenVisualization;
 
         public override void OnNetworkSpawn()
         {
@@ -85,9 +85,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             }
         }
 
-        public void ReceiveHP(ServerCharacter inflicter, int HP)
+        public void ReceiveHp(ServerCharacter inflicter, int hp)
         {
-            if (HP < 0)
+            if (hp < 0)
             {
                 if (inflicter && !inflicter.IsNpc)
                 {
@@ -102,7 +102,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 if (m_NetworkHealthState)
                 {
                     m_NetworkHealthState.HitPoints.Value =
-                        Mathf.Clamp(m_NetworkHealthState.HitPoints.Value + HP, 0, m_MaxHealth.Value);
+                        Mathf.Clamp(m_NetworkHealthState.HitPoints.Value + hp, 0, m_MaxHealth.Value);
                     if (m_NetworkHealthState.HitPoints.Value <= 0)
                     {
                         Break();
@@ -116,7 +116,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             }
         }
 
-        private void Break()
+		public Transform Transform { get; }
+
+		private void Break()
         {
             IsBroken.Value = true;
             if (m_Collider)
@@ -165,21 +167,21 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 }
             }
 
-            if (m_CurrentBrokenVisualization)
-                Destroy(m_CurrentBrokenVisualization); // just a safety check, should be null when we get here
+            if (_mCurrentBrokenVisualization)
+                Destroy(_mCurrentBrokenVisualization); // just a safety check, should be null when we get here
 
             GameObject brokenPrefab = (onStart && m_PrebrokenPrefab != null) ? m_PrebrokenPrefab : m_BrokenPrefab;
             if (brokenPrefab)
             {
-                m_CurrentBrokenVisualization = Instantiate(brokenPrefab, m_BrokenPrefabPos.position, m_BrokenPrefabPos.rotation, transform);
+                _mCurrentBrokenVisualization = Instantiate(brokenPrefab, m_BrokenPrefabPos.position, m_BrokenPrefabPos.rotation, transform);
             }
         }
 
         private void PerformUnbreakVisualization()
         {
-            if (m_CurrentBrokenVisualization)
+            if (_mCurrentBrokenVisualization)
             {
-                Destroy(m_CurrentBrokenVisualization);
+                Destroy(_mCurrentBrokenVisualization);
             }
             foreach (var unbrokenGameObject in m_UnbrokenGameObjects)
             {

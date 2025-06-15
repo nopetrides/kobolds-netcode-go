@@ -32,14 +32,14 @@ namespace Unity.BossRoom.Gameplay.UI
         [Tooltip("The length of time the mouse needs to hover over this element before the tooltip appears (in seconds)")]
         private float m_TooltipDelay = 0.5f;
 
-        private float m_PointerEnterTime = 0;
-        private bool m_IsShowingTooltip;
+        private float _mPointerEnterTime = 0;
+        private bool _mIsShowingTooltip;
 
         public void SetText(string text)
         {
             bool wasChanged = text != m_TooltipText;
             m_TooltipText = text;
-            if (wasChanged && m_IsShowingTooltip)
+            if (wasChanged && _mIsShowingTooltip)
             {
                 // we changed the text while of our tooltip was being shown! We need to re-show the tooltip!
                 HideTooltip();
@@ -49,12 +49,12 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            m_PointerEnterTime = Time.time;
+            _mPointerEnterTime = Time.time;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            m_PointerEnterTime = 0;
+            _mPointerEnterTime = 0;
             HideTooltip();
         }
 
@@ -68,7 +68,7 @@ namespace Unity.BossRoom.Gameplay.UI
 
         private void Update()
         {
-            if (m_PointerEnterTime != 0 && (Time.time - m_PointerEnterTime) > m_TooltipDelay)
+            if (_mPointerEnterTime != 0 && (Time.time - _mPointerEnterTime) > m_TooltipDelay)
             {
                 ShowTooltip();
             }
@@ -76,19 +76,19 @@ namespace Unity.BossRoom.Gameplay.UI
 
         private void ShowTooltip()
         {
-            if (!m_IsShowingTooltip)
+            if (!_mIsShowingTooltip)
             {
                 m_TooltipPopup.ShowTooltip(m_TooltipText, Input.mousePosition);
-                m_IsShowingTooltip = true;
+                _mIsShowingTooltip = true;
             }
         }
 
         private void HideTooltip()
         {
-            if (m_IsShowingTooltip)
+            if (_mIsShowingTooltip)
             {
                 m_TooltipPopup.HideTooltip();
-                m_IsShowingTooltip = false;
+                _mIsShowingTooltip = false;
             }
         }
 

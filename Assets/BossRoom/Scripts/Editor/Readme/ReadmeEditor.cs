@@ -14,11 +14,11 @@ namespace Unity.BossRoom.Editor
     [InitializeOnLoad]
     public class ReadmeEditor : UnityEditor.Editor
     {
-        const string k_ShowedReadmeSessionStateName = "ReadmeEditor.showedReadme";
+        const string KShowedReadmeSessionStateName = "ReadmeEditor.showedReadme";
 
-        const float k_Space = 16f;
+        const float KSpace = 16f;
 
-        bool m_Initialized;
+        bool _mInitialized;
 
         [SerializeField]
         GUIStyle m_LinkStyle;
@@ -59,10 +59,10 @@ namespace Unity.BossRoom.Editor
 
         static void SelectReadmeAutomatically()
         {
-            if (!SessionState.GetBool(k_ShowedReadmeSessionStateName, false))
+            if (!SessionState.GetBool(KShowedReadmeSessionStateName, false))
             {
                 var readme = SelectReadme();
-                SessionState.SetBool(k_ShowedReadmeSessionStateName, true);
+                SessionState.SetBool(KShowedReadmeSessionStateName, true);
 
                 if (readme && !readme.loadedLayout)
                 {
@@ -139,7 +139,7 @@ namespace Unity.BossRoom.Editor
                     }
                 }
 
-                GUILayout.Space(k_Space);
+                GUILayout.Space(KSpace);
             }
         }
 
@@ -147,7 +147,7 @@ namespace Unity.BossRoom.Editor
 
         void Init()
         {
-            if (m_Initialized)
+            if (_mInitialized)
                 return;
             m_BodyStyle = new GUIStyle(EditorStyles.label);
             m_BodyStyle.wordWrap = true;
@@ -166,7 +166,7 @@ namespace Unity.BossRoom.Editor
             m_LinkStyle.normal.textColor = new Color(0x00 / 255f, 0x78 / 255f, 0xDA / 255f, 1f);
             m_LinkStyle.stretchWidth = false;
 
-            m_Initialized = true;
+            _mInitialized = true;
         }
 
         bool LinkLabel(GUIContent label, params GUILayoutOption[] options)

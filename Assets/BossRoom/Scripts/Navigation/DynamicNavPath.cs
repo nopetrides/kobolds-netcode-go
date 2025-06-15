@@ -10,37 +10,37 @@ namespace Unity.BossRoom.Navigation
         /// <summary>
         /// The tolerance to decide whether the path needs to be recalculated when the position of a target transform changed.
         /// </summary>
-        const float k_RepathToleranceSqr = 9f;
+        const float KRepathToleranceSqr = 9f;
 
-        NavMeshAgent m_Agent;
+        NavMeshAgent _mAgent;
 
-        NavigationSystem m_NavigationSystem;
+        NavigationSystem _mNavigationSystem;
 
         /// <summary>
         /// The target position value which was used to calculate the current path.
         /// This get stored to make sure the path gets recalculated if the target
         /// </summary>
-        Vector3 m_CurrentPathOriginalTarget;
+        Vector3 _mCurrentPathOriginalTarget;
 
         /// <summary>
         /// This field caches a NavMesh Path so that we don't have to allocate a new one each time.
         /// </summary>
-        NavMeshPath m_NavMeshPath;
+        NavMeshPath _mNavMeshPath;
 
         /// <summary>
         /// The remaining path points to follow to reach the target position.
         /// </summary>
-        List<Vector3> m_Path;
+        List<Vector3> _mPath;
 
         /// <summary>
         /// The target position of this path.
         /// </summary>
-        Vector3 m_PositionTarget;
+        Vector3 _mPositionTarget;
 
         /// <summary>
         /// A moving transform target, the path will readjust when the target moves. If this is non-null, it takes precedence over m_PositionTarget.
         /// </summary>
-        Transform m_TransformTarget;
+        Transform _mTransformTarget;
 
         /// <summary>
         /// Creates a new instance of the <see cref="DynamicNavPath"/>.
@@ -49,15 +49,15 @@ namespace Unity.BossRoom.Navigation
         /// <param name="navigationSystem">The navigation system which updates this path.</param>
         public DynamicNavPath(NavMeshAgent agent, NavigationSystem navigationSystem)
         {
-            m_Agent = agent;
-            m_Path = new List<Vector3>();
-            m_NavMeshPath = new NavMeshPath();
-            m_NavigationSystem = navigationSystem;
+            _mAgent = agent;
+            _mPath = new List<Vector3>();
+            _mNavMeshPath = new NavMeshPath();
+            _mNavigationSystem = navigationSystem;
 
             navigationSystem.OnNavigationMeshChanged += OnNavMeshChanged;
         }
 
-        Vector3 TargetPosition => m_TransformTarget != null ? m_TransformTarget.position : m_PositionTarget;
+        Vector3 TargetPosition => _mTransformTarget != null ? _mTransformTarget.position : _mPositionTarget;
 
         /// <summary>
         /// Set the target of this path to follow a moving transform.
@@ -65,7 +65,7 @@ namespace Unity.BossRoom.Navigation
         /// <param name="target">The transform to follow.</param>
         public void FollowTransform(Transform target)
         {
-            m_TransformTarget = target;
+            _mTransformTarget = target;
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace Unity.BossRoom.Navigation
                 target = hit.position;
             }
 
-            m_PositionTarget = target;
-            m_TransformTarget = null;
+            _mPositionTarget = target;
+            _mTransformTarget = null;
             RecalculatePath();
         }
 
@@ -98,7 +98,7 @@ namespace Unity.BossRoom.Navigation
         /// </summary>
         public void Clear()
         {
-            m_Path.Clear();
+            _mPath.Clear();
         }
 
         /// <summary>
@@ -108,28 +108,28 @@ namespace Unity.BossRoom.Navigation
         /// <returns>Returns the movement vector.</returns>
         public Vector3 MoveAlongPath(float distance)
         {
-            if (m_TransformTarget != null)
+            if (_mTransformTarget != null)
             {
                 OnTargetPositionChanged(TargetPosition);
             }
 
-            if (m_Path.Count == 0)
+            if (_mPath.Count == 0)
             {
                 return Vector3.zero;
             }
 
-            var currentPredictedPosition = m_Agent.transform.position;
+            var currentPredictedPosition = _mAgent.transform.position;
             var remainingDistance = distance;
 
             while (remainingDistance > 0)
             {
-                var toNextPathPoint = m_Path[0] - currentPredictedPosition;
+                var toNextPathPoint = _mPath[0] - currentPredictedPosition;
 
                 // If end point is closer then distance to move
                 if (toNextPathPoint.sqrMagnitude < remainingDistance * remainingDistance)
                 {
-                    currentPredictedPosition = m_Path[0];
-                    m_Path.RemoveAt(0);
+                    currentPredictedPosition = _mPath[0];
+                    _mPath.RemoveAt(0);
                     remainingDistance -= toNextPathPoint.magnitude;
                 }
 
@@ -140,17 +140,17 @@ namespace Unity.BossRoom.Navigation
                 break;
             }
 
-            return currentPredictedPosition - m_Agent.transform.position;
+            return currentPredictedPosition - _mAgent.transform.position;
         }
 
         void OnTargetPositionChanged(Vector3 newTarget)
         {
-            if (m_Path.Count == 0)
+            if (_mPath.Count == 0)
             {
                 RecalculatePath();
             }
 
-            if ((newTarget - m_CurrentPathOriginalTarget).sqrMagnitude > k_RepathToleranceSqr)
+            if ((newTarget - _mCurrentPathOriginalTarget).sqrMagnitude > KRepathToleranceSqr)
             {
                 RecalculatePath();
             }
@@ -161,22 +161,22 @@ namespace Unity.BossRoom.Navigation
         /// </summary>
         void RecalculatePath()
         {
-            m_CurrentPathOriginalTarget = TargetPosition;
-            m_Agent.CalculatePath(TargetPosition, m_NavMeshPath);
+            _mCurrentPathOriginalTarget = TargetPosition;
+            _mAgent.CalculatePath(TargetPosition, _mNavMeshPath);
 
-            m_Path.Clear();
+            _mPath.Clear();
 
-            var corners = m_NavMeshPath.corners;
+            var corners = _mNavMeshPath.corners;
 
             for (int i = 1; i < corners.Length; i++) // Skip the first corner because it is the starting point.
             {
-                m_Path.Add(corners[i]);
+                _mPath.Add(corners[i]);
             }
         }
 
         public void Dispose()
         {
-            m_NavigationSystem.OnNavigationMeshChanged -= OnNavMeshChanged;
+            _mNavigationSystem.OnNavigationMeshChanged -= OnNavMeshChanged;
         }
     }
 }

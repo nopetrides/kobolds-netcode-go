@@ -29,17 +29,17 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// - we were attacked,
         /// - or the maximum charge was reached.
         /// </summary>
-        private float m_StoppedChargingUpTime = 0;
+        private float _mStoppedChargingUpTime = 0;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
-            if (m_Data.TargetIds != null && m_Data.TargetIds.Length > 0)
+            if (MData.TargetIds != null && MData.TargetIds.Length > 0)
             {
-                NetworkObject initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[m_Data.TargetIds[0]];
+                NetworkObject initialTarget = NetworkManager.Singleton.SpawnManager.SpawnedObjects[MData.TargetIds[0]];
                 if (initialTarget)
                 {
                     // face our target, if we had one
-                    serverCharacter.physicsWrapper.Transform.LookAt(initialTarget.transform.position);
+                    serverCharacter.PhysicsWrapper.Transform.LookAt(initialTarget.transform.position);
                 }
             }
 
@@ -47,31 +47,31 @@ namespace Unity.BossRoom.Gameplay.Actions
             // for several copies of this action to be playing at once. This can lead to situations where several
             // dying versions of the action raise the end-trigger, but the animator only lowers it once, leaving the trigger
             // in a raised state. So we'll make sure that our end-trigger isn't raised yet. (Generally a good idea anyway.)
-            serverCharacter.serverAnimationHandler.NetworkAnimator.ResetTrigger(Config.Anim2);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.ResetTrigger(Config.Anim2);
 
             // raise the start trigger to start the animation loop!
-            serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
 
-            serverCharacter.clientCharacter.ClientPlayActionRpc(Data);
+            serverCharacter.ClientCharacter.ClientPlayActionRpc(Data);
             return true;
         }
 
         public override void Reset()
         {
             base.Reset();
-            m_ChargeGraphics = null;
-            m_ShieldGraphics = null;
-            m_StoppedChargingUpTime = 0;
+            _mChargeGraphics = null;
+            _mShieldGraphics = null;
+            _mStoppedChargingUpTime = 0;
         }
 
         private bool IsChargingUp()
         {
-            return m_StoppedChargingUpTime == 0;
+            return _mStoppedChargingUpTime == 0;
         }
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (m_StoppedChargingUpTime == 0)
+            if (_mStoppedChargingUpTime == 0)
             {
                 // we haven't explicitly stopped charging up... but if we've reached max charge, that implicitly stops us
                 if (TimeRunning >= Config.ExecTimeSeconds)
@@ -81,17 +81,17 @@ namespace Unity.BossRoom.Gameplay.Actions
             }
 
             // we stop once the charge-up has ended and our effect duration has elapsed
-            return m_StoppedChargingUpTime == 0 || Time.time < (m_StoppedChargingUpTime + Config.EffectDurationSeconds);
+            return _mStoppedChargingUpTime == 0 || Time.time < (_mStoppedChargingUpTime + Config.EffectDurationSeconds);
         }
 
         public override bool ShouldBecomeNonBlocking()
         {
-            return m_StoppedChargingUpTime != 0;
+            return _mStoppedChargingUpTime != 0;
         }
 
         private float GetPercentChargedUp()
         {
-            return ActionUtils.GetPercentChargedUp(m_StoppedChargingUpTime, TimeRunning, TimeStarted, Config.ExecTimeSeconds);
+            return ActionUtils.GetPercentChargedUp(_mStoppedChargingUpTime, TimeRunning, TimeStarted, Config.ExecTimeSeconds);
         }
 
         public override void BuffValue(BuffableValue buffType, ref float buffedValue)
@@ -135,8 +135,8 @@ namespace Unity.BossRoom.Gameplay.Actions
             // if stepped into invincibility, decrement invincibility counter
             if (Mathf.Approximately(GetPercentChargedUp(), 1f))
             {
-                serverCharacter.serverAnimationHandler.NetworkAnimator.Animator.SetInteger(Config.OtherAnimatorVariable,
-                    serverCharacter.serverAnimationHandler.NetworkAnimator.Animator.GetInteger(Config.OtherAnimatorVariable) - 1);
+                serverCharacter.ServerAnimationHandler.NetworkAnimator.Animator.SetInteger(Config.OtherAnimatorVariable,
+                    serverCharacter.ServerAnimationHandler.NetworkAnimator.Animator.GetInteger(Config.OtherAnimatorVariable) - 1);
             }
         }
 
@@ -144,12 +144,12 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             if (IsChargingUp())
             {
-                m_StoppedChargingUpTime = Time.time;
-                parent.clientCharacter.ClientStopChargingUpRpc(GetPercentChargedUp());
+                _mStoppedChargingUpTime = Time.time;
+                parent.ClientCharacter.ClientStopChargingUpRpc(GetPercentChargedUp());
 
-                parent.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                parent.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
 
-                parent.serverAnimationHandler.NetworkAnimator.ResetTrigger(Config.Anim);
+                parent.ServerAnimationHandler.NetworkAnimator.ResetTrigger(Config.Anim);
 
                 //tell the animator controller to enter "invincibility mode" (where we don't flinch from damage)
                 if (Mathf.Approximately(GetPercentChargedUp(), 1f))
@@ -158,8 +158,8 @@ namespace Unity.BossRoom.Gameplay.Actions
                     // can restart their shield before the first one has ended, thereby getting two stacks of invincibility.
                     // So each active copy of the charge-up increments the invincibility counter, and the animator controller
                     // knows anything greater than zero means we shouldn't show hit-reacts.
-                    parent.serverAnimationHandler.NetworkAnimator.Animator.SetInteger(Config.OtherAnimatorVariable,
-                        parent.serverAnimationHandler.NetworkAnimator.Animator.GetInteger(Config.OtherAnimatorVariable) + 1);
+                    parent.ServerAnimationHandler.NetworkAnimator.Animator.SetInteger(Config.OtherAnimatorVariable,
+                        parent.ServerAnimationHandler.NetworkAnimator.Animator.GetInteger(Config.OtherAnimatorVariable) + 1);
                 }
             }
         }
@@ -169,7 +169,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             Assert.IsTrue(Config.Spawns.Length == 2, $"Found {Config.Spawns.Length} spawns for action {name}. Should be exactly 2: a charge-up particle and a fully-charged particle");
 
             base.OnStartClient(clientCharacter);
-            m_ChargeGraphics = InstantiateSpecialFXGraphic(Config.Spawns[0], clientCharacter.transform, true);
+            _mChargeGraphics = InstantiateSpecialFXGraphic(Config.Spawns[0], clientCharacter.transform, true);
             return true;
         }
     }

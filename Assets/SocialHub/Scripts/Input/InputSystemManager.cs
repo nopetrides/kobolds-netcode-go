@@ -37,26 +37,26 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
         /// </example>
         /// <seealso cref="Touchscreen"/>
         /// <seealso cref="MobileGamepadBehaviour"/>
-        internal static Task<bool> IsMobile => s_IsMobile.Task;
-        static TaskCompletionSource<bool> s_IsMobile;
+        internal static Task<bool> IsMobile => _sIsMobile.Task;
+        static TaskCompletionSource<bool> _sIsMobile;
 
 #if UNITY_EDITOR
         [Header("Debug"), Tooltip("This option is only used in Playmode in the Editor"), SerializeField]
         internal bool ForceMobileInput;
 #endif
 
-        AvatarActions.UIActions m_UIInputs;
-        AvatarActions.PlayerActions m_GameplayInputs;
+        AvatarActions.UIActions _mUIInputs;
+        AvatarActions.PlayerActions _mGameplayInputs;
 
         /// <summary>
-        /// This method makes sure that <see cref="s_IsMobile"/> is initialized when the game is started.
+        /// This method makes sure that <see cref="_sIsMobile"/> is initialized when the game is started.
         /// </summary>
         /// <remarks>
         /// The setup is done in this method rather than in static constructors to ensure that multiple
         /// Editor Playmode sessions will be initialized properly if not assembly reloading is performed between sessions.
         /// </remarks>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void InitializeStatic() => s_IsMobile = new TaskCompletionSource<bool>();
+        static void InitializeStatic() => _sIsMobile = new TaskCompletionSource<bool>();
 
         void Awake()
         {
@@ -71,7 +71,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
                 GameInput.Actions.Disable();
                 GameInput.Actions.bindingMask = InputBinding.MaskByGroup(GameInput.Actions.TouchScheme.bindingGroup);
                 GameInput.Actions.Enable();
-                s_IsMobile.SetResult(true);
+                _sIsMobile.SetResult(true);
 
 #if UNITY_EDITOR
                 Cursor.visible = true;
@@ -84,27 +84,27 @@ namespace Unity.Multiplayer.Samples.SocialHub.Input
 #endif
 #if UNITY_EDITOR || (!UNITY_ANDROID && !UNITY_IOS)
             {
-                s_IsMobile.SetResult(false);
+                _sIsMobile.SetResult(false);
             }
 #endif
         }
 
         void Start()
         {
-            m_UIInputs = GameInput.Actions.UI;
-            m_GameplayInputs = GameInput.Actions.Player;
+            _mUIInputs = GameInput.Actions.UI;
+            _mGameplayInputs = GameInput.Actions.Player;
         }
 
         internal void EnableUIInputs()
         {
-            m_GameplayInputs.Disable();
-            m_UIInputs.Enable();
+            _mGameplayInputs.Disable();
+            _mUIInputs.Enable();
         }
 
         internal void EnableGameplayInputs()
         {
-            m_UIInputs.Disable();
-            m_GameplayInputs.Enable();
+            _mUIInputs.Disable();
+            _mGameplayInputs.Enable();
         }
     }
 }

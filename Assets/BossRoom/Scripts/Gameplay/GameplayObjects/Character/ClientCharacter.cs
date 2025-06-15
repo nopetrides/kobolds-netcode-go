@@ -7,6 +7,7 @@ using Unity.BossRoom.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     /// <summary>
@@ -40,30 +41,30 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// </summary>
         public Material ReticuleFriendlyMat => m_VisualizationConfiguration.ReticuleFriendlyMat;
 
-        CharacterSwap m_CharacterSwapper;
+        CharacterSwap _mCharacterSwapper;
 
-        public CharacterSwap CharacterSwap => m_CharacterSwapper;
+        public CharacterSwap CharacterSwap => _mCharacterSwapper;
 
-        public bool CanPerformActions => m_ServerCharacter.CanPerformActions;
+        public bool CanPerformActions => _mServerCharacter.CanPerformActions;
 
-        ServerCharacter m_ServerCharacter;
+        ServerCharacter _mServerCharacter;
 
-        public ServerCharacter serverCharacter => m_ServerCharacter;
+        public ServerCharacter ServerCharacter => _mServerCharacter;
 
-        ClientActionPlayer m_ClientActionViz;
+        ClientActionPlayer _mClientActionViz;
 
-        PositionLerper m_PositionLerper;
+        PositionLerper _mPositionLerper;
 
-        RotationLerper m_RotationLerper;
+        RotationLerper _mRotationLerper;
 
         // this value suffices for both positional and rotational interpolations; one may have a constant value for each
-        const float k_LerpTime = 0.08f;
+        const float KLerpTime = 0.08f;
 
-        Vector3 m_LerpedPosition;
+        Vector3 _mLerpedPosition;
 
-        Quaternion m_LerpedRotation;
+        Quaternion _mLerpedRotation;
 
-        float m_CurrentSpeed;
+        float _mCurrentSpeed;
 
         /// <summary>
         /// /// Server to Client RPC that broadcasts this action play to all clients.
@@ -73,7 +74,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         public void ClientPlayActionRpc(ActionRequestData data)
         {
             ActionRequestData data1 = data;
-            m_ClientActionViz.PlayAction(ref data1);
+            _mClientActionViz.PlayAction(ref data1);
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [Rpc(SendTo.ClientsAndHost)]
         public void ClientCancelAllActionsRpc()
         {
-            m_ClientActionViz.CancelAllActions();
+            _mClientActionViz.CancelAllActions();
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [Rpc(SendTo.ClientsAndHost)]
         public void ClientCancelActionsByPrototypeIDRpc(ActionID actionPrototypeID)
         {
-            m_ClientActionViz.CancelAllActionsWithSamePrototypeID(actionPrototypeID);
+            _mClientActionViz.CancelAllActionsWithSamePrototypeID(actionPrototypeID);
         }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         [Rpc(SendTo.ClientsAndHost)]
         public void ClientStopChargingUpRpc(float percentCharged)
         {
-            m_ClientActionViz.OnStoppedChargingUp(percentCharged);
+            _mClientActionViz.OnStoppedChargingUp(percentCharged);
         }
 
         void Awake()
@@ -118,45 +119,45 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
             enabled = true;
 
-            m_ClientActionViz = new ClientActionPlayer(this);
+            _mClientActionViz = new ClientActionPlayer(this);
 
-            m_ServerCharacter = GetComponentInParent<ServerCharacter>();
+            _mServerCharacter = GetComponentInParent<ServerCharacter>();
 
-            m_ServerCharacter.IsStealthy.OnValueChanged += OnStealthyChanged;
-            m_ServerCharacter.MovementStatus.OnValueChanged += OnMovementStatusChanged;
-            OnMovementStatusChanged(MovementStatus.Normal, m_ServerCharacter.MovementStatus.Value);
+            _mServerCharacter.IsStealthy.OnValueChanged += OnStealthyChanged;
+            _mServerCharacter.MovementStatus.OnValueChanged += OnMovementStatusChanged;
+            OnMovementStatusChanged(MovementStatus.Normal, _mServerCharacter.MovementStatus.Value);
 
             // sync our visualization position & rotation to the most up to date version received from server
-            transform.SetPositionAndRotation(serverCharacter.physicsWrapper.Transform.position,
-                serverCharacter.physicsWrapper.Transform.rotation);
-            m_LerpedPosition = transform.position;
-            m_LerpedRotation = transform.rotation;
+            transform.SetPositionAndRotation(ServerCharacter.PhysicsWrapper.Transform.position,
+                ServerCharacter.PhysicsWrapper.Transform.rotation);
+            _mLerpedPosition = transform.position;
+            _mLerpedRotation = transform.rotation;
 
             // similarly, initialize start position and rotation for smooth lerping purposes
-            m_PositionLerper = new PositionLerper(serverCharacter.physicsWrapper.Transform.position, k_LerpTime);
-            m_RotationLerper = new RotationLerper(serverCharacter.physicsWrapper.Transform.rotation, k_LerpTime);
+            _mPositionLerper = new PositionLerper(ServerCharacter.PhysicsWrapper.Transform.position, KLerpTime);
+            _mRotationLerper = new RotationLerper(ServerCharacter.PhysicsWrapper.Transform.rotation, KLerpTime);
 
-            if (!m_ServerCharacter.IsNpc)
+            if (!_mServerCharacter.IsNpc)
             {
-                name = "AvatarGraphics" + m_ServerCharacter.OwnerClientId;
+                name = "AvatarGraphics" + _mServerCharacter.OwnerClientId;
 
-                if (m_ServerCharacter.TryGetComponent(out ClientAvatarGuidHandler clientAvatarGuidHandler))
+                if (_mServerCharacter.TryGetComponent(out ClientAvatarGuidHandler clientAvatarGuidHandler))
                 {
-                    m_ClientVisualsAnimator = clientAvatarGuidHandler.graphicsAnimator;
+                    m_ClientVisualsAnimator = clientAvatarGuidHandler.GraphicsAnimator;
                 }
 
-                m_CharacterSwapper = GetComponentInChildren<CharacterSwap>();
+                _mCharacterSwapper = GetComponentInChildren<CharacterSwap>();
 
                 // ...and visualize the current char-select value that we know about
                 SetAppearanceSwap();
 
-                if (m_ServerCharacter.IsOwner)
+                if (_mServerCharacter.IsOwner)
                 {
                     ActionRequestData data = new ActionRequestData { ActionID = GameDataSource.Instance.GeneralTargetActionPrototype.ActionID };
-                    m_ClientActionViz.PlayAction(ref data);
+                    _mClientActionViz.PlayAction(ref data);
                     gameObject.AddComponent<CameraController>();
 
-                    if (m_ServerCharacter.TryGetComponent(out ClientInputSender inputSender))
+                    if (_mServerCharacter.TryGetComponent(out ClientInputSender inputSender))
                     {
                         // anticipated actions will only be played on non-host, owning clients
                         if (!IsServer)
@@ -171,11 +172,11 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         public override void OnNetworkDespawn()
         {
-            if (m_ServerCharacter)
+            if (_mServerCharacter)
             {
-                m_ServerCharacter.IsStealthy.OnValueChanged -= OnStealthyChanged;
+                _mServerCharacter.IsStealthy.OnValueChanged -= OnStealthyChanged;
 
-                if (m_ServerCharacter.TryGetComponent(out ClientInputSender sender))
+                if (_mServerCharacter.TryGetComponent(out ClientInputSender sender))
                 {
                     sender.ActionInputEvent -= OnActionInput;
                     sender.ClientMoveEvent -= OnMoveInput;
@@ -187,7 +188,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         void OnActionInput(ActionRequestData data)
         {
-            m_ClientActionViz.AnticipateAction(ref data);
+            _mClientActionViz.AnticipateAction(ref data);
         }
 
         void OnMoveInput(Vector3 position)
@@ -205,12 +206,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         void SetAppearanceSwap()
         {
-            if (m_CharacterSwapper)
+            if (_mCharacterSwapper)
             {
                 var specialMaterialMode = CharacterSwap.SpecialMaterialMode.None;
-                if (m_ServerCharacter.IsStealthy.Value)
+                if (_mServerCharacter.IsStealthy.Value)
                 {
-                    if (m_ServerCharacter.IsOwner)
+                    if (_mServerCharacter.IsOwner)
                     {
                         specialMaterialMode = CharacterSwap.SpecialMaterialMode.StealthySelf;
                     }
@@ -220,7 +221,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                     }
                 }
 
-                m_CharacterSwapper.SwapToModel(specialMaterialMode);
+                _mCharacterSwapper.SwapToModel(specialMaterialMode);
             }
         }
 
@@ -229,7 +230,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
         /// </summary>
         float GetVisualMovementSpeed(MovementStatus movementStatus)
         {
-            if (m_ServerCharacter.NetLifeState.LifeState.Value != LifeState.Alive)
+            if (_mServerCharacter.NetLifeState.LifeState.Value != LifeState.Alive)
             {
                 return m_VisualizationConfiguration.SpeedDead;
             }
@@ -255,7 +256,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 
         void OnMovementStatusChanged(MovementStatus previousValue, MovementStatus newValue)
         {
-            m_CurrentSpeed = GetVisualMovementSpeed(newValue);
+            _mCurrentSpeed = GetVisualMovementSpeed(newValue);
         }
 
         void Update()
@@ -269,20 +270,20 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
                 // Note: a cached position (m_LerpedPosition) and rotation (m_LerpedRotation) are created and used as
                 // the starting point for each interpolation since the root's position and rotation are modified in
                 // FixedUpdate, thus altering this transform (being a child) in the process.
-                m_LerpedPosition = m_PositionLerper.LerpPosition(m_LerpedPosition,
-                    serverCharacter.physicsWrapper.Transform.position);
-                m_LerpedRotation = m_RotationLerper.LerpRotation(m_LerpedRotation,
-                    serverCharacter.physicsWrapper.Transform.rotation);
-                transform.SetPositionAndRotation(m_LerpedPosition, m_LerpedRotation);
+                _mLerpedPosition = _mPositionLerper.LerpPosition(_mLerpedPosition,
+                    ServerCharacter.PhysicsWrapper.Transform.position);
+                _mLerpedRotation = _mRotationLerper.LerpRotation(_mLerpedRotation,
+                    ServerCharacter.PhysicsWrapper.Transform.rotation);
+                transform.SetPositionAndRotation(_mLerpedPosition, _mLerpedRotation);
             }
 
             if (m_ClientVisualsAnimator)
             {
                 // set Animator variables here
-                OurAnimator.SetFloat(m_VisualizationConfiguration.SpeedVariableID, m_CurrentSpeed);
+                OurAnimator.SetFloat(m_VisualizationConfiguration.SpeedVariableID, _mCurrentSpeed);
             }
 
-            m_ClientActionViz.OnUpdate();
+            _mClientActionViz.OnUpdate();
         }
 
         void OnAnimEvent(string id)
@@ -291,7 +292,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
             //and calls a method of the same name on a component on the same GameObject as the Animator. See the "attack1" Animation Clip as one
             //example of where this is configured.
 
-            m_ClientActionViz.OnAnimEvent(id);
+            _mClientActionViz.OnAnimEvent(id);
         }
 
         public bool IsAnimating()

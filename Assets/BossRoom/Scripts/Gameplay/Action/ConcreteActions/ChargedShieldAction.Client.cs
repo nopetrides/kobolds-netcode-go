@@ -10,16 +10,16 @@ namespace Unity.BossRoom.Gameplay.Actions
         /// <summary>
         /// The "charging up" graphics. These are disabled as soon as the player stops charging up
         /// </summary>
-        SpecialFXGraphic m_ChargeGraphics;
+        SpecialFXGraphic _mChargeGraphics;
 
         /// <summary>
         /// The "I'm fully charged" graphics. This is null until instantiated
         /// </summary>
-        SpecialFXGraphic m_ShieldGraphics;
+        SpecialFXGraphic _mShieldGraphics;
 
         public override bool OnUpdateClient(ClientCharacter clientCharacter)
         {
-            return IsChargingUp() || (Time.time - m_StoppedChargingUpTime) < Config.EffectDurationSeconds;
+            return IsChargingUp() || (Time.time - _mStoppedChargingUpTime) < Config.EffectDurationSeconds;
         }
 
         public override void CancelClient(ClientCharacter clientCharacter)
@@ -27,15 +27,15 @@ namespace Unity.BossRoom.Gameplay.Actions
             if (IsChargingUp())
             {
                 // we never actually stopped "charging up" so do necessary clean up here
-                if (m_ChargeGraphics)
+                if (_mChargeGraphics)
                 {
-                    m_ChargeGraphics.Shutdown();
+                    _mChargeGraphics.Shutdown();
                 }
             }
 
-            if (m_ShieldGraphics)
+            if (_mShieldGraphics)
             {
-                m_ShieldGraphics.Shutdown();
+                _mShieldGraphics.Shutdown();
             }
         }
 
@@ -43,17 +43,17 @@ namespace Unity.BossRoom.Gameplay.Actions
         {
             if (!IsChargingUp()) { return; }
 
-            m_StoppedChargingUpTime = Time.time;
-            if (m_ChargeGraphics)
+            _mStoppedChargingUpTime = Time.time;
+            if (_mChargeGraphics)
             {
-                m_ChargeGraphics.Shutdown();
-                m_ChargeGraphics = null;
+                _mChargeGraphics.Shutdown();
+                _mChargeGraphics = null;
             }
 
             // if fully charged, we show a special graphic
             if (Mathf.Approximately(finalChargeUpPercentage, 1))
             {
-                m_ShieldGraphics = InstantiateSpecialFXGraphic(Config.Spawns[1], clientCharacter.transform, true);
+                _mShieldGraphics = InstantiateSpecialFXGraphic(Config.Spawns[1], clientCharacter.transform, true);
             }
         }
 

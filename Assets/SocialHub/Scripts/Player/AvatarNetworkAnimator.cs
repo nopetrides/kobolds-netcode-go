@@ -11,9 +11,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
         [SerializeField]
         PhysicsPlayerController m_PhysicsPlayerController;
 
-        static readonly int k_GroundedId = Animator.StringToHash("Grounded");
-        static readonly int k_MoveId = Animator.StringToHash("Move");
-        static readonly int k_JumpId = Animator.StringToHash("Jump");
+        static readonly int KGroundedId = Animator.StringToHash("Grounded");
+        static readonly int KMoveId = Animator.StringToHash("Move");
+        static readonly int KJumpId = Animator.StringToHash("Jump");
 
         protected override bool OnIsServerAuthoritative()
         {
@@ -39,7 +39,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
 
         void OnPlayerJumped()
         {
-            SetTrigger(k_JumpId);
+            SetTrigger(KJumpId);
         }
 
         void LateUpdate()
@@ -49,10 +49,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.Player
                 return;
             }
 
-            Animator.SetBool(k_GroundedId, m_PhysicsPlayerController.Grounded);
+            Animator.SetBool(KGroundedId, m_PhysicsPlayerController.Grounded);
             var moveInput = GameInput.Actions.Player.Move.ReadValue<Vector2>();
             var isSprinting = GameInput.Actions.Player.Sprint.ReadValue<float>() > 0f;
-            Animator.SetFloat(k_MoveId, moveInput.magnitude * (isSprinting ? 2f : 1f));
+            Animator.SetFloat(KMoveId, moveInput.magnitude * (isSprinting ? 2f : 1f));
         }
     }
 }

@@ -29,20 +29,20 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         [SerializeField]
         float m_PanelMinSize = 0.7f;
 
-        VisualElement m_CarryUI;
+        VisualElement _mCarryUI;
 
-        Transform m_CarryTransform;
+        Transform _mCarryTransform;
 
-        bool m_IsShown;
+        bool _mIsShown;
 
         void OnEnable()
         {
             // Pick first child to avoid adding the root element
-            m_CarryUI = m_CarryBoxIndicatorAsset.CloneTree().GetFirstChild();
-            m_ScreenspaceUI.rootVisualElement.Q<VisualElement>("player-carry-container").Add(m_CarryUI);
-            m_CarryUI.Q<Label>("call-to-action").text = "tap - drop \nhold - throw";
-            m_CarryUI.AddToClassList("carrybox");
-            m_CarryUI.AddToClassList(UIUtils.s_InactiveUSSClass);
+            _mCarryUI = m_CarryBoxIndicatorAsset.CloneTree().GetFirstChild();
+            m_ScreenspaceUI.rootVisualElement.Q<VisualElement>("player-carry-container").Add(_mCarryUI);
+            _mCarryUI.Q<Label>("call-to-action").text = "tap - drop \nhold - throw";
+            _mCarryUI.AddToClassList("carrybox");
+            _mCarryUI.AddToClassList(UIUtils.SInactiveUSSClass);
 
             GameplayEventHandler.OnPickupStateChanged += OnPickupStateChanged;
         }
@@ -59,26 +59,26 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void ShowCarry(Transform t)
         {
-            if (m_IsShown)
+            if (_mIsShown)
                 return;
 
-            m_CarryTransform = t;
-            m_CarryUI.RemoveFromClassList(UIUtils.s_InactiveUSSClass);
-            m_CarryUI.AddToClassList(UIUtils.s_ActiveUSSClass);
+            _mCarryTransform = t;
+            _mCarryUI.RemoveFromClassList(UIUtils.SInactiveUSSClass);
+            _mCarryUI.AddToClassList(UIUtils.SActiveUSSClass);
             StopCoroutine(HideAfterDelay(5f));
             StartCoroutine(HideAfterDelay(5f));
-            m_IsShown = true;
+            _mIsShown = true;
         }
 
         void HideCarry()
         {
-            if(m_IsShown == false)
+            if(_mIsShown == false)
                 return;
 
             StopCoroutine(HideAfterDelay(5f));
-            m_CarryUI.RemoveFromClassList(UIUtils.s_ActiveUSSClass);
-            m_CarryUI.AddToClassList(UIUtils.s_InactiveUSSClass);
-            m_IsShown = false;
+            _mCarryUI.RemoveFromClassList(UIUtils.SActiveUSSClass);
+            _mCarryUI.AddToClassList(UIUtils.SInactiveUSSClass);
+            _mIsShown = false;
         }
 
         IEnumerator HideAfterDelay(float delay)
@@ -89,13 +89,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void Update()
         {
-            if (m_CarryTransform == null)
+            if (_mCarryTransform == null)
                 return;
 
-            m_CarryUI.TranslateVEWorldToScreenspace(m_Camera, m_CarryTransform, m_VerticalOffset);
-            var distance = Vector3.Distance(m_Camera.transform.position, m_CarryTransform.position);
+            _mCarryUI.TranslateVeWorldToScreenspace(m_Camera, _mCarryTransform, m_VerticalOffset);
+            var distance = Vector3.Distance(m_Camera.transform.position, _mCarryTransform.position);
             var mappedScale = Mathf.Lerp(m_PanelMaxSize, m_PanelMinSize, Mathf.InverseLerp(5, 20, distance));
-            m_CarryUI.style.scale = new StyleScale(new Vector2(mappedScale, mappedScale));
+            _mCarryUI.style.scale = new StyleScale(new Vector2(mappedScale, mappedScale));
         }
 
         void OnDisable()

@@ -12,15 +12,15 @@ namespace Unity.BossRoom.UnityServices.Lobbies
     /// </summary>
     public class LobbyAPIInterface
     {
-        const int k_MaxLobbiesToShow = 16; // If more are necessary, consider retrieving paginated results or using filters.
+        const int KMaxLobbiesToShow = 16; // If more are necessary, consider retrieving paginated results or using filters.
 
-        readonly List<QueryFilter> m_Filters;
-        readonly List<QueryOrder> m_Order;
+        readonly List<QueryFilter> _mFilters;
+        readonly List<QueryOrder> _mOrder;
 
         public LobbyAPIInterface()
         {
             // Filter for open lobbies only
-            m_Filters = new List<QueryFilter>()
+            _mFilters = new List<QueryFilter>()
             {
                 new QueryFilter(
                     field: QueryFilter.FieldOptions.AvailableSlots,
@@ -29,7 +29,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
             };
 
             // Order by newest lobbies first
-            m_Order = new List<QueryOrder>()
+            _mOrder = new List<QueryOrder>()
             {
                 new QueryOrder(
                     asc: false,
@@ -71,7 +71,7 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         {
             var joinRequest = new QuickJoinLobbyOptions
             {
-                Filter = m_Filters,
+                Filter = _mFilters,
                 Player = new Player(id: requesterUasId, data: localUserData)
             };
 
@@ -100,9 +100,9 @@ namespace Unity.BossRoom.UnityServices.Lobbies
         {
             QueryLobbiesOptions queryOptions = new QueryLobbiesOptions
             {
-                Count = k_MaxLobbiesToShow,
-                Filters = m_Filters,
-                Order = m_Order
+                Count = KMaxLobbiesToShow,
+                Filters = _mFilters,
+                Order = _mOrder
             };
 
             return await LobbyService.Instance.QueryLobbiesAsync(queryOptions);

@@ -24,9 +24,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
         [SerializeField]
         TransferableObject m_TransferableObject;
 
-        NetworkVariable<NetworkBehaviourReference> m_SessionOwnerNetworkObjectSpawner = new NetworkVariable<NetworkBehaviourReference>(writePerm: NetworkVariableWritePermission.Owner);
+        NetworkVariable<NetworkBehaviourReference> _mSessionOwnerNetworkObjectSpawner = new NetworkVariable<NetworkBehaviourReference>(writePerm: NetworkVariableWritePermission.Owner);
 
-        int m_LastDamageTick;
+        int _mLastDamageTick;
 
         [SerializeField]
         GameObject m_DestructionFX;
@@ -37,22 +37,22 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
         [SerializeField]
         string destructionVFXType;
 
-        FXPrefabPool m_DestructionFXPoolSystem;
+        FXPrefabPool _mDestructionFXPoolSystem;
 
-        NetworkVariable<bool> m_Initialized = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        NetworkVariable<float> m_Health = new NetworkVariable<float>(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        NetworkVariable<bool> _mInitialized = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        NetworkVariable<float> _mHealth = new NetworkVariable<float>(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-        Vector3 m_OriginalPosition;
-        Quaternion m_OriginalRotation;
+        Vector3 _mOriginalPosition;
+        Quaternion _mOriginalRotation;
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
             InitializeDestructible();
             gameObject.name = $"[NetworkObjectId-{NetworkObjectId}]{name}";
-            m_OriginalPosition = transform.position;
-            m_OriginalRotation = transform.rotation;
-            m_DestructionFXPoolSystem = FXPrefabPool.GetFxPool(m_DestructionFX);
+            _mOriginalPosition = transform.position;
+            _mOriginalRotation = transform.rotation;
+            _mDestructionFXPoolSystem = FXPrefabPool.GetFxPool(m_DestructionFX);
         }
 
         public override void OnNetworkDespawn()
@@ -61,7 +61,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 
             if (!HasAuthority)
             {
-                var fxInstance = m_DestructionFXPoolSystem.GetInstance();
+                var fxInstance = _mDestructionFXPoolSystem.GetInstance();
                 fxInstance.transform.position = transform.position;
                 ChangeObjectVisuals(false);
             }
@@ -70,7 +70,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 
         public void Init(SessionOwnerNetworkObjectSpawner spawner)
         {
-            m_SessionOwnerNetworkObjectSpawner.Value = new NetworkBehaviourReference(spawner);
+            _mSessionOwnerNetworkObjectSpawner.Value = new NetworkBehaviourReference(spawner);
         }
 
         protected override bool ProvideNonRigidbodyContactEvents()
@@ -107,14 +107,14 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 
         protected override void OnHandleCollision(CollisionMessageInfo collisionMessage, bool isLocal = false, bool applyImmediately = false)
         {
-            if (m_Health.Value == 0.0f || collisionMessage.GetCollisionType() == CollisionType.Avatar)
+            if (_mHealth.Value == 0.0f || collisionMessage.GetCollisionType() == CollisionType.Avatar)
             {
                 base.OnHandleCollision(collisionMessage, isLocal, applyImmediately);
                 return;
             }
 
             var intangibilityTicks = Mathf.RoundToInt(NetworkManager.ServerTime.TickRate * m_IntangibleDurationAfterDamage);
-            if (NetworkManager.NetworkTickSystem.ServerTime.Tick - m_LastDamageTick < intangibilityTicks)
+            if (NetworkManager.NetworkTickSystem.ServerTime.Tick - _mLastDamageTick < intangibilityTicks)
             {
                 base.OnHandleCollision(collisionMessage, isLocal, applyImmediately);
                 return;
@@ -129,7 +129,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
                 }
                 else
                 {
-                    Debug.Log($"[{name}] Collided with (unknown or self) and is applying a damage of {collisionMessage.Damage}! server tick {NetworkManager.NetworkTickSystem.ServerTime.Tick} last tick {m_LastDamageTick}");
+                    Debug.Log($"[{name}] Collided with (unknown or self) and is applying a damage of {collisionMessage.Damage}! server tick {NetworkManager.NetworkTickSystem.ServerTime.Tick} last tick {_mLastDamageTick}");
                 }
             }
 
@@ -140,31 +140,31 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 
         void ApplyCollisionDamage(float damage)
         {
-            var currentHealth = Mathf.Max(0.0f, m_Health.Value - damage);
+            var currentHealth = Mathf.Max(0.0f, _mHealth.Value - damage);
 
             if (currentHealth == 0.0f)
             {
                 Rigidbody.isKinematic = true;
                 EnableColliders(false);
-                m_Health.Value = currentHealth;
+                _mHealth.Value = currentHealth;
                 // TODO: add NetworkObject pool here
                 NetworkObject.DeferDespawn(m_DeferredDespawnTicks, destroy: true);
             }
             else
             {
-                m_Health.Value = currentHealth;
-                m_LastDamageTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
+                _mHealth.Value = currentHealth;
+                _mLastDamageTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
             }
         }
 
         // This method is authority relative
         public override void OnDeferringDespawn(int despawnTick)
         {
-            var fxInstance = m_DestructionFXPoolSystem.GetInstance();
+            var fxInstance = _mDestructionFXPoolSystem.GetInstance();
             fxInstance.transform.position = transform.position;
             ChangeObjectVisuals(false);
             SpawnRubble(transform.position);
-            m_SessionOwnerNetworkObjectSpawner.Value.TryGet(out SessionOwnerNetworkObjectSpawner spawner, NetworkManager);
+            _mSessionOwnerNetworkObjectSpawner.Value.TryGet(out SessionOwnerNetworkObjectSpawner spawner, NetworkManager);
             var tickToRespawn = NetworkManager.NetworkTickSystem.ServerTime.Tick + Mathf.RoundToInt(m_SecondsUntilRespawn * NetworkManager.NetworkTickSystem.ServerTime.TickRate);
             spawner.RespawnRpc(tickToRespawn);
             base.OnDeferringDespawn(despawnTick);
@@ -176,8 +176,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
             if (enable)
             {
                 var carryableObject = transform;
-                carryableObject.position = m_OriginalPosition;
-                carryableObject.rotation = m_OriginalRotation;
+                carryableObject.position = _mOriginalPosition;
+                carryableObject.rotation = _mOriginalRotation;
             }
 
             var renderers = GetComponentsInChildren<Renderer>();
@@ -204,14 +204,14 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 
         void InitializeDestructible()
         {
-            if (HasAuthority && !m_Initialized.Value)
+            if (HasAuthority && !_mInitialized.Value)
             {
                 if (IsSpawned)
                 {
-                    m_Health.Value = m_StartingHealth;
-                    m_LastDamageTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
+                    _mHealth.Value = m_StartingHealth;
+                    _mLastDamageTick = NetworkManager.NetworkTickSystem.ServerTime.Tick;
                 }
-                m_Initialized.Value = true;
+                _mInitialized.Value = true;
             }
         }
     }

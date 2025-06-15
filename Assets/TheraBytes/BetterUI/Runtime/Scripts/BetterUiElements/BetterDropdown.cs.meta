@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: aca4b1f86157ba44b9a66765360aaf5b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 1ca02aa01b865b0478064a44cfcffdc4, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Runtime/Scripts/BetterUiElements/BetterDropdown.cs
+  uploadId: 759928

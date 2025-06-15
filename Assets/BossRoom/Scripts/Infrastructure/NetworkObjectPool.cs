@@ -21,9 +21,9 @@ namespace Unity.BossRoom.Infrastructure
         [SerializeField]
         List<PoolConfigObject> PooledPrefabsList;
 
-        HashSet<GameObject> m_Prefabs = new HashSet<GameObject>();
+        HashSet<GameObject> _mPrefabs = new HashSet<GameObject>();
 
-        Dictionary<GameObject, ObjectPool<NetworkObject>> m_PooledObjects = new Dictionary<GameObject, ObjectPool<NetworkObject>>();
+        Dictionary<GameObject, ObjectPool<NetworkObject>> _mPooledObjects = new Dictionary<GameObject, ObjectPool<NetworkObject>>();
 
         public void Awake()
         {
@@ -49,14 +49,14 @@ namespace Unity.BossRoom.Infrastructure
         public override void OnNetworkDespawn()
         {
             // Unregisters all objects in PooledPrefabsList from the cache.
-            foreach (var prefab in m_Prefabs)
+            foreach (var prefab in _mPrefabs)
             {
                 // Unregister Netcode Spawn handlers
                 NetworkManager.Singleton.PrefabHandler.RemoveHandler(prefab);
-                m_PooledObjects[prefab].Clear();
+                _mPooledObjects[prefab].Clear();
             }
-            m_PooledObjects.Clear();
-            m_Prefabs.Clear();
+            _mPooledObjects.Clear();
+            _mPrefabs.Clear();
         }
 
         public void OnValidate()
@@ -86,7 +86,7 @@ namespace Unity.BossRoom.Infrastructure
         /// <returns></returns>
         public NetworkObject GetNetworkObject(GameObject prefab, Vector3 position, Quaternion rotation)
         {
-            var networkObject = m_PooledObjects[prefab].Get();
+            var networkObject = _mPooledObjects[prefab].Get();
 
             var noTransform = networkObject.transform;
             noTransform.position = position;
@@ -100,7 +100,7 @@ namespace Unity.BossRoom.Infrastructure
         /// </summary>
         public void ReturnNetworkObject(NetworkObject networkObject, GameObject prefab)
         {
-            m_PooledObjects[prefab].Release(networkObject);
+            _mPooledObjects[prefab].Release(networkObject);
         }
 
         /// <summary>
@@ -128,20 +128,20 @@ namespace Unity.BossRoom.Infrastructure
                 Destroy(networkObject.gameObject);
             }
 
-            m_Prefabs.Add(prefab);
+            _mPrefabs.Add(prefab);
 
             // Create the pool
-            m_PooledObjects[prefab] = new ObjectPool<NetworkObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, defaultCapacity: prewarmCount);
+            _mPooledObjects[prefab] = new ObjectPool<NetworkObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, defaultCapacity: prewarmCount);
 
             // Populate the pool
             var prewarmNetworkObjects = new List<NetworkObject>();
             for (var i = 0; i < prewarmCount; i++)
             {
-                prewarmNetworkObjects.Add(m_PooledObjects[prefab].Get());
+                prewarmNetworkObjects.Add(_mPooledObjects[prefab].Get());
             }
             foreach (var networkObject in prewarmNetworkObjects)
             {
-                m_PooledObjects[prefab].Release(networkObject);
+                _mPooledObjects[prefab].Release(networkObject);
             }
 
             // Register Netcode Spawn handlers
@@ -158,23 +158,23 @@ namespace Unity.BossRoom.Infrastructure
 
     class PooledPrefabInstanceHandler : INetworkPrefabInstanceHandler
     {
-        GameObject m_Prefab;
-        NetworkObjectPool m_Pool;
+        GameObject _mPrefab;
+        NetworkObjectPool _mPool;
 
         public PooledPrefabInstanceHandler(GameObject prefab, NetworkObjectPool pool)
         {
-            m_Prefab = prefab;
-            m_Pool = pool;
+            _mPrefab = prefab;
+            _mPool = pool;
         }
 
         NetworkObject INetworkPrefabInstanceHandler.Instantiate(ulong ownerClientId, Vector3 position, Quaternion rotation)
         {
-            return m_Pool.GetNetworkObject(m_Prefab, position, rotation);
+            return _mPool.GetNetworkObject(_mPrefab, position, rotation);
         }
 
         void INetworkPrefabInstanceHandler.Destroy(NetworkObject networkObject)
         {
-            m_Pool.ReturnNetworkObject(networkObject, m_Prefab);
+            _mPool.ReturnNetworkObject(networkObject, _mPrefab);
         }
     }
 

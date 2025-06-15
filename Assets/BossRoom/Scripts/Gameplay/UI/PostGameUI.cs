@@ -33,12 +33,12 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         private Color m_LoseLightColor;
 
-        ServerPostGameState m_PostGameState;
+        ServerPostGameState _mPostGameState;
 
         [Inject]
         void Inject(ServerPostGameState postGameState)
         {
-            m_PostGameState = postGameState;
+            _mPostGameState = postGameState;
 
             // only hosts can restart the game, other players see a wait message
             if (NetworkManager.Singleton.IsHost)
@@ -55,15 +55,15 @@ namespace Unity.BossRoom.Gameplay.UI
 
         void Start()
         {
-            m_PostGameState.NetworkPostGame.WinState.OnValueChanged += OnWinStateChanged;
-            SetPostGameUI(m_PostGameState.NetworkPostGame.WinState.Value);
+            _mPostGameState.NetworkPostGame.WinState.OnValueChanged += OnWinStateChanged;
+            SetPostGameUI(_mPostGameState.NetworkPostGame.WinState.Value);
         }
 
         void OnDestroy()
         {
-            if (m_PostGameState != null)
+            if (_mPostGameState != null)
             {
-                m_PostGameState.NetworkPostGame.WinState.OnValueChanged -= OnWinStateChanged;
+                _mPostGameState.NetworkPostGame.WinState.OnValueChanged -= OnWinStateChanged;
             }
         }
 
@@ -95,12 +95,12 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void OnPlayAgainClicked()
         {
-            m_PostGameState.PlayAgain();
+            _mPostGameState.PlayAgain();
         }
 
         public void OnMainMenuClicked()
         {
-            m_PostGameState.GoToMainMenu();
+            _mPostGameState.GoToMainMenu();
         }
     }
 }

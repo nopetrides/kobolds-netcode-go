@@ -16,12 +16,12 @@ namespace Unity.BossRoom.ConnectionManagement
     class HostingState : OnlineState
     {
         [Inject]
-        LobbyServiceFacade m_LobbyServiceFacade;
+        LobbyServiceFacade _mLobbyServiceFacade;
         [Inject]
-        IPublisher<ConnectionEventMessage> m_ConnectionEventPublisher;
+        IPublisher<ConnectionEventMessage> _mConnectionEventPublisher;
 
         // used in ApprovalCheck. This is intended as a bit of light protection against DOS attacks that rely on sending silly big buffers of garbage.
-        const int k_MaxConnectPayload = 1024;
+        const int KMaxConnectPayload = 1024;
 
         public override void Enter()
         {
@@ -29,9 +29,9 @@ namespace Unity.BossRoom.ConnectionManagement
             //may do this differently.
             SceneLoaderWrapper.Instance.LoadScene("CharSelect", useNetworkSceneManager: true);
 
-            if (m_LobbyServiceFacade.CurrentUnityLobby != null)
+            if (_mLobbyServiceFacade.CurrentUnityLobby != null)
             {
-                m_LobbyServiceFacade.BeginTracking();
+                _mLobbyServiceFacade.BeginTracking();
             }
         }
 
@@ -45,21 +45,21 @@ namespace Unity.BossRoom.ConnectionManagement
             var playerData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(clientId);
             if (playerData != null)
             {
-                m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.Success, PlayerName = playerData.Value.PlayerName });
+                _mConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.Success, PlayerName = playerData.Value.PlayerName });
             }
             else
             {
                 // This should not happen since player data is assigned during connection approval
                 Debug.LogError($"No player data associated with client {clientId}");
                 var reason = JsonUtility.ToJson(ConnectStatus.GenericDisconnect);
-                m_ConnectionManager.NetworkManager.DisconnectClient(clientId, reason);
+                MConnectionManager.NetworkManager.DisconnectClient(clientId, reason);
             }
 
         }
 
         public override void OnClientDisconnect(ulong clientId)
         {
-            if (clientId != m_ConnectionManager.NetworkManager.LocalClientId)
+            if (clientId != MConnectionManager.NetworkManager.LocalClientId)
             {
                 var playerId = SessionManager<SessionPlayerData>.Instance.GetPlayerId(clientId);
                 if (playerId != null)
@@ -67,7 +67,7 @@ namespace Unity.BossRoom.ConnectionManagement
                     var sessionData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(playerId);
                     if (sessionData.HasValue)
                     {
-                        m_ConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.GenericDisconnect, PlayerName = sessionData.Value.PlayerName });
+                        _mConnectionEventPublisher.Publish(new ConnectionEventMessage() { ConnectStatus = ConnectStatus.GenericDisconnect, PlayerName = sessionData.Value.PlayerName });
                     }
                     SessionManager<SessionPlayerData>.Instance.DisconnectClient(clientId);
                 }
@@ -77,21 +77,21 @@ namespace Unity.BossRoom.ConnectionManagement
         public override void OnUserRequestedShutdown()
         {
             var reason = JsonUtility.ToJson(ConnectStatus.HostEndedSession);
-            for (var i = m_ConnectionManager.NetworkManager.ConnectedClientsIds.Count - 1; i >= 0; i--)
+            for (var i = MConnectionManager.NetworkManager.ConnectedClientsIds.Count - 1; i >= 0; i--)
             {
-                var id = m_ConnectionManager.NetworkManager.ConnectedClientsIds[i];
-                if (id != m_ConnectionManager.NetworkManager.LocalClientId)
+                var id = MConnectionManager.NetworkManager.ConnectedClientsIds[i];
+                if (id != MConnectionManager.NetworkManager.LocalClientId)
                 {
-                    m_ConnectionManager.NetworkManager.DisconnectClient(id, reason);
+                    MConnectionManager.NetworkManager.DisconnectClient(id, reason);
                 }
             }
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+            MConnectionManager.ChangeState(MConnectionManager.MOffline);
         }
 
         public override void OnServerStopped()
         {
-            m_ConnectStatusPublisher.Publish(ConnectStatus.GenericDisconnect);
-            m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+            MConnectStatusPublisher.Publish(ConnectStatus.GenericDisconnect);
+            MConnectionManager.ChangeState(MConnectionManager.MOffline);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Unity.BossRoom.ConnectionManagement
         {
             var connectionData = request.Payload;
             var clientId = request.ClientNetworkId;
-            if (connectionData.Length > k_MaxConnectPayload)
+            if (connectionData.Length > KMaxConnectPayload)
             {
                 // If connectionData too high, deny immediately to avoid wasting time on the server. This is intended as
                 // a bit of light protection against DOS attacks that rely on sending silly big buffers of garbage.
@@ -139,15 +139,15 @@ namespace Unity.BossRoom.ConnectionManagement
 
             response.Approved = false;
             response.Reason = JsonUtility.ToJson(gameReturnStatus);
-            if (m_LobbyServiceFacade.CurrentUnityLobby != null)
+            if (_mLobbyServiceFacade.CurrentUnityLobby != null)
             {
-                m_LobbyServiceFacade.RemovePlayerFromLobbyAsync(connectionPayload.playerId);
+                _mLobbyServiceFacade.RemovePlayerFromLobbyAsync(connectionPayload.playerId);
             }
         }
 
         ConnectStatus GetConnectStatus(ConnectionPayload connectionPayload)
         {
-            if (m_ConnectionManager.NetworkManager.ConnectedClientsIds.Count >= m_ConnectionManager.MaxConnectedPlayers)
+            if (MConnectionManager.NetworkManager.ConnectedClientsIds.Count >= MConnectionManager.MaxConnectedPlayers)
             {
                 return ConnectStatus.ServerFull;
             }

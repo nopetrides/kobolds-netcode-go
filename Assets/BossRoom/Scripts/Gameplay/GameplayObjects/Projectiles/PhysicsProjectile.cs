@@ -7,6 +7,7 @@ using Unity.BossRoom.VisualEffects;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -14,7 +15,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
     /// </summary>
     public class PhysicsProjectile : NetworkBehaviour
     {
-        bool m_Started;
+        bool _mStarted;
 
         [SerializeField]
         SphereCollider m_OurCollider;
@@ -22,26 +23,26 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// <summary>
         /// The character that created us. Can be 0 to signal that we were created generically by the server.
         /// </summary>
-        ulong m_SpawnerId;
+        ulong _mSpawnerId;
 
         /// <summary>
         /// The data for our projectile. Indicates speed, damage, etc.
         /// </summary>
-        ProjectileInfo m_ProjectileInfo;
+        ProjectileInfo _mProjectileInfo;
 
-        const int k_MaxCollisions = 4;
-        const float k_WallLingerSec = 2f; //time in seconds that arrows linger after hitting a target.
-        const float k_EnemyLingerSec = 0.2f; //time after hitting an enemy that we persist.
-        Collider[] m_CollisionCache = new Collider[k_MaxCollisions];
+        const int KMaxCollisions = 4;
+        const float KWallLingerSec = 2f; //time in seconds that arrows linger after hitting a target.
+        const float KEnemyLingerSec = 0.2f; //time after hitting an enemy that we persist.
+        Collider[] _mCollisionCache = new Collider[KMaxCollisions];
 
         /// <summary>
         /// Time when we should destroy this arrow, in Time.time seconds.
         /// </summary>
-        float m_DestroyAtSec;
+        float _mDestroyAtSec;
 
-        int m_CollisionMask;  //mask containing everything we test for while moving
-        int m_BlockerMask;    //physics mask for things that block the arrow's flight.
-        int m_NpcLayer;
+        int _mCollisionMask;  //mask containing everything we test for while moving
+        int _mBlockerMask;    //physics mask for things that block the arrow's flight.
+        int _mNpcLayer;
 
         /// <summary>
         /// List of everyone we've hit and dealt damage to.
@@ -51,12 +52,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// But that's fine by us! We use <c>m_HitTargets.Count</c> to tell us how many total enemies we've hit,
         /// so those nulls still count as hits.
         /// </remarks>
-        List<GameObject> m_HitTargets = new List<GameObject>();
+        List<GameObject> _mHitTargets = new List<GameObject>();
 
         /// <summary>
         /// Are we done moving?
         /// </summary>
-        bool m_IsDead;
+        bool _mIsDead;
 
         [SerializeField]
         [Tooltip("Explosion prefab used when projectile hits enemy. This should have a fixed duration.")]
@@ -68,9 +69,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         [SerializeField]
         Transform m_Visualization;
 
-        const float k_LerpTime = 0.1f;
+        const float KLerpTime = 0.1f;
 
-        PositionLerper m_PositionLerper;
+        PositionLerper _mPositionLerper;
 
         /// <summary>
         /// Set everything up based on provided projectile information.
@@ -78,24 +79,24 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         /// </summary>
         public void Initialize(ulong creatorsNetworkObjectId, in ProjectileInfo projectileInfo)
         {
-            m_SpawnerId = creatorsNetworkObjectId;
-            m_ProjectileInfo = projectileInfo;
+            _mSpawnerId = creatorsNetworkObjectId;
+            _mProjectileInfo = projectileInfo;
         }
 
         public override void OnNetworkSpawn()
         {
             if (IsServer)
             {
-                m_Started = true;
+                _mStarted = true;
 
-                m_HitTargets = new List<GameObject>();
-                m_IsDead = false;
+                _mHitTargets = new List<GameObject>();
+                _mIsDead = false;
 
-                m_DestroyAtSec = Time.fixedTime + (m_ProjectileInfo.Range / m_ProjectileInfo.Speed_m_s);
+                _mDestroyAtSec = Time.fixedTime + (_mProjectileInfo.Range / _mProjectileInfo.Speed_m_s);
 
-                m_CollisionMask = LayerMask.GetMask(new[] { "NPCs", "Default", "Environment" });
-                m_BlockerMask = LayerMask.GetMask(new[] { "Default", "Environment" });
-                m_NpcLayer = LayerMask.NameToLayer("NPCs");
+                _mCollisionMask = LayerMask.GetMask(new[] { "NPCs", "Default", "Environment" });
+                _mBlockerMask = LayerMask.GetMask(new[] { "Default", "Environment" });
+                _mNpcLayer = LayerMask.NameToLayer("NPCs");
             }
 
             if (IsClient)
@@ -104,7 +105,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
                 m_Visualization.parent = null;
 
-                m_PositionLerper = new PositionLerper(transform.position, k_LerpTime);
+                _mPositionLerper = new PositionLerper(transform.position, KLerpTime);
                 m_Visualization.transform.rotation = transform.rotation;
             }
 
@@ -114,7 +115,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         {
             if (IsServer)
             {
-                m_Started = false;
+                _mStarted = false;
             }
 
 
@@ -127,12 +128,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
         void FixedUpdate()
         {
-            if (!m_Started || !IsServer)
+            if (!_mStarted || !IsServer)
             {
                 return; //don't do anything before OnNetworkSpawn has run.
             }
 
-            if (m_DestroyAtSec < Time.fixedTime)
+            if (_mDestroyAtSec < Time.fixedTime)
             {
                 // Time to return to the pool from whence it came.
                 var networkObject = gameObject.GetComponent<NetworkObject>();
@@ -140,10 +141,10 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 return;
             }
 
-            var displacement = transform.forward * (m_ProjectileInfo.Speed_m_s * Time.fixedDeltaTime);
+            var displacement = transform.forward * (_mProjectileInfo.Speed_m_s * Time.fixedDeltaTime);
             transform.position += displacement;
 
-            if (!m_IsDead)
+            if (!_mIsDead)
             {
                 DetectCollisions();
             }
@@ -162,7 +163,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
 
                 if (IsHost)
                 {
-                    m_Visualization.position = m_PositionLerper.LerpPosition(m_Visualization.position,
+                    m_Visualization.position = _mPositionLerper.LerpPosition(m_Visualization.position,
                         transform.position);
                 }
                 else
@@ -176,47 +177,47 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         void DetectCollisions()
         {
             var position = transform.localToWorldMatrix.MultiplyPoint(m_OurCollider.center);
-            var numCollisions = Physics.OverlapSphereNonAlloc(position, m_OurCollider.radius, m_CollisionCache, m_CollisionMask);
+            var numCollisions = Physics.OverlapSphereNonAlloc(position, m_OurCollider.radius, _mCollisionCache, _mCollisionMask);
             for (int i = 0; i < numCollisions; i++)
             {
-                int layerTest = 1 << m_CollisionCache[i].gameObject.layer;
-                if ((layerTest & m_BlockerMask) != 0)
+                int layerTest = 1 << _mCollisionCache[i].gameObject.layer;
+                if ((layerTest & _mBlockerMask) != 0)
                 {
                     //hit a wall; leave it for a couple of seconds.
-                    m_ProjectileInfo.Speed_m_s = 0;
-                    m_IsDead = true;
-                    m_DestroyAtSec = Time.fixedTime + k_WallLingerSec;
+                    _mProjectileInfo.Speed_m_s = 0;
+                    _mIsDead = true;
+                    _mDestroyAtSec = Time.fixedTime + KWallLingerSec;
                     return;
                 }
 
-                if (m_CollisionCache[i].gameObject.layer == m_NpcLayer && !m_HitTargets.Contains(m_CollisionCache[i].gameObject))
+                if (_mCollisionCache[i].gameObject.layer == _mNpcLayer && !_mHitTargets.Contains(_mCollisionCache[i].gameObject))
                 {
-                    m_HitTargets.Add(m_CollisionCache[i].gameObject);
+                    _mHitTargets.Add(_mCollisionCache[i].gameObject);
 
-                    if (m_HitTargets.Count >= m_ProjectileInfo.MaxVictims)
+                    if (_mHitTargets.Count >= _mProjectileInfo.MaxVictims)
                     {
                         // we've hit all the enemies we're allowed to! So we're done
-                        m_DestroyAtSec = Time.fixedTime + k_EnemyLingerSec;
-                        m_IsDead = true;
+                        _mDestroyAtSec = Time.fixedTime + KEnemyLingerSec;
+                        _mIsDead = true;
                     }
 
                     //all NPC layer entities should have one of these.
-                    var targetNetObj = m_CollisionCache[i].GetComponentInParent<NetworkObject>();
+                    var targetNetObj = _mCollisionCache[i].GetComponentInParent<NetworkObject>();
                     if (targetNetObj)
                     {
                         ClientHitEnemyRpc(targetNetObj.NetworkObjectId);
 
                         //retrieve the person that created us, if he's still around.
-                        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(m_SpawnerId, out var spawnerNet);
+                        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_mSpawnerId, out var spawnerNet);
                         var spawnerObj = spawnerNet != null ? spawnerNet.GetComponent<ServerCharacter>() : null;
 
-                        if (m_CollisionCache[i].TryGetComponent(out IDamageable damageable))
+                        if (_mCollisionCache[i].TryGetComponent(out IDamageable damageable))
                         {
-                            damageable.ReceiveHP(spawnerObj, -m_ProjectileInfo.Damage);
+                            damageable.ReceiveHp(spawnerObj, -_mProjectileInfo.Damage);
                         }
                     }
 
-                    if (m_IsDead)
+                    if (_mIsDead)
                     {
                         return; // don't keep examining collisions since we can't damage anybody else
                     }

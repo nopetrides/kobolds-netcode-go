@@ -14,38 +14,38 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
     {
         private enum AIStateType
         {
-            ATTACK,
+            Attack,
             //WANDER,
-            IDLE,
+            Idle,
         }
 
-        static readonly AIStateType[] k_AIStates = (AIStateType[])Enum.GetValues(typeof(AIStateType));
+        static readonly AIStateType[] KaiStates = (AIStateType[])Enum.GetValues(typeof(AIStateType));
 
-        private ServerCharacter m_ServerCharacter;
-        private ServerActionPlayer m_ServerActionPlayer;
-        private AIStateType m_CurrentState;
-        private Dictionary<AIStateType, AIState> m_Logics;
-        private List<ServerCharacter> m_HatedEnemies;
+        private ServerCharacter _mServerCharacter;
+        private ServerActionPlayer _mServerActionPlayer;
+        private AIStateType _mCurrentState;
+        private Dictionary<AIStateType, AIState> _mLogics;
+        private List<ServerCharacter> _mHatedEnemies;
 
         /// <summary>
         /// If we are created by a spawner, the spawner might override our detection radius
         /// -1 is a sentinel value meaning "no override"
         /// </summary>
-        private float m_DetectRangeOverride = -1;
+        private float _mDetectRangeOverride = -1;
 
         public AIBrain(ServerCharacter me, ServerActionPlayer myServerActionPlayer)
         {
-            m_ServerCharacter = me;
-            m_ServerActionPlayer = myServerActionPlayer;
+            _mServerCharacter = me;
+            _mServerActionPlayer = myServerActionPlayer;
 
-            m_Logics = new Dictionary<AIStateType, AIState>
+            _mLogics = new Dictionary<AIStateType, AIState>
             {
-                [AIStateType.IDLE] = new IdleAIState(this),
+                [AIStateType.Idle] = new IdleAIState(this),
                 //[ AIStateType.WANDER ] = new WanderAIState(this), // not written yet
-                [AIStateType.ATTACK] = new AttackAIState(this, m_ServerActionPlayer),
+                [AIStateType.Attack] = new AttackAIState(this, _mServerActionPlayer),
             };
-            m_HatedEnemies = new List<ServerCharacter>();
-            m_CurrentState = AIStateType.IDLE;
+            _mHatedEnemies = new List<ServerCharacter>();
+            _mCurrentState = AIStateType.Idle;
         }
 
         /// <summary>
@@ -54,12 +54,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         public void Update()
         {
             AIStateType newState = FindBestEligibleAIState();
-            if (m_CurrentState != newState)
+            if (_mCurrentState != newState)
             {
-                m_Logics[newState].Initialize();
+                _mLogics[newState].Initialize();
             }
-            m_CurrentState = newState;
-            m_Logics[m_CurrentState].Update();
+            _mCurrentState = newState;
+            _mLogics[_mCurrentState].Update();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         /// </summary>
         /// <param name="inflicter">The person who hurt or healed us. May be null. </param>
         /// <param name="amount">The amount of HP received. Negative is damage. </param>
-        public void ReceiveHP(ServerCharacter inflicter, int amount)
+        public void ReceiveHp(ServerCharacter inflicter, int amount)
         {
             if (inflicter != null && amount < 0)
             {
@@ -79,16 +79,16 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         {
             // for now we assume the AI states are in order of appropriateness,
             // which may be nonsensical when there are more states
-            foreach (AIStateType aiStateType in k_AIStates)
+            foreach (AIStateType aiStateType in KaiStates)
             {
-                if (m_Logics[aiStateType].IsEligible())
+                if (_mLogics[aiStateType].IsEligible())
                 {
                     return aiStateType;
                 }
             }
 
             Debug.LogError("No AI states are valid!?!");
-            return AIStateType.IDLE;
+            return AIStateType.Idle;
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         /// <param name="character"></param>
         public void Hate(ServerCharacter character)
         {
-            if (!m_HatedEnemies.Contains(character))
+            if (!_mHatedEnemies.Contains(character))
             {
-                m_HatedEnemies.Add(character);
+                _mHatedEnemies.Add(character);
             }
         }
 
@@ -126,14 +126,14 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         public List<ServerCharacter> GetHatedEnemies()
         {
             // first we clean the list -- remove any enemies that have disappeared (became null), are dead, etc.
-            for (int i = m_HatedEnemies.Count - 1; i >= 0; i--)
+            for (int i = _mHatedEnemies.Count - 1; i >= 0; i--)
             {
-                if (!IsAppropriateFoe(m_HatedEnemies[i]))
+                if (!IsAppropriateFoe(_mHatedEnemies[i]))
                 {
-                    m_HatedEnemies.RemoveAt(i);
+                    _mHatedEnemies.RemoveAt(i);
                 }
             }
-            return m_HatedEnemies;
+            return _mHatedEnemies;
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         /// <returns></returns>
         public ServerCharacter GetMyServerCharacter()
         {
-            return m_ServerCharacter;
+            return _mServerCharacter;
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         {
             get
             {
-                return GameDataSource.Instance.CharacterDataByType[m_ServerCharacter.CharacterType];
+                return GameDataSource.Instance.CharacterDataByType[_mServerCharacter.CharacterType];
             }
         }
 
@@ -165,12 +165,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         {
             get
             {
-                return (m_DetectRangeOverride == -1) ? CharacterData.DetectRange : m_DetectRangeOverride;
+                return (_mDetectRangeOverride == -1) ? CharacterData.DetectRange : _mDetectRangeOverride;
             }
 
             set
             {
-                m_DetectRangeOverride = value;
+                _mDetectRangeOverride = value;
             }
         }
 

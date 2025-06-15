@@ -47,17 +47,17 @@ namespace Unity.BossRoom.Utils
         [SerializeField]
         int m_RandomConnectionsSwapChangeIntervalMilliseconds;
 
-        const int k_NbTouchesToOpenWindow = 5;
+        const int KNbTouchesToOpenWindow = 5;
 
-        Dictionary<string, INetworkSimulatorPreset> m_SimulatorPresets = new Dictionary<string, INetworkSimulatorPreset>();
+        Dictionary<string, INetworkSimulatorPreset> _mSimulatorPresets = new Dictionary<string, INetworkSimulatorPreset>();
 #endif
-        bool m_Shown;
+        bool _mShown;
 
-        const string k_None = "None";
-        const string k_ConnectionCyclesScenarioName = "Connections Cycle";
-        const string k_RandomConnectionSwapScenarioName = "Random Connections Swap";
-        const string k_PauseString = "Pause";
-        const string k_ResumeString = "Resume";
+        const string KNone = "None";
+        const string KConnectionCyclesScenarioName = "Connections Cycle";
+        const string KRandomConnectionSwapScenarioName = "Random Connections Swap";
+        const string KPauseString = "Pause";
+        const string KResumeString = "Resume";
 
         void Awake()
         {
@@ -73,7 +73,7 @@ namespace Unity.BossRoom.Utils
             m_CanvasGroup.alpha = 0f;
             m_CanvasGroup.interactable = false;
             m_CanvasGroup.blocksRaycasts = false;
-            m_Shown = false;
+            _mShown = false;
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -102,7 +102,7 @@ namespace Unity.BossRoom.Utils
 
         void OnPresetChanged(int optionIndex)
         {
-            m_NetworkSimulator.ChangeConnectionPreset(m_SimulatorPresets[m_PresetsDropdown.options[optionIndex].text]);
+            m_NetworkSimulator.ChangeConnectionPreset(_mSimulatorPresets[m_PresetsDropdown.options[optionIndex].text]);
         }
 
         void OnScenarioChanged(int optionIndex)
@@ -111,11 +111,11 @@ namespace Unity.BossRoom.Utils
             NetworkScenario scenario = null;
             switch (scenarioName)
             {
-                case k_None:
+                case KNone:
                     m_PresetsDropdown.captionText.color = m_PresetsDropdown.colors.normalColor;
                     m_PresetsDropdown.interactable = true;
                     break;
-                case k_ConnectionCyclesScenarioName:
+                case KConnectionCyclesScenarioName:
                     var connectionsCyleScenario = new ConnectionsCycle();
                     connectionsCyleScenario.Configurations.Clear();
                     foreach (var configuration in m_ConnectionsCycleConfigurations)
@@ -126,7 +126,7 @@ namespace Unity.BossRoom.Utils
                     m_PresetsDropdown.interactable = false;
                     scenario = connectionsCyleScenario;
                     break;
-                case k_RandomConnectionSwapScenarioName:
+                case KRandomConnectionSwapScenarioName:
                     var randomConnectionsSwapScenario = new RandomConnectionsSwap();
                     randomConnectionsSwapScenario.Configurations.Clear();
                     foreach (var configuration in m_RandomConnectionsSwapConfigurations)
@@ -158,12 +158,12 @@ namespace Unity.BossRoom.Utils
             m_CanvasGroup.interactable = true;
             m_CanvasGroup.blocksRaycasts = true;
             UpdateScenarioButton();
-            m_Shown = true;
+            _mShown = true;
         }
 
         void ToggleVisibility()
         {
-            if (m_Shown)
+            if (_mShown)
             {
                 Hide();
             }
@@ -180,7 +180,7 @@ namespace Unity.BossRoom.Utils
             // Adding all available presets
             foreach (var networkSimulatorPreset in NetworkSimulatorPresets.Values)
             {
-                m_SimulatorPresets[networkSimulatorPreset.Name] = networkSimulatorPreset;
+                _mSimulatorPresets[networkSimulatorPreset.Name] = networkSimulatorPreset;
                 optionData.Add(new TMP_Dropdown.OptionData(networkSimulatorPreset.Name));
             }
             m_PresetsDropdown.AddOptions(optionData);
@@ -190,13 +190,13 @@ namespace Unity.BossRoom.Utils
             optionData = new List<TMP_Dropdown.OptionData>();
 
             // Adding empty scenario
-            optionData.Add(new TMP_Dropdown.OptionData(k_None));
+            optionData.Add(new TMP_Dropdown.OptionData(KNone));
 
             // Adding ConnectionsCycle scenario
-            optionData.Add(new TMP_Dropdown.OptionData(k_ConnectionCyclesScenarioName));
+            optionData.Add(new TMP_Dropdown.OptionData(KConnectionCyclesScenarioName));
 
             // Adding RandomConnectionsSwap scenario
-            optionData.Add(new TMP_Dropdown.OptionData(k_RandomConnectionSwapScenarioName));
+            optionData.Add(new TMP_Dropdown.OptionData(KRandomConnectionSwapScenarioName));
 
             m_ScenariosDropdown.AddOptions(optionData);
             m_ScenariosDropdown.onValueChanged.AddListener(OnScenarioChanged);
@@ -206,7 +206,7 @@ namespace Unity.BossRoom.Utils
         {
             if (m_NetworkSimulator.IsAvailable)
             {
-                if (Input.touchCount == k_NbTouchesToOpenWindow && AnyTouchDown() ||
+                if (Input.touchCount == KNbTouchesToOpenWindow && AnyTouchDown() ||
                     m_OpenWindowKeyCode != KeyCode.None && Input.GetKeyDown(m_OpenWindowKeyCode))
                 {
                     ToggleVisibility();
@@ -227,7 +227,7 @@ namespace Unity.BossRoom.Utils
             }
             else
             {
-                if (m_Shown)
+                if (_mShown)
                 {
                     Hide();
                 }
@@ -275,7 +275,7 @@ namespace Unity.BossRoom.Utils
         {
             if (m_NetworkSimulator.Scenario != null)
             {
-                m_ScenariosButtonText.text = m_NetworkSimulator.Scenario.IsPaused ? k_ResumeString : k_PauseString;
+                m_ScenariosButtonText.text = m_NetworkSimulator.Scenario.IsPaused ? KResumeString : KPauseString;
                 m_ScenariosButton.interactable = true;
                 m_ScenariosButtonText.color = m_ScenariosButton.colors.normalColor;
             }

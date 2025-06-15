@@ -53,26 +53,26 @@ namespace Unity.BossRoom.VisualEffects
         bool m_StayAtSpawnRotation;
 
         // track when Shutdown() is called so we don't try to do it twice
-        private bool m_IsShutdown = false;
+        private bool _mIsShutdown = false;
 
         // we keep a reference to our self-destruction coroutine in case we need to abort it prematurely
-        private Coroutine coroWaitForSelfDestruct = null;
+        private Coroutine _coroWaitForSelfDestruct = null;
 
-        Quaternion m_StartRotation;
+        Quaternion _mStartRotation;
 
         private void Start()
         {
-            m_StartRotation = transform.rotation;
+            _mStartRotation = transform.rotation;
 
             if (m_AutoShutdownTime != -1)
             {
-                coroWaitForSelfDestruct = StartCoroutine(CoroWaitForSelfDestruct());
+                _coroWaitForSelfDestruct = StartCoroutine(CoroWaitForSelfDestruct());
             }
         }
 
         public void Shutdown()
         {
-            if (!m_IsShutdown)
+            if (!_mIsShutdown)
             {
                 foreach (var particleSystem in m_ParticleSystemsToTurnOffOnShutdown)
                 {
@@ -94,7 +94,7 @@ namespace Unity.BossRoom.VisualEffects
                     StartCoroutine(CoroWaitForParticlesToEnd());
                 }
 
-                m_IsShutdown = true;
+                _mIsShutdown = true;
             }
         }
 
@@ -114,9 +114,9 @@ namespace Unity.BossRoom.VisualEffects
                 }
             } while (foundAliveParticles);
 
-            if (coroWaitForSelfDestruct != null)
+            if (_coroWaitForSelfDestruct != null)
             {
-                StopCoroutine(coroWaitForSelfDestruct);
+                StopCoroutine(_coroWaitForSelfDestruct);
             }
 
             Destroy(gameObject);
@@ -126,8 +126,8 @@ namespace Unity.BossRoom.VisualEffects
         private IEnumerator CoroWaitForSelfDestruct()
         {
             yield return new WaitForSeconds(m_AutoShutdownTime);
-            coroWaitForSelfDestruct = null;
-            if (!m_IsShutdown)
+            _coroWaitForSelfDestruct = null;
+            if (!_mIsShutdown)
             {
                 Shutdown();
             }
@@ -137,7 +137,7 @@ namespace Unity.BossRoom.VisualEffects
         {
             if (m_StayAtSpawnRotation)
             {
-                transform.rotation = m_StartRotation;
+                transform.rotation = _mStartRotation;
             }
         }
     }

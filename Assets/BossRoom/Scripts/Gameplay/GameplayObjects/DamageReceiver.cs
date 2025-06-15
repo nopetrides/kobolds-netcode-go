@@ -3,6 +3,7 @@ using Unity.BossRoom.Gameplay.GameplayObjects.Character;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     public class DamageReceiver : NetworkBehaviour, IDamageable
@@ -14,15 +15,17 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
         [SerializeField]
         NetworkLifeState m_NetworkLifeState;
 
-        public void ReceiveHP(ServerCharacter inflicter, int HP)
+        public void ReceiveHp(ServerCharacter inflicter, int hp)
         {
             if (IsDamageable())
             {
-                DamageReceived?.Invoke(inflicter, HP);
+                DamageReceived?.Invoke(inflicter, hp);
             }
         }
 
-        public IDamageable.SpecialDamageFlags GetSpecialDamageFlags()
+		public Transform Transform { get; }
+
+		public IDamageable.SpecialDamageFlags GetSpecialDamageFlags()
         {
             return IDamageable.SpecialDamageFlags.None;
         }

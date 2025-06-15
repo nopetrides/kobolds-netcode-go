@@ -5,16 +5,16 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
 {
     public class IdleAIState : AIState
     {
-        private AIBrain m_Brain;
+        private AIBrain _mBrain;
 
         public IdleAIState(AIBrain brain)
         {
-            m_Brain = brain;
+            _mBrain = brain;
         }
 
         public override bool IsEligible()
         {
-            return m_Brain.GetHatedEnemies().Count == 0;
+            return _mBrain.GetHatedEnemies().Count == 0;
         }
 
         public override void Initialize()
@@ -29,17 +29,17 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
 
         protected void DetectFoes()
         {
-            float detectionRange = m_Brain.DetectRange;
+            float detectionRange = _mBrain.DetectRange;
             // we are doing this check every Update, so we'll use square-magnitude distance to avoid the expensive sqrt (that's implicit in Vector3.magnitude)
             float detectionRangeSqr = detectionRange * detectionRange;
-            Vector3 position = m_Brain.GetMyServerCharacter().physicsWrapper.Transform.position;
+            Vector3 position = _mBrain.GetMyServerCharacter().PhysicsWrapper.Transform.position;
 
             // in this game, NPCs only attack players (and never other NPCs), so we can just iterate over the players to see if any are nearby
             foreach (var character in PlayerServerCharacter.GetPlayerServerCharacters())
             {
-                if (m_Brain.IsAppropriateFoe(character) && (character.physicsWrapper.Transform.position - position).sqrMagnitude <= detectionRangeSqr)
+                if (_mBrain.IsAppropriateFoe(character) && (character.PhysicsWrapper.Transform.position - position).sqrMagnitude <= detectionRangeSqr)
                 {
-                    m_Brain.Hate(character);
+                    _mBrain.Hate(character);
                 }
             }
         }

@@ -6,18 +6,18 @@ namespace Unity.Multiplayer.Samples.SocialHub.Effects
     [RequireComponent(typeof(ParticleSystem))]
     class ReturnToPool : BaseFxObject
     {
-        ParticleSystem m_ParticleSystem;
+        ParticleSystem _mParticleSystem;
 
         void Awake()
         {
-            m_ParticleSystem = GetComponent<ParticleSystem>();
-            var systemMain = m_ParticleSystem.main;
+            _mParticleSystem = GetComponent<ParticleSystem>();
+            var systemMain = _mParticleSystem.main;
             systemMain.stopAction = ParticleSystemStopAction.Callback;
         }
 
         void OnEnable()
         {
-            m_ParticleSystem.Play();
+            _mParticleSystem.Play();
         }
 
         void OnParticleSystemStopped()

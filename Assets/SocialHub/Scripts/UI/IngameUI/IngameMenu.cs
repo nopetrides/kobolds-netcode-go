@@ -19,74 +19,74 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         [SerializeField]
         VisualTreeAsset m_IngameMenuAsset;
 
-        VisualElement m_Root;
-        VisualElement m_Menu;
-        VisualElement m_ScreenOverlay;
+        VisualElement _mRoot;
+        VisualElement _mMenu;
+        VisualElement _mScreenOverlay;
 
-        Button m_BurgerButton;
-        Button m_ExitButton;
-        Button m_GotoMainButton;
-        Button m_CloseMenuButton;
+        Button _mBurgerButton;
+        Button _mExitButton;
+        Button _mGotoMainButton;
+        Button _mCloseMenuButton;
 
-        Toggle m_MuteToggle;
+        Toggle _mMuteToggle;
 
-        Slider m_InputVolumeSlider;
-        Slider m_OutputVolumeSlider;
+        Slider _mInputVolumeSlider;
+        Slider _mOutputVolumeSlider;
 
-        DropdownField m_InputDevicesDropdown;
-        DropdownField m_OutputDevicesDropdown;
+        DropdownField _mInputDevicesDropdown;
+        DropdownField _mOutputDevicesDropdown;
 
         void OnEnable()
         {
-            m_Root = m_UIDocument.rootVisualElement.Q<VisualElement>("ingame-menu-container");
-            m_Root.Add(m_IngameMenuAsset.CloneTree().GetFirstChild());
+            _mRoot = m_UIDocument.rootVisualElement.Q<VisualElement>("ingame-menu-container");
+            _mRoot.Add(m_IngameMenuAsset.CloneTree().GetFirstChild());
 
-            m_ScreenOverlay = m_Root.Q<VisualElement>("screen-overlay");
+            _mScreenOverlay = _mRoot.Q<VisualElement>("screen-overlay");
 
-            m_BurgerButton = m_Root.Q<Button>("burger-button");
-            m_BurgerButton.clicked += ShowMenu;
+            _mBurgerButton = _mRoot.Q<Button>("burger-button");
+            _mBurgerButton.clicked += ShowMenu;
 
-            m_Menu = m_Root.Q<VisualElement>("menu");
-            m_Menu.AddToClassList(UIUtils.s_InactiveUSSClass);
+            _mMenu = _mRoot.Q<VisualElement>("menu");
+            _mMenu.AddToClassList(UIUtils.SInactiveUSSClass);
 
-            m_ExitButton = m_Menu.Q<Button>("btn-exit");
-            m_ExitButton.clicked += QuitGame;
+            _mExitButton = _mMenu.Q<Button>("btn-exit");
+            _mExitButton.clicked += QuitGame;
 
-            m_GotoMainButton = m_Menu.Q<Button>("btn-goto-main");
-            m_GotoMainButton.clicked += GoToMainMenuScene;
+            _mGotoMainButton = _mMenu.Q<Button>("btn-goto-main");
+            _mGotoMainButton.clicked += GoToMainMenuScene;
 
-            m_CloseMenuButton = m_Menu.Q<Button>("btn-close-menu");
-            m_CloseMenuButton.clicked += HideMenu;
+            _mCloseMenuButton = _mMenu.Q<Button>("btn-close-menu");
+            _mCloseMenuButton.clicked += HideMenu;
 
             GameInput.Actions.Player.TogglePauseMenu.performed += OnTogglePauseMenu;
 
             // Audio settings
 
             // Input Selection
-            m_InputDevicesDropdown = m_Menu.Q<DropdownField>("audio-input");
+            _mInputDevicesDropdown = _mMenu.Q<DropdownField>("audio-input");
             PopulateAudioInputDevices();
-            m_InputDevicesDropdown.RegisterValueChangedCallback(evt => OnInputDeviceDropDownChanged(evt));
+            _mInputDevicesDropdown.RegisterValueChangedCallback(evt => OnInputDeviceDropDownChanged(evt));
 
             // Output Selection
-            m_OutputDevicesDropdown = m_Menu.Q<DropdownField>("audio-output");
+            _mOutputDevicesDropdown = _mMenu.Q<DropdownField>("audio-output");
             PopulateAudioOutputDevices();
-            m_OutputDevicesDropdown.value = VivoxService.Instance.ActiveOutputDevice.DeviceName;
-            m_OutputDevicesDropdown.RegisterValueChangedCallback(evt => OnOutputDeviceDropdownChanged(evt));
+            _mOutputDevicesDropdown.value = VivoxService.Instance.ActiveOutputDevice.DeviceName;
+            _mOutputDevicesDropdown.RegisterValueChangedCallback(evt => OnOutputDeviceDropdownChanged(evt));
 
             // Input Volume
-            m_InputVolumeSlider = m_Menu.Q<Slider>("input-volume");
-            m_InputVolumeSlider.value = VivoxService.Instance.InputDeviceVolume + 50;
-            m_InputVolumeSlider.RegisterValueChangedCallback(evt => OnInputVolumeChanged(evt));
+            _mInputVolumeSlider = _mMenu.Q<Slider>("input-volume");
+            _mInputVolumeSlider.value = VivoxService.Instance.InputDeviceVolume + 50;
+            _mInputVolumeSlider.RegisterValueChangedCallback(evt => OnInputVolumeChanged(evt));
 
             // Output Volume
-            m_OutputVolumeSlider = m_Menu.Q<Slider>("output-volume");
-            m_OutputVolumeSlider.value = VivoxService.Instance.OutputDeviceVolume + 50;
-            m_OutputVolumeSlider.RegisterValueChangedCallback(evt => OnOutputVolumeChanged(evt));
+            _mOutputVolumeSlider = _mMenu.Q<Slider>("output-volume");
+            _mOutputVolumeSlider.value = VivoxService.Instance.OutputDeviceVolume + 50;
+            _mOutputVolumeSlider.RegisterValueChangedCallback(evt => OnOutputVolumeChanged(evt));
 
             // Mute Button
-            m_MuteToggle = m_Menu.Q<Toggle>("mute-checkbox");
-            m_MuteToggle.SetValueWithoutNotify(VivoxService.Instance.IsInputDeviceMuted);
-            m_MuteToggle.RegisterValueChangedCallback(evt => OnMuteCheckboxChanged(evt));
+            _mMuteToggle = _mMenu.Q<Toggle>("mute-checkbox");
+            _mMuteToggle.SetValueWithoutNotify(VivoxService.Instance.IsInputDeviceMuted);
+            _mMuteToggle.RegisterValueChangedCallback(evt => OnMuteCheckboxChanged(evt));
 
             VivoxService.Instance.AvailableInputDevicesChanged += PopulateAudioInputDevices;
             VivoxService.Instance.AvailableOutputDevicesChanged += PopulateAudioOutputDevices;
@@ -115,41 +115,41 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         void ShowMenu()
         {
             InputSystemManager.Instance.EnableUIInputs();
-            m_Menu.RemoveFromClassList(UIUtils.s_InactiveUSSClass);
-            m_Menu.AddToClassList(UIUtils.s_ActiveUSSClass);
-            m_ScreenOverlay.style.display = DisplayStyle.Flex;
-            m_Menu.SetEnabled(true);
+            _mMenu.RemoveFromClassList(UIUtils.SInactiveUSSClass);
+            _mMenu.AddToClassList(UIUtils.SActiveUSSClass);
+            _mScreenOverlay.style.display = DisplayStyle.Flex;
+            _mMenu.SetEnabled(true);
         }
 
         void HideMenu()
         {
             InputSystemManager.Instance.EnableGameplayInputs();
-            m_ScreenOverlay.style.display = DisplayStyle.None;
-            m_Menu.RemoveFromClassList(UIUtils.s_ActiveUSSClass);
-            m_Menu.AddToClassList(UIUtils.s_InactiveUSSClass);
-            m_Menu.SetEnabled(false);
+            _mScreenOverlay.style.display = DisplayStyle.None;
+            _mMenu.RemoveFromClassList(UIUtils.SActiveUSSClass);
+            _mMenu.AddToClassList(UIUtils.SInactiveUSSClass);
+            _mMenu.SetEnabled(false);
         }
 
         void PopulateAudioInputDevices()
         {
-            m_InputDevicesDropdown.choices.Clear();
+            _mInputDevicesDropdown.choices.Clear();
             foreach (var inputDevice in VivoxService.Instance.AvailableInputDevices)
             {
-                m_InputDevicesDropdown.choices.Add(inputDevice.DeviceName);
+                _mInputDevicesDropdown.choices.Add(inputDevice.DeviceName);
             }
 
-            m_InputDevicesDropdown.SetValueWithoutNotify(VivoxService.Instance.ActiveInputDevice.DeviceName);
+            _mInputDevicesDropdown.SetValueWithoutNotify(VivoxService.Instance.ActiveInputDevice.DeviceName);
         }
 
         void PopulateAudioOutputDevices()
         {
-            m_OutputDevicesDropdown.choices.Clear();
+            _mOutputDevicesDropdown.choices.Clear();
             foreach (var outputDevice in VivoxService.Instance.AvailableOutputDevices)
             {
-                m_OutputDevicesDropdown.choices.Add(outputDevice.DeviceName);
+                _mOutputDevicesDropdown.choices.Add(outputDevice.DeviceName);
             }
 
-            m_OutputDevicesDropdown.SetValueWithoutNotify(VivoxService.Instance.ActiveOutputDevice.DeviceName);
+            _mOutputDevicesDropdown.SetValueWithoutNotify(VivoxService.Instance.ActiveOutputDevice.DeviceName);
         }
 
         void OnMuteCheckboxChanged(ChangeEvent<bool> evt)
@@ -206,16 +206,16 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 
         void OnDisable()
         {
-            m_BurgerButton.clicked -= ShowMenu;
-            m_ExitButton.clicked -= QuitGame;
-            m_GotoMainButton.clicked -= GoToMainMenuScene;
-            m_CloseMenuButton.clicked -= HideMenu;
+            _mBurgerButton.clicked -= ShowMenu;
+            _mExitButton.clicked -= QuitGame;
+            _mGotoMainButton.clicked -= GoToMainMenuScene;
+            _mCloseMenuButton.clicked -= HideMenu;
 
-            m_InputDevicesDropdown.UnregisterValueChangedCallback(evt => OnInputDeviceDropDownChanged(evt));
-            m_OutputDevicesDropdown.UnregisterValueChangedCallback(evt => OnOutputDeviceDropdownChanged(evt));
+            _mInputDevicesDropdown.UnregisterValueChangedCallback(evt => OnInputDeviceDropDownChanged(evt));
+            _mOutputDevicesDropdown.UnregisterValueChangedCallback(evt => OnOutputDeviceDropdownChanged(evt));
 
-            m_InputVolumeSlider.UnregisterValueChangedCallback(evt => OnInputVolumeChanged(evt));
-            m_OutputVolumeSlider.UnregisterValueChangedCallback(evt => OnOutputVolumeChanged(evt));
+            _mInputVolumeSlider.UnregisterValueChangedCallback(evt => OnInputVolumeChanged(evt));
+            _mOutputVolumeSlider.UnregisterValueChangedCallback(evt => OnOutputVolumeChanged(evt));
 
             VivoxService.Instance.AvailableInputDevicesChanged -= PopulateAudioInputDevices;
             VivoxService.Instance.AvailableOutputDevicesChanged -= PopulateAudioOutputDevices;

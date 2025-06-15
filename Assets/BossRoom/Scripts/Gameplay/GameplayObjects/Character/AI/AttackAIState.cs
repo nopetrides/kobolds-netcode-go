@@ -9,77 +9,77 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
 {
     public class AttackAIState : AIState
     {
-        private AIBrain m_Brain;
-        private ServerActionPlayer m_ServerActionPlayer;
-        private ServerCharacter m_Foe;
-        private Action m_CurAttackAction;
+        private AIBrain _mBrain;
+        private ServerActionPlayer _mServerActionPlayer;
+        private ServerCharacter _mFoe;
+        private Action _mCurAttackAction;
 
-        List<Action> m_AttackActions;
+        List<Action> _mAttackActions;
 
         public AttackAIState(AIBrain brain, ServerActionPlayer serverActionPlayer)
         {
-            m_Brain = brain;
-            m_ServerActionPlayer = serverActionPlayer;
+            _mBrain = brain;
+            _mServerActionPlayer = serverActionPlayer;
         }
 
         public override bool IsEligible()
         {
-            return m_Foe != null || ChooseFoe() != null;
+            return _mFoe != null || ChooseFoe() != null;
         }
 
         public override void Initialize()
         {
-            m_AttackActions = new List<Action>();
-            if (m_Brain.CharacterData.Skill1 != null)
+            _mAttackActions = new List<Action>();
+            if (_mBrain.CharacterData.Skill1 != null)
             {
-                m_AttackActions.Add(m_Brain.CharacterData.Skill1);
+                _mAttackActions.Add(_mBrain.CharacterData.Skill1);
             }
-            if (m_Brain.CharacterData.Skill2 != null)
+            if (_mBrain.CharacterData.Skill2 != null)
             {
-                m_AttackActions.Add(m_Brain.CharacterData.Skill2);
+                _mAttackActions.Add(_mBrain.CharacterData.Skill2);
             }
-            if (m_Brain.CharacterData.Skill3 != null)
+            if (_mBrain.CharacterData.Skill3 != null)
             {
-                m_AttackActions.Add(m_Brain.CharacterData.Skill3);
+                _mAttackActions.Add(_mBrain.CharacterData.Skill3);
             }
 
             // pick a starting attack action from the possible
-            m_CurAttackAction = m_AttackActions[Random.Range(0, m_AttackActions.Count)];
+            _mCurAttackAction = _mAttackActions[Random.Range(0, _mAttackActions.Count)];
 
             // clear any old foe info; we'll choose a new one in Update()
-            m_Foe = null;
+            _mFoe = null;
         }
 
         public override void Update()
         {
-            if (!m_Brain.IsAppropriateFoe(m_Foe))
+            if (!_mBrain.IsAppropriateFoe(_mFoe))
             {
                 // time for a new foe!
-                m_Foe = ChooseFoe();
+                _mFoe = ChooseFoe();
                 // whatever we used to be doing, stop that. New plan is coming!
-                m_ServerActionPlayer.ClearActions(true);
+                _mServerActionPlayer.ClearActions(true);
             }
 
             // if we're out of foes, stop! IsEligible() will now return false so we'll soon switch to a new state
-            if (!m_Foe)
+            if (!_mFoe)
             {
                 return;
             }
 
             // see if we're already chasing or attacking our active foe!
-            if (m_ServerActionPlayer.GetActiveActionInfo(out var info))
+            if (_mServerActionPlayer.GetActiveActionInfo(out var info))
             {
                 if (GameDataSource.Instance.GetActionPrototypeByID(info.ActionID).IsChaseAction)
                 {
-                    if (info.TargetIds != null && info.TargetIds[0] == m_Foe.NetworkObjectId)
+                    if (info.TargetIds != null && info.TargetIds[0] == _mFoe.NetworkObjectId)
                     {
                         // yep we're chasing our foe; all set! (The attack is enqueued after it)
                         return;
                     }
                 }
-                else if (info.ActionID == m_CurAttackAction.ActionID)
+                else if (info.ActionID == _mCurAttackAction.ActionID)
                 {
-                    if (info.TargetIds != null && info.TargetIds[0] == m_Foe.NetworkObjectId)
+                    if (info.TargetIds != null && info.TargetIds[0] == _mFoe.NetworkObjectId)
                     {
                         // yep we're attacking our foe; all set!
                         return;
@@ -93,8 +93,8 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
             }
 
             // choose the attack to use
-            m_CurAttackAction = ChooseAttack();
-            if (m_CurAttackAction == null)
+            _mCurAttackAction = ChooseAttack();
+            if (_mCurAttackAction == null)
             {
                 // no actions are usable right now
                 return;
@@ -103,12 +103,12 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
             // attack!
             var attackData = new ActionRequestData
             {
-                ActionID = m_CurAttackAction.ActionID,
-                TargetIds = new ulong[] { m_Foe.NetworkObjectId },
+                ActionID = _mCurAttackAction.ActionID,
+                TargetIds = new ulong[] { _mFoe.NetworkObjectId },
                 ShouldClose = true,
-                Direction = m_Brain.GetMyServerCharacter().physicsWrapper.Transform.forward
+                Direction = _mBrain.GetMyServerCharacter().PhysicsWrapper.Transform.forward
             };
-            m_ServerActionPlayer.PlayAction(ref attackData);
+            _mServerActionPlayer.PlayAction(ref attackData);
         }
 
         /// <summary>
@@ -118,13 +118,13 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         /// <returns></returns>
         private ServerCharacter ChooseFoe()
         {
-            Vector3 myPosition = m_Brain.GetMyServerCharacter().physicsWrapper.Transform.position;
+            Vector3 myPosition = _mBrain.GetMyServerCharacter().PhysicsWrapper.Transform.position;
 
             float closestDistanceSqr = int.MaxValue;
             ServerCharacter closestFoe = null;
-            foreach (var foe in m_Brain.GetHatedEnemies())
+            foreach (var foe in _mBrain.GetHatedEnemies())
             {
-                float distanceSqr = (myPosition - foe.physicsWrapper.Transform.position).sqrMagnitude;
+                float distanceSqr = (myPosition - foe.PhysicsWrapper.Transform.position).sqrMagnitude;
                 if (distanceSqr < closestDistanceSqr)
                 {
                     closestDistanceSqr = distanceSqr;
@@ -141,16 +141,16 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.Character.AI
         private Action ChooseAttack()
         {
             // make a random choice
-            int idx = Random.Range(0, m_AttackActions.Count);
+            int idx = Random.Range(0, _mAttackActions.Count);
 
             // now iterate through our options to find one that's currently usable
             bool anyUsable;
             do
             {
                 anyUsable = false;
-                foreach (var attack in m_AttackActions)
+                foreach (var attack in _mAttackActions)
                 {
-                    if (m_ServerActionPlayer.IsReuseTimeElapsed(attack.ActionID))
+                    if (_mServerActionPlayer.IsReuseTimeElapsed(attack.ActionID))
                     {
                         anyUsable = true;
                         if (idx == 0)

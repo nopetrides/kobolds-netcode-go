@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: bdf6e657945a4694f9a489b4b65f4c33
+timeCreated: 1480701436
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 79031
+  packageName: Better UI
+  packageVersion: 3.0
+  assetPath: Assets/TheraBytes/BetterUI/Editor/Scripts/UiElements/BetterImageEditor.cs
+  uploadId: 759928

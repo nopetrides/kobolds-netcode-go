@@ -9,17 +9,17 @@ namespace Unity.BossRoom.Gameplay.UI
     {
         [SerializeField]
         Color[] m_TintColors;
-        Image m_Image;
+        Image _mImage;
         void Awake()
         {
-            m_Image = GetComponent<Image>();
+            _mImage = GetComponent<Image>();
         }
 
         public void SetToColor(int colorIndex)
         {
             if (colorIndex >= m_TintColors.Length)
                 return;
-            m_Image.color = m_TintColors[colorIndex];
+            _mImage.color = m_TintColors[colorIndex];
         }
     }
 }

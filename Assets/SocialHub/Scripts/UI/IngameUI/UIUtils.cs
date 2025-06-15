@@ -5,8 +5,8 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
 {
     static class UIUtils
     {
-        internal const string s_ActiveUSSClass = "show";
-        internal const string s_InactiveUSSClass = "hide";
+        internal const string SActiveUSSClass = "show";
+        internal const string SInactiveUSSClass = "hide";
 
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Unity.Multiplayer.Samples.SocialHub.UI
         /// <param name="worldspaceTransform">Transform of the worldspace object</param>
         /// <param name="visualElement">VisualElement that should get translated in Screenspace</param>
         /// <param name="yOffset">Offset in Y from the position provided in worldspaceTransform</param>
-        internal static void TranslateVEWorldToScreenspace(this VisualElement visualElement, Camera camera, Transform worldspaceTransform, float yOffset = 0f)
+        internal static void TranslateVeWorldToScreenspace(this VisualElement visualElement, Camera camera, Transform worldspaceTransform, float yOffset = 0f)
         {
             var positionInWorldSpace = new Vector3(worldspaceTransform.position.x, worldspaceTransform.position.y + yOffset, worldspaceTransform.position.z);
             var screenSpacePosition = camera.WorldToScreenPoint(positionInWorldSpace);

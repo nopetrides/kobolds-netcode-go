@@ -11,7 +11,7 @@ namespace Unity.BossRoom.Utils.Editor
         [SerializeField]
         GameObject m_DebugCanvasPrefab;
 
-        Transform m_VerticalLayoutTransform;
+        Transform _mVerticalLayoutTransform;
 
         void Awake()
         {
@@ -21,8 +21,8 @@ namespace Unity.BossRoom.Utils.Editor
 
         public void AddTextToUI(string gameObjectName, string defaultText, out TextMeshProUGUI textComponent)
         {
-            var rootGO = new GameObject(gameObjectName);
-            textComponent = rootGO.AddComponent<TextMeshProUGUI>();
+            var rootGo = new GameObject(gameObjectName);
+            textComponent = rootGo.AddComponent<TextMeshProUGUI>();
             textComponent.fontSize = 28;
             textComponent.text = defaultText;
             textComponent.horizontalAlignment = HorizontalAlignmentOptions.Left;
@@ -30,19 +30,19 @@ namespace Unity.BossRoom.Utils.Editor
             textComponent.raycastTarget = false;
             textComponent.autoSizeTextContainer = true;
 
-            var rectTransform = rootGO.GetComponent<RectTransform>();
+            var rectTransform = rootGo.GetComponent<RectTransform>();
             AddToUI(rectTransform);
         }
 
         public void AddToUI(RectTransform displayTransform)
         {
-            if (m_VerticalLayoutTransform == null)
+            if (_mVerticalLayoutTransform == null)
             {
                 CreateDebugCanvas();
             }
 
             displayTransform.sizeDelta = new Vector2(100f, 24f);
-            displayTransform.SetParent(m_VerticalLayoutTransform);
+            displayTransform.SetParent(_mVerticalLayoutTransform);
             displayTransform.SetAsFirstSibling();
             displayTransform.localScale = Vector3.one;
         }
@@ -50,7 +50,7 @@ namespace Unity.BossRoom.Utils.Editor
         void CreateDebugCanvas()
         {
             var canvas = Instantiate(m_DebugCanvasPrefab, transform);
-            m_VerticalLayoutTransform = canvas.GetComponentInChildren<VerticalLayoutGroup>().transform;
+            _mVerticalLayoutTransform = canvas.GetComponentInChildren<VerticalLayoutGroup>().transform;
         }
     }
 }

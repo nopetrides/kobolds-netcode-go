@@ -14,19 +14,19 @@ namespace Unity.BossRoom.Gameplay.Actions
     [CreateAssetMenu(menuName = "BossRoom/Actions/Pick Up Action")]
     public class PickUpAction : Action
     {
-        const string k_HeavyTag = "Heavy";
-        const string k_NpcLayer = "NPCs";
-        const string k_FailedPickupTrigger = "PickUpFailed";
+        const string KHeavyTag = "Heavy";
+        const string KNpcLayer = "NPCs";
+        const string KFailedPickupTrigger = "PickUpFailed";
 
-        static RaycastHitComparer s_RaycastHitComparer = new RaycastHitComparer();
+        static RaycastHitComparer _sRaycastHitComparer = new RaycastHitComparer();
 
-        RaycastHit[] m_RaycastHits = new RaycastHit[8];
-        float m_ActionStartTime;
-        bool m_AttemptedPickup;
+        RaycastHit[] _mRaycastHits = new RaycastHit[8];
+        float _mActionStartTime;
+        bool _mAttemptedPickup;
 
         public override bool OnStart(ServerCharacter serverCharacter)
         {
-            m_ActionStartTime = Time.time;
+            _mActionStartTime = Time.time;
 
             // play pickup animation based if a heavy object is not already held
             if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(
@@ -34,7 +34,7 @@ namespace Unity.BossRoom.Gameplay.Actions
             {
                 if (!string.IsNullOrEmpty(Config.Anim))
                 {
-                    serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+                    serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
                 }
             }
 
@@ -44,29 +44,29 @@ namespace Unity.BossRoom.Gameplay.Actions
         public override void Reset()
         {
             base.Reset();
-            m_ActionStartTime = 0;
-            m_AttemptedPickup = false;
+            _mActionStartTime = 0;
+            _mAttemptedPickup = false;
         }
 
         bool TryPickUp(ServerCharacter parent)
         {
-            var numResults = Physics.RaycastNonAlloc(parent.physicsWrapper.Transform.position,
-                parent.physicsWrapper.Transform.forward,
-                m_RaycastHits,
+            var numResults = Physics.RaycastNonAlloc(parent.PhysicsWrapper.Transform.position,
+                parent.PhysicsWrapper.Transform.forward,
+                _mRaycastHits,
                 Config.Range,
-                1 << LayerMask.NameToLayer(k_NpcLayer));
+                1 << LayerMask.NameToLayer(KNpcLayer));
 
-            Array.Sort(m_RaycastHits, 0, numResults, s_RaycastHitComparer);
+            Array.Sort(_mRaycastHits, 0, numResults, _sRaycastHitComparer);
 
             // collider must contain "Heavy" tag, the heavy object must not be parented to another NetworkObject, and
             // parenting attempt must be successful
-            if (numResults == 0 || !m_RaycastHits[0].collider.TryGetComponent(out NetworkObject heavyNetworkObject) ||
-                !m_RaycastHits[0].collider.gameObject.CompareTag(k_HeavyTag) ||
+            if (numResults == 0 || !_mRaycastHits[0].collider.TryGetComponent(out NetworkObject heavyNetworkObject) ||
+                !_mRaycastHits[0].collider.gameObject.CompareTag(KHeavyTag) ||
                 (heavyNetworkObject.transform.parent != null &&
                     heavyNetworkObject.transform.parent.TryGetComponent(out NetworkObject parentNetworkObject)) ||
                 !heavyNetworkObject.TrySetParent(parent.transform))
             {
-                parent.serverAnimationHandler.NetworkAnimator.SetTrigger(k_FailedPickupTrigger);
+                parent.ServerAnimationHandler.NetworkAnimator.SetTrigger(KFailedPickupTrigger);
                 return false;
             }
 
@@ -91,7 +91,7 @@ namespace Unity.BossRoom.Gameplay.Actions
                 {
                     var constraintSource = new ConstraintSource()
                     {
-                        sourceTransform = serverCharacter.clientCharacter.CharacterSwap.CharacterModel.handSocket.transform,
+                        sourceTransform = serverCharacter.ClientCharacter.CharacterSwap.CharacterModel.handSocket.transform,
                         weight = 1
                     };
                     positionConstraint.AddSource(constraintSource);
@@ -104,9 +104,9 @@ namespace Unity.BossRoom.Gameplay.Actions
 
         public override bool OnUpdate(ServerCharacter clientCharacter)
         {
-            if (!m_AttemptedPickup && Time.time > m_ActionStartTime + Config.ExecTimeSeconds)
+            if (!_mAttemptedPickup && Time.time > _mActionStartTime + Config.ExecTimeSeconds)
             {
-                m_AttemptedPickup = true;
+                _mAttemptedPickup = true;
                 if (!TryPickUp(clientCharacter))
                 {
                     // pickup attempt unsuccessful; action can be terminated

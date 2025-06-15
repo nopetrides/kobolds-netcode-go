@@ -11,7 +11,7 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         TextMeshProUGUI m_ProfileNameText;
 
-        [Inject] ProfileManager m_ProfileManager;
+        [Inject] ProfileManager _mProfileManager;
 
         public void SetProfileName(string profileName)
         {
@@ -20,12 +20,12 @@ namespace Unity.BossRoom.Gameplay.UI
 
         public void OnSelectClick()
         {
-            m_ProfileManager.Profile = m_ProfileNameText.text;
+            _mProfileManager.Profile = m_ProfileNameText.text;
         }
 
         public void OnDeleteClick()
         {
-            m_ProfileManager.DeleteProfile(m_ProfileNameText.text);
+            _mProfileManager.DeleteProfile(m_ProfileNameText.text);
         }
     }
 }

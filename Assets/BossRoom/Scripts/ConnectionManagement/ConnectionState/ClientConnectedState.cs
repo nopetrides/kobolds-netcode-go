@@ -11,13 +11,13 @@ namespace Unity.BossRoom.ConnectionManagement
     class ClientConnectedState : OnlineState
     {
         [Inject]
-        protected LobbyServiceFacade m_LobbyServiceFacade;
+        protected LobbyServiceFacade MLobbyServiceFacade;
 
         public override void Enter()
         {
-            if (m_LobbyServiceFacade.CurrentUnityLobby != null)
+            if (MLobbyServiceFacade.CurrentUnityLobby != null)
             {
-                m_LobbyServiceFacade.BeginTracking();
+                MLobbyServiceFacade.BeginTracking();
             }
         }
 
@@ -25,18 +25,18 @@ namespace Unity.BossRoom.ConnectionManagement
 
         public override void OnClientDisconnect(ulong _)
         {
-            var disconnectReason = m_ConnectionManager.NetworkManager.DisconnectReason;
+            var disconnectReason = MConnectionManager.NetworkManager.DisconnectReason;
             if (string.IsNullOrEmpty(disconnectReason) ||
                 disconnectReason == "Disconnected due to host shutting down.")
             {
-                m_ConnectStatusPublisher.Publish(ConnectStatus.Reconnecting);
-                m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientReconnecting);
+                MConnectStatusPublisher.Publish(ConnectStatus.Reconnecting);
+                MConnectionManager.ChangeState(MConnectionManager.MClientReconnecting);
             }
             else
             {
                 var connectStatus = JsonUtility.FromJson<ConnectStatus>(disconnectReason);
-                m_ConnectStatusPublisher.Publish(connectStatus);
-                m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
+                MConnectStatusPublisher.Publish(connectStatus);
+                MConnectionManager.ChangeState(MConnectionManager.MOffline);
             }
         }
     }

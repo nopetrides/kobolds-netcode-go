@@ -64,7 +64,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
         [Tooltip("If the speed variable is between WalkSpeedThreshold and this, we're running. (Higher than this means no sound)")]
         private float m_RunSpeedThreshold = 1.2f;
 
-        float m_LastSpeed;
+        float _mLastSpeed;
 
         void Awake()
         {
@@ -85,7 +85,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
 
             var speed = m_Animator.GetFloat(m_AnimatorVariableHash);
 
-            if (Mathf.Approximately(speed, m_LastSpeed))
+            if (Mathf.Approximately(speed, _mLastSpeed))
             {
                 return;
             }
@@ -128,7 +128,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
                 m_AudioSource.Play();
             }
 
-            m_LastSpeed = speed;
+            _mLastSpeed = speed;
         }
 
 #if UNITY_EDITOR

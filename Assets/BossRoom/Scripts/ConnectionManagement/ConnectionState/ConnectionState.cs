@@ -12,10 +12,10 @@ namespace Unity.BossRoom.ConnectionManagement
     abstract class ConnectionState
     {
         [Inject]
-        protected ConnectionManager m_ConnectionManager;
+        protected ConnectionManager MConnectionManager;
 
         [Inject]
-        protected IPublisher<ConnectStatus> m_ConnectStatusPublisher;
+        protected IPublisher<ConnectStatus> MConnectStatusPublisher;
 
         public abstract void Enter();
 

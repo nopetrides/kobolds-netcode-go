@@ -3,6 +3,7 @@ using Unity.BossRoom.Gameplay.UserInput;
 using Unity.Netcode;
 using UnityEngine;
 
+
 namespace Unity.BossRoom.Gameplay.UI
 {
     /// <summary>
@@ -14,11 +15,11 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         GameObject m_FeedbackPrefab;
 
-        GameObject m_FeedbackObj;
+        GameObject _mFeedbackObj;
 
-        ClientInputSender m_ClientSender;
+        ClientInputSender _mClientSender;
 
-        ClickFeedbackLerper m_ClickFeedbackLerper;
+        ClickFeedbackLerper _mClickFeedbackLerper;
 
 
         void Start()
@@ -29,25 +30,25 @@ namespace Unity.BossRoom.Gameplay.UI
                 return;
             }
 
-            m_ClientSender = GetComponent<ClientInputSender>();
-            m_ClientSender.ClientMoveEvent += OnClientMove;
-            m_FeedbackObj = Instantiate(m_FeedbackPrefab);
-            m_FeedbackObj.SetActive(false);
-            m_ClickFeedbackLerper = m_FeedbackObj.GetComponent<ClickFeedbackLerper>();
+            _mClientSender = GetComponent<ClientInputSender>();
+            _mClientSender.ClientMoveEvent += OnClientMove;
+            _mFeedbackObj = Instantiate(m_FeedbackPrefab);
+            _mFeedbackObj.SetActive(false);
+            _mClickFeedbackLerper = _mFeedbackObj.GetComponent<ClickFeedbackLerper>();
         }
 
         void OnClientMove(Vector3 position)
         {
-            m_FeedbackObj.SetActive(true);
-            m_ClickFeedbackLerper.SetTarget(position);
+            _mFeedbackObj.SetActive(true);
+            _mClickFeedbackLerper.SetTarget(position);
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
-            if (m_ClientSender)
+            if (_mClientSender)
             {
-                m_ClientSender.ClientMoveEvent -= OnClientMove;
+                _mClientSender.ClientMoveEvent -= OnClientMove;
             }
 
         }

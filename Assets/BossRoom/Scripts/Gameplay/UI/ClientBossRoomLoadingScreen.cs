@@ -13,13 +13,13 @@ namespace Unity.BossRoom.Gameplay.UI
         protected override void AddOtherPlayerProgressBar(ulong clientId, NetworkedLoadingProgressTracker progressTracker)
         {
             base.AddOtherPlayerProgressBar(clientId, progressTracker);
-            m_LoadingProgressBars[clientId].NameText.text = GetPlayerName(clientId);
+            MLoadingProgressBars[clientId].NameText.text = GetPlayerName(clientId);
         }
 
         protected override void UpdateOtherPlayerProgressBar(ulong clientId, int progressBarIndex)
         {
             base.UpdateOtherPlayerProgressBar(clientId, progressBarIndex);
-            m_LoadingProgressBars[clientId].NameText.text = GetPlayerName(clientId);
+            MLoadingProgressBars[clientId].NameText.text = GetPlayerName(clientId);
         }
 
         string GetPlayerName(ulong clientId)

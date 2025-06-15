@@ -5,21 +5,21 @@ namespace Unity.BossRoom.Infrastructure
 {
     public class DisposableGroup : IDisposable
     {
-        readonly List<IDisposable> m_Disposables = new List<IDisposable>();
+        readonly List<IDisposable> _mDisposables = new List<IDisposable>();
 
         public void Dispose()
         {
-            foreach (var disposable in m_Disposables)
+            foreach (var disposable in _mDisposables)
             {
                 disposable.Dispose();
             }
 
-            m_Disposables.Clear();
+            _mDisposables.Clear();
         }
 
         public void Add(IDisposable disposable)
         {
-            m_Disposables.Add(disposable);
+            _mDisposables.Add(disposable);
         }
     }
 }

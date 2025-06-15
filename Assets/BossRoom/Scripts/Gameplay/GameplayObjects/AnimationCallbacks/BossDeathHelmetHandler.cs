@@ -23,20 +23,20 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects.AnimationCallbacks
         [Tooltip("The transform of the boss's helmet, which will become de-parented when the boss is defeated")]
         Transform m_HelmetTransform;
 
-        bool m_HasDeparentedHelmet;
+        bool _mHasDeparentedHelmet;
 
         public void OnAnimEvent(string id)
         {
-            if (id == "HelmetLanded" && !m_HasDeparentedHelmet)
+            if (id == "HelmetLanded" && !_mHasDeparentedHelmet)
             {
-                m_HasDeparentedHelmet = true;
+                _mHasDeparentedHelmet = true;
                 m_HelmetTransform.parent = null;
             }
         }
 
         public void OnDestroy()
         {
-            if (m_HasDeparentedHelmet && m_HelmetTransform)
+            if (_mHasDeparentedHelmet && m_HelmetTransform)
             {
                 // the boss is going away, so the helmet should go too!
                 Destroy(m_HelmetTransform.gameObject);
