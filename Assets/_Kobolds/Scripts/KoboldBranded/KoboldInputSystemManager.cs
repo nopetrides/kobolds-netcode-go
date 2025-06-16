@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Kobold.GameManagement;
 using Kobolds;
+using UnityEngine.InputSystem;
 
 namespace Kobold.Input
 {
@@ -8,6 +9,7 @@ namespace Kobold.Input
     {
         public static KoboldInputSystemManager Instance { get; private set; }
 		
+		public PlayerInput NewInputSystem { get; private set; }
 		public KoboldInputs Inputs { get; private set; }
         
         [Header("Cursor Settings")]
@@ -21,6 +23,7 @@ namespace Kobold.Input
             {
                 Instance = this;
                 DontDestroyOnLoad(this);
+				NewInputSystem = gameObject.GetComponent<PlayerInput>();
 				Inputs = gameObject.GetComponent<KoboldInputs>();
 			}
             else
@@ -58,7 +61,8 @@ namespace Kobold.Input
             _isInUIMode = true;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            
+			NewInputSystem.SwitchCurrentActionMap("UI");
+			
             // You could add an event here to notify KoboldInputs components
             // KoboldEventHandler.InputModeChanged?.Invoke(false);
         }
@@ -68,10 +72,11 @@ namespace Kobold.Input
             _isInUIMode = false;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-            
-            // You could add an event here to notify KoboldInputs components
-            // KoboldEventHandler.InputModeChanged?.Invoke(true);
-        }
+			NewInputSystem.SwitchCurrentActionMap("Player");
+
+			// You could add an event here to notify KoboldInputs components
+			// KoboldEventHandler.InputModeChanged?.Invoke(true);
+		}
         
         public void ToggleMode()
         {

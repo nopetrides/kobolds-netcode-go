@@ -364,58 +364,9 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: UI
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!1 &1426471132
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1426471134}
-  - component: {fileID: 1426471133}
-  m_Layer: 0
-  m_Name: KoboldUISystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1426471133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426471132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 558040c9df354179a5247010fe185f42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Kobold.UI.KoboldUISystem
-  _config: {fileID: 11400000, guid: e141cbf23d0d6b94298425a578c63f47, type: 2}
-  _windowDefinitions:
-  - {fileID: 11400000, guid: 2ed091b74651cc74980e9c12a4d565a1, type: 2}
-  - {fileID: 11400000, guid: e4637cc3204155c439ebeba6d7627549, type: 2}
-  - {fileID: 11400000, guid: a3399192ed1449a4489b0a78d18f8b1f, type: 2}
---- !u!4 &1426471134
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426471132}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2025323661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -540,4 +491,3 @@ SceneRoots:
   - {fileID: 880674796}
   - {fileID: 1247579326}
   - {fileID: 341120911}
-  - {fileID: 1426471134}

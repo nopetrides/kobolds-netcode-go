@@ -1,6 +1,5 @@
 ﻿using System;
 using Kobold.GameManagement;
-using Kobold.UI.Components;
 using Kobold.UI.Configuration;
 using UnityEditor;
 using UnityEngine;
@@ -24,16 +23,22 @@ namespace Kobold.UI.Presenters
 
 			// Debug: Log the structure
 			Debug.Log($"[MainMenuPresenter] Root element: {_root?.name}, children: {_root?.childCount}");
+			Debug.Log($"[MainMenuPresenter] Root panel: {_root?.panel != null}");
 
-			// Find the main menu window
+			// The root might be the container, so let's find the actual menu window
 			_mainMenu = _root.Q<VisualElement>("main-menu-window");
 
 			if (_mainMenu == null)
 			{
 				// Maybe the root IS the main menu window?
-				if (_root.name == "main-menu-window")
+				if (_root?.name == "main-menu-window")
 				{
 					_mainMenu = _root;
+				}
+				// Or maybe it's the first child
+				else if (_root?.childCount > 0 && _root[0].name == "main-menu-window")
+				{
+					_mainMenu = _root[0];
 				}
 				else
 				{
@@ -42,6 +47,10 @@ namespace Kobold.UI.Presenters
 				}
 			}
 
+			// Check if panel is attached to the menu element
+			Debug.Log($"[MainMenuPresenter] Main menu panel: {_mainMenu.panel != null}");
+
+			// Continue with initialization...
 			Debug.Log($"[MainMenuPresenter] Found main menu with {_mainMenu.childCount} children");
 
 			// Debug: Log the full structure
@@ -51,41 +60,80 @@ namespace Kobold.UI.Presenters
 			BindButton(
 				"social-hub-button", () =>
 				{
-					PlayClickSound();
 					KoboldUISystem.Instance.ShowMenu(KoboldMenu.SocialHub);
+					PlayClickSound();
 				});
 
 			BindButton(
 				"quick-mission-button", () =>
 				{
-					PlayClickSound();
 					var playerName = PlayerPrefs.GetString("PlayerName", _config.defaultPlayerName);
 					KoboldEventHandler.QuickMissionPressed(playerName, "QuickMatch");
+					PlayClickSound();
 				});
 
 			BindButton(
 				"settings-button", () =>
 				{
-					PlayClickSound();
 					KoboldUISystem.Instance.ShowMenu(KoboldMenu.Settings);
+					PlayClickSound();
 				});
 
 			BindButton(
 				"quit-button", () =>
 				{
-					PlayClickSound();
 					QuitGame();
+					PlayClickSound();
 				});
 
 			// Update version label if it exists
 			var versionLabel = _mainMenu.Q<Label>("version-label");
 			if (versionLabel != null) versionLabel.text = $"Version {Application.version}";
+				
+			// After binding buttons
+			_root.schedule.Execute(() => 
+			{
+				var panel = _root.panel;
+				Debug.Log($"[MainMenuPresenter] Panel focus owner: {panel?.focusController?.focusedElement?.tabIndex ?? -1}");
+    
+				// Force focus to the panel
+				_root.Focus();
+    
+				// Try focusing a button directly
+				var socialButton = _mainMenu.Q<Button>("social-hub-button");
+				if (socialButton != null)
+				{
+					socialButton.Focus();
+					Debug.Log($"[MainMenuPresenter] Forced focus to social button");
+				}
+			}).ExecuteLater(100); // Wait a bit for everything to settle
 		}
 
 		public void OnShow()
 		{
-			// Called when main menu is shown
 			Debug.Log("[MainMenuPresenter] Main menu shown");
+    
+			// Use _mainMenu for scheduling, not _root
+			if (_mainMenu?.panel != null)
+			{
+				_mainMenu.schedule.Execute(() => 
+				{
+					Debug.Log("[MainMenuPresenter] Schedule callback fired!");
+            
+					var button = _mainMenu.Q<Button>("social-hub-button");
+					if (button != null)
+					{
+						Debug.Log($"[MainMenuPresenter] OnShow check - Button enabled: {button.enabledInHierarchy}, Clickable: {button.enabledSelf}");
+                
+						// Try re-binding to see if it works
+						button.clicked += () => Debug.Log("[MainMenuPresenter] Re-bound handler fired!");
+					}
+				}).ExecuteLater(100);
+			}
+			else
+			{
+				Debug.LogError($"[MainMenuPresenter] Main menu panel is null in OnShow!");
+			}
 		}
 
 		public void OnHide()
@@ -109,55 +157,23 @@ namespace Kobold.UI.Presenters
 
 		private void BindButton(string buttonName, Action action)
 		{
-			// First try to find the KoboldButtonElement
-			var koboldButtonElement = _mainMenu.Q<KoboldButtonElement>(buttonName);
-
-			if (koboldButtonElement != null)
-			{
-				// Debug what's inside
-				Debug.Log(
-					$"[MainMenuPresenter] Found KoboldButtonElement '{buttonName}' with {koboldButtonElement.childCount} children");
-				foreach (var child in koboldButtonElement.Children())
-					Debug.Log($"  - Child: {child.GetType().Name} '{child.name}'");
-
-				// The KoboldButtonElement should have created a KoboldButton as a child
-				var koboldButton = koboldButtonElement.Q<KoboldButton>();
-				if (koboldButton != null)
-				{
-					// Subscribe to the KoboldButton's Clicked event
-					koboldButton.Clicked += action;
-					Debug.Log($"[MainMenuPresenter] Successfully bound KoboldButton '{buttonName}'");
-					return;
-				}
-
-				// Maybe it needs more time to initialize?
-				koboldButtonElement.schedule.Execute(() =>
-				{
-					var delayedButton = koboldButtonElement.Q<KoboldButton>();
-					if (delayedButton != null)
-					{
-						delayedButton.Clicked += action;
-						Debug.Log($"[MainMenuPresenter] Successfully bound KoboldButton '{buttonName}' (delayed)");
-					}
-					else
-					{
-						Debug.LogWarning($"[MainMenuPresenter] Still couldn't find KoboldButton inside '{buttonName}'");
-					}
-				}).ExecuteLater(100);
-
-				return;
-			}
-
-			// Fallback: try standard button search
 			var button = _mainMenu.Q<Button>(buttonName);
+    
 			if (button != null)
 			{
+				// Simple binding
 				button.clicked += action;
-				Debug.Log($"[MainMenuPresenter] Successfully bound standard button '{buttonName}'");
-				return;
+        
+				// Debug to confirm
+				Debug.Log($"[MainMenuPresenter] Bound button '{buttonName}' - Enabled: {button.enabledInHierarchy}");
+        
+				// Add a test click handler to verify events are firing
+				button.clicked += () => Debug.Log($"[MainMenuPresenter] Button '{buttonName}' was clicked!");
 			}
-
-			Debug.LogWarning($"[MainMenuPresenter] Button '{buttonName}' not found!");
+			else
+			{
+				Debug.LogError($"[MainMenuPresenter] Button '{buttonName}' not found!");
+			}
 		}
 
 		private void PlayClickSound()

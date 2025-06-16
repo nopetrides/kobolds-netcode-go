@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8bec4898ec443be8450132848f4285c, type: 3}
+  m_Name: KoboldUITheme_Default
+  m_EditorClassIdentifier: Assembly-CSharp::Kobold.UI.Theming.UITheme
+  themeName: Default
+  themeDescription: The Default look
+  themePreviewImage: {fileID: 0}
+  mainStyleSheet: {fileID: 7433441132597879392, guid: 278ee5504e524289813b1f72f4a989be, type: 3}
+  additionalStyleSheets: []
+  primaryColor: {r: 1, g: 1, b: 1, a: 1}
+  secondaryColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}
+  backgroundColor: {r: 0, g: 0, b: 0, a: 1}
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  errorColor: {r: 1, g: 0, b: 0, a: 1}
+  successColor: {r: 0, g: 1, b: 0, a: 1}
+  warningColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  primaryFont: {fileID: 12800000, guid: ae3fa31b7436b4541b1a40b4da1bfb37, type: 3}
+  secondaryFont: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
+  baseFontSize: 36
+  themeIcons: []
+  themeSprites: []
+  uiClickSound: {fileID: 8300000, guid: 47d638bab461ccb4fa1dcb75d296f93a, type: 3}
+  uiHoverSound: {fileID: 8300000, guid: 02526936df3e4f7408081fc9ab239313, type: 3}
+  uiErrorSound: {fileID: 8300000, guid: 670a699d2dce2c44aa70febe6d4b2dab, type: 3}
+  uiSuccessSound: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  uiBackSound: {fileID: 8300000, guid: 47d638bab461ccb4fa1dcb75d296f93a, type: 3}

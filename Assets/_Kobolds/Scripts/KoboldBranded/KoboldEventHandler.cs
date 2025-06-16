@@ -118,16 +118,19 @@ namespace Kobold.GameManagement
 
 		public static void ConnectToSessionComplete(Task task, string sessionName)
 		{
+			Debug.Log("[KoboldEventHandler.ConnectToSessionComplete]");
 			OnConnectToSessionCompleted?.Invoke(task, sessionName);
 		}
 
 		public static void SocialHubConnectionComplete(Task task, string sessionName)
 		{
+			Debug.Log("[KoboldEventHandler.SocialHubConnectionComplete]");
 			OnSocialHubConnectionCompleted?.Invoke(task, sessionName);
 		}
 
 		public static void MissionConnectionComplete(Task task, string sessionName)
 		{
+			Debug.Log("[KoboldEventHandler.MissionConnectionComplete]");
 			OnMissionConnectionCompleted?.Invoke(task, sessionName);
 		}
 
@@ -152,16 +155,19 @@ namespace Kobold.GameManagement
 
 		public static void LoadMainMenuScene(string name)
 		{
+			Debug.Log($"[KoboldEventHandler.LoadMainMenuScene({name})]");
 			SceneManager.LoadScene(name);
 		}
 
 		public static void LoadInGameScene(string name)
 		{
+			Debug.Log($"[KoboldEventHandler.LoadInGameScene({name})]");
 			SceneManager.LoadScene(name);
 		}
 
 		public static void LoadMissionScene(string missionSceneName)
 		{
+			Debug.Log($"[KoboldEventHandler.LoadMissionScene({missionSceneName})]");
 			SceneManager.LoadScene(missionSceneName);
 		}
 

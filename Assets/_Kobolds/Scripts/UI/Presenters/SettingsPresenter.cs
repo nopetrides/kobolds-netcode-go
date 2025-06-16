@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kobold.UI.Components;
 using Kobold.UI.Configuration;
 using Kobold.UI.Theming;
 using UnityEngine;
@@ -266,10 +265,10 @@ namespace Kobold.UI.Presenters
 
 			if (koboldButtonElement != null)
 			{
-				var koboldButton = koboldButtonElement.Q<KoboldButton>();
+				var koboldButton = koboldButtonElement.Q<Button>();
 				if (koboldButton != null)
 				{
-					koboldButton.Clicked += action;
+					koboldButton.clicked += action;
 					return;
 				}
 			}

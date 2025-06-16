@@ -22,4 +22,13 @@
 		Inventory = 6,
 		GameOver = 7
 	}
+	
+	public enum UISoundType
+	{
+		Click,
+		Hover,
+		Error,
+		Success,
+		Back
+	}
 }

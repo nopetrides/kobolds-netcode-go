@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Kobold.UI.Components;
 using Kobold.UI.Configuration;
 using Kobold.UI.Theming;
 using UnityEngine;
@@ -57,20 +56,15 @@ namespace Kobold.UI
 			if (defaultMenu != KoboldMenu.None)
 				ShowMenu(defaultMenu);
 		}
-		
-		void OnEnable()
+
+		private void OnEnable()
 		{
 			SceneManager.sceneLoaded += OnSceneLoaded;
 		}
 
-		void OnDisable()
+		private void OnDisable()
 		{
 			SceneManager.sceneLoaded -= OnSceneLoaded;
-		}
-
-		private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-		{
-			UnloadAllMenus();
 		}
 
 		private void OnDestroy()
@@ -80,6 +74,11 @@ namespace Kobold.UI
 
 			if (Instance == this)
 				Instance = null;
+		}
+
+		private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+		{
+			UnloadAllMenus();
 		}
 
 		private void BuildMenuDictionary()
@@ -103,37 +102,65 @@ namespace Kobold.UI
 
 		public void ShowMenu(KoboldMenu menuType)
 		{
-			// Hide current
-			if (CurrentMenu != KoboldMenu.None && _loadedMenus.TryGetValue(CurrentMenu, out var currentGo))
-			{
-				currentGo.SetActive(false);
-				_presenters[CurrentMenu]?.OnHide();
-			}
+			Debug.Log($"[KoboldUISystem] Starting ShowMenu menu {menuType}");
 
+			// Store the previous menu
+			var previousMenu = CurrentMenu;
+
+			// Update current menu
+			CurrentMenu = menuType;
+
+			// If going to None, hide current and return
 			if (menuType == KoboldMenu.None)
 			{
-				CurrentMenu = KoboldMenu.None;
+				if (previousMenu != KoboldMenu.None && _loadedMenus.TryGetValue(previousMenu, out var currentGo))
+				{
+					currentGo.SetActive(false);
+					if (_presenters.TryGetValue(previousMenu, out var presenter)) presenter?.OnHide();
+				}
+
 				return;
 			}
 
 			// Load if needed
 			if (!_loadedMenus.ContainsKey(menuType))
+			{
+				Debug.Log($"[KoboldUISystem] Menu {menuType} not loaded yet, loading...");
 				LoadMenu(menuType);
+				// Don't hide the current menu yet - wait until new one is ready
+				return;
+			}
 
-			if (_loadedMenus.TryGetValue(menuType, out var newGo))
+			// Menu is loaded, do the transition
+			PerformMenuTransition(previousMenu, menuType);
+		}
+
+		private void PerformMenuTransition(KoboldMenu fromMenu, KoboldMenu toMenu)
+		{
+			Debug.Log($"[KoboldUISystem] Performing transition from {fromMenu} to {toMenu}");
+
+			// Hide previous menu
+			if (fromMenu != KoboldMenu.None && _loadedMenus.TryGetValue(fromMenu, out var previousGo))
+			{
+				previousGo.SetActive(false);
+				if (_presenters.TryGetValue(fromMenu, out var previousPresenter)) previousPresenter?.OnHide();
+			}
+
+			// Show new menu
+			if (_loadedMenus.TryGetValue(toMenu, out var newGo))
 			{
 				newGo.SetActive(true);
-				CurrentMenu = menuType;
 
 				// Animate if needed
-				if (_config.autoAnimateWindows && _roots.TryGetValue(menuType, out var veRoot))
-					AnimateWindow(veRoot, _menus[menuType]);
+				if (_config.autoAnimateWindows && _roots.TryGetValue(toMenu, out var veRoot))
+					AnimateWindow(veRoot, _menus[toMenu]);
 
-				_presenters[menuType]?.OnShow();
+				// Call OnShow after the menu is active
+				if (_presenters.TryGetValue(toMenu, out var presenter)) presenter?.OnShow();
 			}
 			else
 			{
-				Debug.LogWarning($"[KoboldUISystem] Failed to show menu {menuType}");
+				Debug.LogWarning($"[KoboldUISystem] Failed to show menu {toMenu} - not in loaded menus");
 			}
 		}
 
@@ -157,27 +184,71 @@ namespace Kobold.UI
 			// Activate to ensure root is generated
 			go.SetActive(true);
 
+			// Wait for next frame or for panel attachment
+			StartCoroutine(InitializeMenuWhenReady(menuType, def, go, document));
+		}
+
+		private IEnumerator InitializeMenuWhenReady(KoboldMenu menuType, UIWindowDefinition def, GameObject go, UIDocument document)
+		{
+			// Wait a frame for UIDocument to initialize
+			yield return null;
+
 			var root = document.rootVisualElement;
 			if (root == null)
 			{
 				Debug.LogError($"[KoboldUISystem] Root visual element missing for {menuType}");
 				Destroy(go);
-				return;
+				yield break;
 			}
 
-			// Ensure it's hidden initially
-			go.SetActive(false);
+			// Wait for panel attachment
+			int waitFrames = 0;
+			while (root.panel == null && waitFrames < 60) // Max 1 second wait
+			{
+				Debug.Log($"[KoboldUISystem] Waiting for panel attachment for {menuType}... (frame {waitFrames})");
+				yield return null;
+				waitFrames++;
+			}
+
+			if (root.panel == null)
+			{
+				Debug.LogError($"[KoboldUISystem] Panel never attached for {menuType}!");
+				Destroy(go);
+				yield break;
+			}
+
+			Debug.Log($"[KoboldUISystem] Panel attached for {menuType}!");
 
 			// Theme application
 			KoboldThemeManager.Instance?.RegisterUIDocument(document);
 
+			// Find the actual content root
+			VisualElement contentRoot = root;
+			if (root.childCount == 1)
+			{
+				contentRoot = root[0];
+				Debug.Log($"[KoboldUISystem] Using child as content root: {contentRoot.name}");
+			}
+
 			// Presenter hookup
 			var presenter = def.CreatePresenter();
-			presenter?.Initialize(root, _config);
+			presenter?.Initialize(contentRoot, _config);
 
 			_loadedMenus[menuType] = go;
 			_presenters[menuType] = presenter;
 			_roots[menuType] = root;
+
+			// Start hidden
+			go.SetActive(false);
+
+			// Get the previous menu before we do the transition
+			var previousMenu = CurrentMenu == menuType ? KoboldMenu.None : CurrentMenu;
+
+			// If this menu is supposed to be shown, do the transition now
+			if (CurrentMenu == menuType)
+			{
+				PerformMenuTransition(previousMenu, menuType);
+			}
 		}
 
 		public void HideCurrentMenu()
@@ -282,11 +353,10 @@ namespace Kobold.UI
 		{
 			return _config;
 		}
-		
+
 		public void UnloadAllMenus()
 		{
 			foreach (var presenter in _presenters.Values)
-			{
 				try
 				{
 					presenter?.OnHide();
@@ -296,13 +366,10 @@ namespace Kobold.UI
 				{
 					Debug.LogError($"[KoboldUISystem] Error during presenter cleanup: {e}");
 				}
-			}
 
 			foreach (var go in _loadedMenus.Values)
-			{
 				if (go != null)
 					Destroy(go);
-			}
 
 			_loadedMenus.Clear();
 			_presenters.Clear();
@@ -311,6 +378,5 @@ namespace Kobold.UI
 
 			Debug.Log("[KoboldUISystem] All menus unloaded.");
 		}
-
 	}
 }

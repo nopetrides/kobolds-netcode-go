@@ -1,6 +1,5 @@
 ﻿using System;
 using Kobold.GameManagement;
-using Kobold.UI.Components;
 using Kobold.UI.Configuration;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -135,10 +134,10 @@ namespace Kobold.UI.Presenters
 
 			if (koboldButtonElement != null)
 			{
-				var koboldButton = koboldButtonElement.Q<KoboldButton>();
+				var koboldButton = koboldButtonElement.Q<Button>();
 				if (koboldButton != null)
 				{
-					koboldButton.Clicked += action;
+					koboldButton.clicked += action;
 					return;
 				}
 			}
