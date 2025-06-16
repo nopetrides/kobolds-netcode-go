@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kobolds;
+using Kobold;
 using Kobold.GameManagement;
 using Kobold.Vivox;
 using Unity.Netcode;

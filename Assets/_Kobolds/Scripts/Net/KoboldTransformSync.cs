@@ -1,7 +1,7 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Net
+namespace Kobold.Net
 {
 	/// <summary>
 	///     Synchronizes key bone transforms for Kobold characters.

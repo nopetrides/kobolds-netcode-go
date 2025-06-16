@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Kobolds
+namespace Kobold
 {
 	/// <summary>
 	/// Defines the possible states for a Kobold character.

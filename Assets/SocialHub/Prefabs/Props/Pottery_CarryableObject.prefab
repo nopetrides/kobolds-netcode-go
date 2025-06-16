@@ -299,6 +299,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -48.802002
       objectReference: {fileID: 0}
+    - target: {fileID: 7182157057332534688, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
+      propertyPath: _snapToGripPoint
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8480444494992682542, guid: b35b44635b9b3ec43b189ea3a1400750, type: 3}
       propertyPath: m_Layer
       value: 12

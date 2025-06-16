@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-namespace Kobolds
+namespace Kobold
 {
 	public class KoboldInputs : MonoBehaviour
 	{
@@ -19,6 +19,7 @@ namespace Kobolds
 		public bool GripL;
 		public bool GripJaw;
 		public bool Escape;
+		public bool Flop;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -84,6 +85,11 @@ namespace Kobolds
 		{
 			EscapeInput(value.isPressed);
 		}
+
+		public void OnFlop(InputValue value)
+		{
+			FlopInput(value.isPressed);
+		}
 		
 #endif
 		
@@ -140,6 +146,11 @@ namespace Kobolds
 		private void EscapeInput(bool newEscapeState)
 		{
 			Escape = newEscapeState;
+		}
+
+		private void FlopInput(bool newFlopState)
+		{
+			Flop = newFlopState;
 		}
 		
 		private void OnApplicationFocus(bool hasFocus)

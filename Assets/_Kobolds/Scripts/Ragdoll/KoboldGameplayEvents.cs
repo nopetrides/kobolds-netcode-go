@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Unity.Netcode;
 
-namespace Kobolds
+namespace Kobold
 {
     /// <summary>
     /// Central event system for Kobold gameplay events.

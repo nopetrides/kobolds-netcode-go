@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Kobolds
+namespace Kobold
 {
 	public class BulletManager : MonoBehaviour
 	{
         [Header("External Scripts")]
 		[SerializeField] private Camera Cam;
-        [SerializeField] private KoboldInputs Inputs;
+        private KoboldInputs Inputs { get; set; }
 
         [Header("Bullets")]
 		[FormerlySerializedAs("BulletPrefab")] 
@@ -25,6 +25,11 @@ namespace Kobolds
             Raycast = 0,
             Physics = 1,
         }
+
+		private void Start()
+		{
+			Inputs = KoboldInputSystemManager.Instance.Inputs;
+		}
 
 		private void Update()
 		{

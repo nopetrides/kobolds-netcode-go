@@ -1,37 +1,32 @@
-using Kobold.Input;
-using Kobolds.Cam;
+using Kobold.Cam;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace Kobolds
+namespace Kobold
 {
 	public class AimControls : MonoBehaviour
 	{
 		[SerializeField] private bool Aiming;
 
+		private KoboldInputs Inputs { get; set; }
+
+		private void Start()
+		{
+			Inputs = KoboldInputSystemManager.Instance.Inputs;
+		}
+
 		private void Update()
 		{
 			if (KoboldInputSystemManager.Instance == null ||
 				KoboldInputSystemManager.Instance.IsInUIMode)
-			{
 				return;
-			}
+
+			Aiming = Inputs.Aim;
 
 			var cameraManager = KoboldCameraManager.Instance;
 			if (cameraManager != null && Aiming)
 				cameraManager.SetCameraMode(CameraMode.Aiming);
-			else if (cameraManager != null && !Aiming) 
+			else if (cameraManager != null && !Aiming)
 				cameraManager.SetCameraMode(CameraMode.ThirdPerson);
-		}
-
-		public void OnAim(InputValue value)
-		{
-			AimInput(value.isPressed);
-		}
-
-		private void AimInput(bool aiming)
-		{
-			Aiming = aiming;
 		}
 	}
 }

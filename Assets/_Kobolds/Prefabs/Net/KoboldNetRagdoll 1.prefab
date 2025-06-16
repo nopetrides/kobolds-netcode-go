@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3384502417
+  GlobalObjectIdHash: 2889691916
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 0
@@ -151,14 +151,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kobolds.Net.KoboldNetworkController
   ShowTopMostFoldoutHeaderGroup: 1
-  StateManager: {fileID: 2510681358187479047}
-  PlayerInput: {fileID: 22533368929329322}
-  CameraController: {fileID: 1639005649986965827}
-  RagdollMover: {fileID: 6965394787087793183}
-  CameraTrackingObject: {fileID: 4975526964688346221}
-  MouthBone: {fileID: 6740537932542261689}
-  LeftHandBone: {fileID: 6869410007263197964}
-  RightHandBone: {fileID: 6755193184454163706}
+  _stateManager: {fileID: 0}
+  _initialHealth: 100
+  _maxHealth: 100
+  _playerNamePrefix: Kobold
+  _cameraController: {fileID: 0}
+  _ragdollMover: {fileID: 0}
+  _mouthBone: {fileID: 0}
+  _leftHandBone: {fileID: 0}
+  _rightHandBone: {fileID: 0}
+  _cameraTrackingObject: {fileID: 0}
+  _ragdollAnimator: {fileID: 0}
+  _animationController: {fileID: 0}
+  _koboldGrabber: {fileID: 0}
+  _koboldLatcher: {fileID: 0}
 --- !u!1 &1412196872679037331
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,6 +1367,10 @@ PrefabInstance:
       propertyPath: Inputs
       value: 
       objectReference: {fileID: 1788161974888472274}
+    - target: {fileID: 4209389921519996671, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
+      propertyPath: GroundMask.m_Bits
+      value: 14339
+      objectReference: {fileID: 0}
     - target: {fileID: 4925504081294414680, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
       propertyPath: m_Name
       value: KoboldRigv13
@@ -1429,17 +1439,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1639005649986965827}
   m_SourcePrefab: {fileID: 100100000, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
---- !u!114 &22533368929329322 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6525928656619344458, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
-  m_PrefabInstance: {fileID: 6539451454409061088}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2205122997444731320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1572313732246977282 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5697395962272156130, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
@@ -1478,8 +1477,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795d05d403d32184d951a0ef4aca6876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kobolds.KoboldCameraController
-  PlayerInput: {fileID: 22533368929329322}
-  Inputs: {fileID: 1788161974888472274}
   TopClamp: 70
   BottomClamp: -30
   CameraAngleOverride: 0
@@ -1521,27 +1518,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 525795231494081369, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
   m_PrefabInstance: {fileID: 6539451454409061088}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &6755193184454163706 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 540300127193075226, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
-  m_PrefabInstance: {fileID: 6539451454409061088}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6869410007263197964 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 402439340910250476, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
-  m_PrefabInstance: {fileID: 6539451454409061088}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6965394787087793183 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4209389921519996671, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}
-  m_PrefabInstance: {fileID: 6539451454409061088}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2205122997444731320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2c593230016111478e8fe38ddd9a9ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &8958906941718856391 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2780025089278193703, guid: 9039fc5241e93a348935922fcf1597c8, type: 3}

@@ -1,8 +1,7 @@
-using Kobold.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kobolds
+namespace Kobold
 {
 	/// <summary>
 	///     Controls looking around
@@ -10,8 +9,8 @@ namespace Kobolds
 	public class KoboldCameraController : MonoBehaviour
 	{
 		private const float Threshold = 0.01f;
-		[SerializeField] private PlayerInput PlayerInput;
-		[SerializeField] private KoboldInputs Inputs;
+		private PlayerInput PlayerInput { get; set; }
+		private KoboldInputs Inputs { get; set; }
 
 		[Header("Cinemachine")]
 		[Tooltip("How far in degrees can you move the camera up")]
@@ -38,6 +37,8 @@ namespace Kobolds
 		/// </summary>
 		public void SetCamera(Camera cam, Transform target)
 		{
+			Inputs = KoboldInputSystemManager.Instance.Inputs;
+			PlayerInput = KoboldInputSystemManager.Instance.NewInputSystem;
 			_mainCamera = cam;
 			Debug.Log($"[{name}] Camera assigned: {cam?.name ?? "null"}");
 			_cinemachineCameraTarget = target;

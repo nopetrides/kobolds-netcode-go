@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Kobolds
+namespace Kobold
 {
 	public interface IGrippable
 	{

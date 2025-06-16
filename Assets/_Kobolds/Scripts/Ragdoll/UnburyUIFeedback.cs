@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Kobolds
+namespace Kobold
 {
 	/// <summary>
 	/// Handles UI feedback for unbury actions in the Kobolds namespace.

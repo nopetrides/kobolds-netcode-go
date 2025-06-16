@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 {
-    class SessionOwnerNetworkObjectSpawner : NetworkBehaviour
+    public class SessionOwnerNetworkObjectSpawner : NetworkBehaviour
     {
         [SerializeField]
         NetworkObject m_NetworkObjectToSpawn;

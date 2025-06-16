@@ -1,7 +1,7 @@
 using UnityEngine;
 using FIMSpace.FProceduralAnimation;
 
-namespace Kobolds
+namespace Kobold
 {
 	public enum GripType
 	{

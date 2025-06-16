@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using Kobold.GameManagement;
-using Kobolds;
 using UnityEngine.InputSystem;
 
-namespace Kobold.Input
+namespace Kobold
 {
     public class KoboldInputSystemManager : MonoBehaviour
     {
@@ -106,7 +105,8 @@ namespace Kobold.Input
         void Update()
         {
             if (Inputs.Escape)
-            {
+			{
+				Inputs.Escape = false;
                 ToggleMode();
             }
         }

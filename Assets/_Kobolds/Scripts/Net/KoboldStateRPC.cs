@@ -2,7 +2,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Net
+namespace Kobold.Net
 {
 	/// <summary>
 	///     Extension of KoboldNetworkController with state-specific RPCs.

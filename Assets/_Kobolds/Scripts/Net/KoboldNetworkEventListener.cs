@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Net
+namespace Kobold.Net
 {
 	/// <summary>
 	///     Listens to gameplay events and translates them to network RPCs.
@@ -12,24 +12,37 @@ namespace Kobolds.Net
 	{
 		[SerializeField] private KoboldNetworkController _networkController;
 		[SerializeField] private KoboldGameplayEvents _gameplayEvents;
-		
+		private NetworkObject _currentJawObject;
+
 		// Track grabbed objects for position updates
 		private NetworkObject _currentLeftHandObject;
 		private NetworkObject _currentRightHandObject;
-		private NetworkObject _currentJawObject;
-		
+		private Vector3 _jawOffset;
+		private Quaternion _jawRotOffset;
+
 		// Local offsets for position sync
 		private Vector3 _leftHandOffset;
 		private Quaternion _leftHandRotOffset;
 		private Vector3 _rightHandOffset;
 		private Quaternion _rightHandRotOffset;
-		private Vector3 _jawOffset;
-		private Quaternion _jawRotOffset;
 
 		private void Awake()
 		{
 			if (_gameplayEvents == null) Debug.LogError($"[{name}] KoboldGameplayEvents component not found!");
 			if (_networkController == null) Debug.LogError($"[{name}] KoboldNetworkController component not found!");
+		}
+
+		private void LateUpdate()
+		{
+			if (!IsOwner) return;
+
+			// Update positions of grabbed NetworkObjects
+			UpdateGrabbedObjectPosition(
+				_currentLeftHandObject, _networkController.GetHandBone(true), _leftHandOffset, _leftHandRotOffset);
+			UpdateGrabbedObjectPosition(
+				_currentRightHandObject, _networkController.GetHandBone(false), _rightHandOffset, _rightHandRotOffset);
+			UpdateGrabbedObjectPosition(
+				_currentJawObject, _networkController.GetMouthBone(), _jawOffset, _jawRotOffset);
 		}
 
 		public override void OnNetworkSpawn()
@@ -48,21 +61,12 @@ namespace Kobolds.Net
 
 			base.OnNetworkDespawn();
 		}
-		
-		private void LateUpdate()
-		{
-			if (!IsOwner) return;
-			
-			// Update positions of grabbed NetworkObjects
-			UpdateGrabbedObjectPosition(_currentLeftHandObject, _networkController.GetHandBone(true), _leftHandOffset, _leftHandRotOffset);
-			UpdateGrabbedObjectPosition(_currentRightHandObject, _networkController.GetHandBone(false), _rightHandOffset, _rightHandRotOffset);
-			UpdateGrabbedObjectPosition(_currentJawObject, _networkController.GetMouthBone(), _jawOffset, _jawRotOffset);
-		}
-		
-		private void UpdateGrabbedObjectPosition(NetworkObject grabbedObject, Transform gripPoint, Vector3 localOffset, Quaternion localRotOffset)
+
+		private void UpdateGrabbedObjectPosition(
+			NetworkObject grabbedObject, Transform gripPoint, Vector3 localOffset, Quaternion localRotOffset)
 		{
 			if (grabbedObject == null || gripPoint == null) return;
-			
+
 			// Update position without parenting
 			grabbedObject.transform.position = gripPoint.TransformPoint(localOffset);
 			grabbedObject.transform.rotation = gripPoint.rotation * localRotOffset;
@@ -97,6 +101,9 @@ namespace Kobolds.Net
 			var networkObject = grabbedObject.GetComponent<NetworkObject>();
 			if (networkObject != null)
 			{
+				// Get the grippable component for offset settings
+				var grippable = grabbedObject.GetComponent<AttachableObjectGrippable>();
+
 				// Store reference and calculate offset
 				Transform gripPoint = null;
 				switch (gripType)
@@ -106,30 +113,66 @@ namespace Kobolds.Net
 						gripPoint = _networkController.GetHandBone(true);
 						if (gripPoint != null)
 						{
-							_leftHandOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
-							_leftHandRotOffset = Quaternion.Inverse(gripPoint.rotation) * grabbedObject.transform.rotation;
+							if (grippable != null && grippable.ShouldSnapToGripPoint())
+							{
+								// Use configured offsets
+								_leftHandOffset = grippable.GetAttachmentPositionOffset();
+								_leftHandRotOffset = grippable.GetAttachmentRotationOffset();
+							}
+							else
+							{
+								// Calculate dynamic offset based on current position
+								_leftHandOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
+								_leftHandRotOffset = Quaternion.Inverse(gripPoint.rotation) *
+													grabbedObject.transform.rotation;
+							}
 						}
+
 						break;
 					case GripType.RightHand:
 						_currentRightHandObject = networkObject;
 						gripPoint = _networkController.GetHandBone(false);
 						if (gripPoint != null)
 						{
-							_rightHandOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
-							_rightHandRotOffset = Quaternion.Inverse(gripPoint.rotation) * grabbedObject.transform.rotation;
+							if (grippable != null && grippable.ShouldSnapToGripPoint())
+							{
+								// Use configured offsets
+								_rightHandOffset = grippable.GetAttachmentPositionOffset();
+								_rightHandRotOffset = grippable.GetAttachmentRotationOffset();
+							}
+							else
+							{
+								// Calculate dynamic offset based on current position
+								_rightHandOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
+								_rightHandRotOffset = Quaternion.Inverse(gripPoint.rotation) *
+													grabbedObject.transform.rotation;
+							}
 						}
+
 						break;
 					case GripType.Jaw:
 						_currentJawObject = networkObject;
 						gripPoint = _networkController.GetMouthBone();
 						if (gripPoint != null)
 						{
-							_jawOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
-							_jawRotOffset = Quaternion.Inverse(gripPoint.rotation) * grabbedObject.transform.rotation;
+							if (grippable != null && grippable.ShouldSnapToGripPoint())
+							{
+								// Use configured offsets
+								_jawOffset = grippable.GetAttachmentPositionOffset();
+								_jawRotOffset = grippable.GetAttachmentRotationOffset();
+							}
+							else
+							{
+								// Calculate dynamic offset based on current position
+								_jawOffset = gripPoint.InverseTransformPoint(grabbedObject.transform.position);
+								_jawRotOffset = Quaternion.Inverse(gripPoint.rotation) *
+												grabbedObject.transform.rotation;
+							}
 						}
+
 						break;
 				}
-				
+
 				_networkController.OnGrabObjectRpc(networkObject, gripType);
 				_networkController.SetGrabbedObject(networkObject);
 			}
@@ -154,7 +197,7 @@ namespace Kobolds.Net
 					_currentJawObject = null;
 					break;
 			}
-			
+
 			_networkController.OnReleaseObjectRpc(gripType);
 			_networkController.SetGrabbedObject(null);
 		}

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Unity.Multiplayer.Samples.SocialHub.Physics
 {
-    class BaseObjectMotionHandler : NetworkTransform, ICollisionHandler, IContactEventHandlerWithInfo
+    public class BaseObjectMotionHandler : NetworkTransform, ICollisionHandler, IContactEventHandlerWithInfo
     {
         protected bool MIsPooled = true;
 

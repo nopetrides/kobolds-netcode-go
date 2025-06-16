@@ -9,12 +9,9 @@ using UnityEngine.InputSystem;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
 */
 
-namespace Kobolds
+namespace Kobold
 {
 	[RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
-	[RequireComponent(typeof(PlayerInput))]
-#endif
 	public class KoboldLeanController : MonoBehaviour
 	{
 		private const float Threshold = 0.01f;
@@ -215,12 +212,8 @@ namespace Kobolds
 
 			_hasAnimator = TryGetComponent(out _animator);
 			_controller = GetComponent<CharacterController>();
-			_input = GetComponent<KoboldInputs>();
-#if ENABLE_INPUT_SYSTEM
-			_playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
+			_input = KoboldInputSystemManager.Instance.Inputs;
+			_playerInput = KoboldInputSystemManager.Instance.NewInputSystem;
 
 			AssignAnimationIDs();
 			InitializeHeadBodySeparation();

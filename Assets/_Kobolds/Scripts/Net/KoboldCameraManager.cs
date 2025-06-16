@@ -1,8 +1,8 @@
-﻿using Kobolds.Net;
+﻿using Kobold.Net;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Kobolds.Cam
+namespace Kobold.Cam
 {
 	/// <summary>
 	///     Manages camera assignment and switching for local Kobold players.
@@ -65,10 +65,16 @@ namespace Kobolds.Cam
 
 			// Ensure cameras start in the correct state
 			if (_thirdPersonCamera != null)
+			{
+				_thirdPersonCamera.enabled = true;
 				_thirdPersonCamera.Priority = 10;
+			}
 
 			if (_aimingCamera != null)
+			{
 				_aimingCamera.Priority = 0;
+				_aimingCamera.enabled = false;
+			}
 		}
 
 		/// <summary>
@@ -84,6 +90,7 @@ namespace Kobolds.Cam
 			}
 
 			_currentLocalKobold = kobold;
+			_koboldInputs = KoboldInputSystemManager.Instance.Inputs;
 
 			// Get the follow target from the Kobold (could be the main transform or a specific bone)
 			var followTarget = kobold.GetCameraFollowTarget();
@@ -154,11 +161,12 @@ namespace Kobolds.Cam
 			// Switch cameras based on aim input
 			var isAiming = _koboldInputs.Aim;
 
-			if (_thirdPersonCamera != null)
-				_thirdPersonCamera.Priority = isAiming ? 0 : 10;
+			
+			if (_thirdPersonCamera != null) //_thirdPersonCamera.Priority = isAiming ? 0 : 10;
+				_thirdPersonCamera.enabled = !isAiming;
 
-			if (_aimingCamera != null)
-				_aimingCamera.Priority = isAiming ? 10 : 0;
+			if (_aimingCamera != null) //_aimingCamera.Priority = isAiming ? 10 : 0;
+				_aimingCamera.enabled = isAiming;
 		}
 
 		/// <summary>

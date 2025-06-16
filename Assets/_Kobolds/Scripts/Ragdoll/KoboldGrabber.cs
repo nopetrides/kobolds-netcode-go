@@ -1,14 +1,15 @@
+using System;
 using FIMSpace.FProceduralAnimation;
 using UnityEngine;
 
-namespace Kobolds
+namespace Kobold
 {
 	public class KoboldGrabber : MonoBehaviour
 	{
 		[SerializeField] private RagdollAnimator2 characterAnimator;
 		public RagdollHandler Handler => characterAnimator?.Handler;
 		
-		[SerializeField] private KoboldInputs Inputs;
+		private KoboldInputs Inputs { get; set; }
 		[SerializeField] private KoboldStateManager StateManager;
 		[SerializeField] private KoboldGameplayEvents _gameplayEvents;
 		[SerializeField] private KoboldLatcher Latcher;
@@ -27,7 +28,11 @@ namespace Kobolds
 		[SerializeField] private GripMagnetPoint JawGrip;
 
 		private bool _jawModeActive;
-		
+
+		private void Start()
+		{
+			Inputs = KoboldInputSystemManager.Instance.Inputs;
+		}
 
 		private void Update()
 		{
@@ -66,7 +71,6 @@ namespace Kobolds
 			{
 				Animator.SetBool(GripRAnimParam, true);
 				
-				// ADD THIS LINE (you'll need to expose CurrentTarget on GripMagnetPoint):
 				if (RightGrip.CurrentTarget != null)
 					_gameplayEvents?.NotifyGrab(RightGrip.CurrentTarget.GetObject(), GripType.RightHand);
 			}

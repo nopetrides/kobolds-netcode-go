@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kobold.GameManagement;
-using Kobold.Input;
 using UnityEngine;
 
 namespace Kobold.UI

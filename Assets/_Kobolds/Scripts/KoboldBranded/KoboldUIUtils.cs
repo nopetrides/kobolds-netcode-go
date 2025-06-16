@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Kobolds.Utils
+namespace Kobold.Utils
 {
 	public static class KoboldUIUtils
 	{

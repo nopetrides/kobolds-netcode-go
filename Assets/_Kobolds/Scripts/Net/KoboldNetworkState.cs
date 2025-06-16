@@ -2,7 +2,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Net
+namespace Kobold.Net
 {
     /// <summary>
     /// Container for Kobold's networked state data.

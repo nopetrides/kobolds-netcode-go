@@ -3,7 +3,7 @@ using System.Collections;
 #endif
 using System.Threading.Tasks;
 using Kobold.GameManagement;
-using Kobolds.Utils;
+using Kobold.Utils;
 using Unity.Multiplayer.Samples.SocialHub.GameManagement;
 using Unity.Multiplayer.Samples.SocialHub.UI;
 using Unity.Services.Authentication;

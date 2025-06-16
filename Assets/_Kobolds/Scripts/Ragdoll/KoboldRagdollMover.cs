@@ -1,11 +1,9 @@
 using System;
 using FIMSpace;
-using Kobold.Input;
-using Kobolds.Cam;
+using Kobold.Cam;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace Kobolds
+namespace Kobold
 {
 	[DefaultExecutionOrder(-100)]
 	public class RagdollMover : FimpossibleComponent
@@ -14,8 +12,8 @@ namespace Kobolds
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int Grounded = Animator.StringToHash("Grounded");
 		private static readonly int Jump = Animator.StringToHash("Jump");
-		
-		[SerializeField] private KoboldInputs Inputs;
+
+		private KoboldInputs Inputs { get; set; }
 		[SerializeField] private Net.KoboldNetworkController _networkController;
 		
 		public Rigidbody Rigb;
@@ -104,6 +102,8 @@ namespace Kobolds
 			_targetRotation = Rigb.transform.rotation;
 			_targetInstantRotation = Rigb.transform.rotation;
 			_rotationAngle = Rigb.transform.eulerAngles.y;
+			
+			Inputs = KoboldInputSystemManager.Instance.Inputs;
 
 			if (Mecanim) Mecanim.SetBool(Grounded, true);
 

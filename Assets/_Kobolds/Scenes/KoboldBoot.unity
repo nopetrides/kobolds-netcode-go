@@ -334,9 +334,10 @@ MonoBehaviour:
   GripL: 0
   GripJaw: 0
   Escape: 0
+  Flop: 0
   analogMovement: 0
   cursorLocked: 0
-  cursorInputForLook: 0
+  cursorInputForLook: 1
 --- !u!114 &1247579328
 MonoBehaviour:
   m_ObjectHideFlags: 0

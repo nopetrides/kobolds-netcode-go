@@ -1,9 +1,9 @@
-﻿using Kobolds.Cam;
+﻿using Kobold.Cam;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Kobolds.Net
+namespace Kobold.Net
 {
 	/// <summary>
 	///     Main network controller for Kobolds.
@@ -22,7 +22,7 @@ namespace Kobolds.Net
 		[SerializeField] private string _playerNamePrefix = "Kobold";
 
 		[Header("Authority-Controlled Components")]
-		[SerializeField] private PlayerInput _playerInput;
+		private PlayerInput PlayerInput { get; set; }
 
 		[SerializeField] private KoboldCameraController _cameraController;
 		[SerializeField] private RagdollMover _ragdollMover;
@@ -192,7 +192,9 @@ namespace Kobolds.Net
 			if (_stateManager == null)
 				Debug.LogError($"[{name}] KoboldStateManager is not assigned!");
 
-			if (_playerInput == null)
+			PlayerInput = KoboldInputSystemManager.Instance.NewInputSystem;
+			
+			if (PlayerInput == null)
 				Debug.LogError($"[{name}] PlayerInput is not assigned!");
 
 			if (_cameraController == null)
@@ -204,10 +206,6 @@ namespace Kobolds.Net
 
 		private void ConfigureAuthorityComponents()
 		{
-			// Only enable input and camera for the local player
-			if (_playerInput != null)
-				_playerInput.enabled = IsOwner;
-
 			if (_cameraController != null)
 				_cameraController.enabled = IsOwner;
 

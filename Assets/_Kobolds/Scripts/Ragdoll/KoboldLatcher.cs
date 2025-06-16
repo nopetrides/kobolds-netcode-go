@@ -3,7 +3,7 @@ using FIMSpace.FProceduralAnimation;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Kobolds
+namespace Kobold
 {
 	public class KoboldLatcher : MonoBehaviour
 	{

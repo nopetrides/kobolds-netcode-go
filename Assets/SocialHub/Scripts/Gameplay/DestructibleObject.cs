@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
 {
-    class DestructibleObject : PhysicsObjectMotion, ISpawnable
+    public class DestructibleObject : PhysicsObjectMotion, ISpawnable
     {
         [SerializeField]
         float m_StartingHealth = 100f;
@@ -45,6 +45,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
         Vector3 _mOriginalPosition;
         Quaternion _mOriginalRotation;
 
+		[SerializeField] private bool _startsKinematic;
+
+		public Action OnDestruction;
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -53,6 +57,10 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
             _mOriginalPosition = transform.position;
             _mOriginalRotation = transform.rotation;
             _mDestructionFXPoolSystem = FXPrefabPool.GetFxPool(m_DestructionFX);
+			if (HasAuthority)
+			{
+				NetworkRigidbody.SetIsKinematic(_startsKinematic);
+			}
         }
 
         public override void OnNetworkDespawn()
@@ -149,6 +157,9 @@ namespace Unity.Multiplayer.Samples.SocialHub.Gameplay
                 _mHealth.Value = currentHealth;
                 // TODO: add NetworkObject pool here
                 NetworkObject.DeferDespawn(m_DeferredDespawnTicks, destroy: true);
+				
+				// todo cleanup
+				OnDestruction?.Invoke();
             }
             else
             {

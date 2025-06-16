@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-namespace Kobolds
+namespace Kobold
 {
 	/// <summary>
 	///     Controls the unburying process, handles struggle timing, and provides the percentage completion of the struggle.
@@ -37,11 +37,7 @@ namespace Kobolds
 		[FormerlySerializedAs("movementController")] [SerializeField]
 		private RagdollMover MovementController;
 
-		/// <summary>
-		///     Represents input data provided to a system or method.
-		/// </summary>
-		[FormerlySerializedAs("playerInput")] [SerializeField]
-		private PlayerInput Input;
+		private PlayerInput Input { get; set; }
 
 		[SerializeField]
 		private List<string> AllowedStruggleActions = new() {"Move", "Jump", "Sprint", "Aim", "Fire"};
@@ -145,7 +141,7 @@ namespace Kobolds
 		{
 			if (!Ragdoll) Ragdoll = GetComponent<RagdollAnimator2>();
 			if (!MainRigidbody) MainRigidbody = GetComponent<Rigidbody>();
-			if (!Input) Input = GetComponent<PlayerInput>();
+			if (!Input) Input = KoboldInputSystemManager.Instance.NewInputSystem;
 
 			// Only set state if we're in an uninitialized state
 			// This prevents overriding network-synced states
