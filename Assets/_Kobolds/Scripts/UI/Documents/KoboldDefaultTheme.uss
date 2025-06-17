@@ -630,3 +630,24 @@ TemplateContainer {
     border-width: 1px;
     border-color: var(--kobold-border-color);
 }
+
+.kobold-hud {
+    position: absolute;
+    top: 24;
+    left: 24;
+    flex-direction: column;
+    padding: 8 12;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.input-prompt {
+    font-size: 14;
+    -unity-font-style: normal;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 4 8;
+    border-radius: 4;
+    margin-bottom: 6;
+    flex-shrink: 0;
+    -unity-text-align: upper-center;
+}

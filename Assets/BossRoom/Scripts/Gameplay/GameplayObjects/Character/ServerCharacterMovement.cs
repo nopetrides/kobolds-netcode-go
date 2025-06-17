@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     public enum MovementState

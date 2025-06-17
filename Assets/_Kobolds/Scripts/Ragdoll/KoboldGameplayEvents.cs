@@ -23,6 +23,9 @@ namespace Kobold
         // Unbury events
         public event Action<float> OnUnburyProgress;
         public event Action OnUnburyComplete;
+
+		public event Action OnFlop;
+		public event Action OnGetUp;
         
         private void Awake()
         {
@@ -78,5 +81,17 @@ namespace Kobold
             if (!ShouldFireEvents()) return;
             OnUnburyComplete?.Invoke();
         }
+
+		public void NotifyFlop()
+		{
+			if (!ShouldFireEvents()) return;
+			OnFlop?.Invoke();
+		}
+		
+		public void NotifyGetUp()
+		{
+			if (!ShouldFireEvents()) return;
+			OnGetUp?.Invoke();
+		}
     }
 }

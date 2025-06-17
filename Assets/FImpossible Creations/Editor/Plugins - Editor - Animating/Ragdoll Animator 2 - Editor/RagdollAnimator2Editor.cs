@@ -6,7 +6,7 @@ namespace FIMSpace.FProceduralAnimation
 {
     [CanEditMultipleObjects]
     [CustomEditor( typeof( RagdollAnimator2 ), true )]
-    public partial class RagdollAnimator2Editor : Editor
+    public partial class RagdollAnimator2Editor : UnityEditor.Editor
     {
         public RagdollHandler Get
         { get { return rGet.Settings; } }

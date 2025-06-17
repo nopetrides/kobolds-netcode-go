@@ -7,7 +7,6 @@ using UnityEngine;
 using Action = Unity.BossRoom.Gameplay.Actions.Action;
 using SkillTriggerStyle = Unity.BossRoom.Gameplay.UserInput.ClientInputSender.SkillTriggerStyle;
 
-
 namespace Unity.BossRoom.Gameplay.UI
 {
     /// <summary>

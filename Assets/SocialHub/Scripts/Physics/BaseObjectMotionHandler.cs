@@ -44,10 +44,13 @@ namespace Unity.Multiplayer.Samples.SocialHub.Physics
         protected ulong LastEventId { get; private set; }
 
         protected void EnableColliders(bool enable)
-        {
-            foreach (var collider in m_Colliders)
-            {
-                collider.enabled = enable;
+		{
+			if (m_Colliders == null) return;
+			
+            foreach (var c in m_Colliders)
+			{
+				if (c == null) continue;
+                c.enabled = enable;
             }
         }
 

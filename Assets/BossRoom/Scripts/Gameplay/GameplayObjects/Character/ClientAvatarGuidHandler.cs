@@ -2,7 +2,6 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     /// <summary>

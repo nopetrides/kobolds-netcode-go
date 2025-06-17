@@ -4,7 +4,6 @@ using Unity.BossRoom.Infrastructure;
 using UnityEngine;
 using VContainer;
 
-
 namespace Unity.BossRoom.Gameplay.UI
 {
     /// <summary>

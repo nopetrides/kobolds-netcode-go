@@ -81,6 +81,8 @@ namespace Kobold.Net
 			_gameplayEvents.OnLatched += HandleLatched;
 			_gameplayEvents.OnDetached += HandleDetached;
 			_gameplayEvents.OnUnburyComplete += HandleUnburyComplete;
+			_gameplayEvents.OnFlop += HandleFlop;
+			_gameplayEvents.OnGetUp += HandleGetUp;
 		}
 
 		private void UnsubscribeFromEvents()
@@ -92,6 +94,8 @@ namespace Kobold.Net
 			_gameplayEvents.OnLatched -= HandleLatched;
 			_gameplayEvents.OnDetached -= HandleDetached;
 			_gameplayEvents.OnUnburyComplete -= HandleUnburyComplete;
+			_gameplayEvents.OnFlop -= HandleFlop;
+			_gameplayEvents.OnGetUp -= HandleGetUp;
 		}
 
 		private void HandleObjectGrabbed(GameObject grabbedObject, GripType gripType)
@@ -231,6 +235,18 @@ namespace Kobold.Net
 			// The state change to Active is already handled by KoboldStateManager
 			// But we could add specific unbury completion effects here if needed
 			Debug.Log($"[{name}] Unbury complete - state should transition to Active");
+		}
+
+		private void HandleFlop()
+		{
+			_networkController.OnFlopRpc();
+		}
+		
+		private void HandleGetUp()
+		{
+			// The state change to Active is already handled by Flop
+			// But we could add specific unbury completion effects here if needed
+			_networkController.OnGetUpRpc();
 		}
 	}
 }

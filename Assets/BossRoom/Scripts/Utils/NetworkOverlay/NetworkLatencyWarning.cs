@@ -35,7 +35,7 @@ namespace Unity.BossRoom.Utils.Editor
                     currentSimulationPreset.PacketLossInterval > 0 ||
                     currentSimulationPreset.PacketLossPercent > 0;
 #else
-				_mArtificialLatencyEnabled = false;
+                _mArtificialLatencyEnabled = false;
 #endif
 
                 if (_mArtificialLatencyEnabled)

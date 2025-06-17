@@ -1,4 +1,6 @@
-﻿using Kobold.Cam;
+﻿using System.Collections;
+using FIMSpace.FProceduralAnimation;
+using Kobold.Cam;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,6 +28,8 @@ namespace Kobold.Net
 
 		[SerializeField] private KoboldCameraController _cameraController;
 		[SerializeField] private RagdollMover _ragdollMover;
+		[SerializeField] private KoboldFlopControls _flopControls;
+		[SerializeField] private UnburyController _unburyController;
 
 		[Header("Transform References")]
 		[SerializeField] private Transform _mouthBone;
@@ -33,6 +37,7 @@ namespace Kobold.Net
 		[SerializeField] private Transform _leftHandBone;
 		[SerializeField] private Transform _rightHandBone;
 		[SerializeField] private Transform _cameraTrackingObject;
+		[SerializeField] private Transform _ragdollTrackingObject;
 
 		/// <summary>
 		///     Main network variable containing all synchronized state.
@@ -100,13 +105,19 @@ namespace Kobold.Net
 			}
 			else
 			{
-				// For non-owners, immediately sync from the network state
-				var networkState = _networkState.Value;
-				if (networkState.State != KoboldState.Uninitialized)
-				{
-					SyncFromNetworkState(networkState);
-					Debug.Log($"[{name}] Non-owner synced from network state: {networkState.State}");
-				}
+				StartCoroutine(WaitForRagdoll());
+			}
+		}
+
+		private IEnumerator WaitForRagdoll()
+		{
+			// For non-owners, immediately sync from the network state
+			var networkState = _networkState.Value;
+			if (networkState.State != KoboldState.Uninitialized)
+			{
+				yield return new WaitWhile(() => _ragdollAnimator?.Handler?.GetAnchorBoneController?.GameRigidbody != null);
+				SyncFromNetworkState(networkState);
+				Debug.Log($"[{name}] Non-owner synced from network state: {networkState.State}");
 			}
 		}
 
@@ -128,7 +139,7 @@ namespace Kobold.Net
 			base.OnNetworkDespawn();
 		}
 
-		private void InitializeOwnerState()
+		/*private void InitializeOwnerState()
 		{
 			// Check if we already have a valid state (e.g., from previous session or server)
 			var currentNetworkState = _networkState.Value;
@@ -168,7 +179,7 @@ namespace Kobold.Net
 				if (_stateManager != null && _stateManager.CurrentState != currentNetworkState.State)
 					_stateManager.SetState(currentNetworkState.State);
 			}
-		}
+		}*/
 
 		private void SyncFromNetworkState(KoboldNetworkState networkState)
 		{
@@ -196,7 +207,16 @@ namespace Kobold.Net
 			
 			if (PlayerInput == null)
 				Debug.LogError($"[{name}] PlayerInput is not assigned!");
-
+			
+			if (_ragdollMover == null)
+				Debug.LogError($"[{name}] RagdollMover is not assigned!");
+			
+			if (_flopControls == null)
+				Debug.LogError($"[{name}] KoboldFlopControls is not assigned!");
+			
+			if (_unburyController == null)
+				Debug.LogError($"[{name}] UnburyController is not assigned!");
+				
 			if (_cameraController == null)
 				Debug.LogError($"[{name}] KoboldCameraController is not assigned!");
 
@@ -211,6 +231,16 @@ namespace Kobold.Net
 
 			if (_ragdollMover != null)
 				_ragdollMover.enabled = IsOwner;
+			
+			if (_flopControls != null)
+				_flopControls.enabled = IsOwner;
+			
+			if (_unburyController != null)
+				_unburyController.enabled = IsOwner;
+			
+			var autoGetUp = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
+			if (autoGetUp != null)
+				autoGetUp.Enabled = false;
 
 			// If we're the owner, initialize local player setup
 			if (IsOwner)
@@ -236,7 +266,7 @@ namespace Kobold.Net
 				$"[{name}] Configured for {(IsOwner ? "Local Player" : "Remote Player")} (Client {OwnerClientId})");
 		}
 
-		private void InitializeLocalPlayer()
+		/*private void InitializeLocalPlayer()
 		{
 			// Name the GameObject for easier debugging
 			gameObject.name = $"Kobold_Local_Client{NetworkManager.LocalClientId}";
@@ -252,7 +282,7 @@ namespace Kobold.Net
 			{
 				Debug.LogError($"[{name}] No KoboldCameraManager found in scene! Cameras will not work properly.");
 			}
-		}
+		}*/
 
 		private void OnLocalStateChanged(KoboldState newState)
 		{
@@ -409,6 +439,11 @@ namespace Kobold.Net
 		public Transform GetCameraFollowTarget()
 		{
 			return _cameraTrackingObject != null ? _cameraTrackingObject : transform;
+		}
+
+		public Transform GetRagdollFollowTarget()
+		{
+			return _ragdollTrackingObject != null ? _ragdollTrackingObject : transform;
 		}
 	}
 }

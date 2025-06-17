@@ -80,8 +80,8 @@ namespace Unity.BossRoom.Gameplay.UI
         {
             switch (eventMessage.CharacterType)
             {
-                case CharacterTypeEnum.Default:
                 case CharacterTypeEnum.Tank:
+                case CharacterTypeEnum.Archer:
                 case CharacterTypeEnum.Mage:
                 case CharacterTypeEnum.Rogue:
                 case CharacterTypeEnum.ImpBoss:

@@ -42,7 +42,7 @@ public static class FSceneIcons
         //{
         //}
 
-        var etype = typeof( Editor );
+        var etype = typeof( UnityEditor.Editor );
         var annotation = etype.Assembly.GetType( "UnityEditor.Annotation" );
         var scriptClass = annotation.GetField( "scriptClass" );
         var classID = annotation.GetField( "classID" );

@@ -71,7 +71,7 @@ namespace FIMSpace.FProceduralAnimation
 
         [CanEditMultipleObjects]
         [CustomEditor( typeof( RA2DummyBoneAsParent ), true )]
-        public class RA2DummyBoneAsParentEditor : Editor
+        public class RA2DummyBoneAsParentEditor : UnityEditor.Editor
         {
             public RA2DummyBoneAsParent Get
             { get { if( _get == null ) _get = (RA2DummyBoneAsParent)target; return _get; } }

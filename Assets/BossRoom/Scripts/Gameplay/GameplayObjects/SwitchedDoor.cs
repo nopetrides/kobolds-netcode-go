@@ -5,7 +5,6 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>

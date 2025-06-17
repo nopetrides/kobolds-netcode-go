@@ -7,7 +7,6 @@ using Unity.BossRoom.VisualEffects;
 using Unity.Netcode;
 using UnityEngine;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>

@@ -288,9 +288,10 @@ namespace Kobold
 			if (MovementController) MovementController.enabled = true;
 
 			var type = Ragdoll.User_CanGetUpByRotation();
-			var anim = type == ERagdollGetUpType.FromFacedown ? GetUpFaceAnim : GetUpBackAnim;
-
-			Ragdoll.Handler.Mecanim.CrossFadeInFixedTime(anim, 0.2f);
+			// todo get up animations
+			//var anim = type == ERagdollGetUpType.FromFacedown ? GetUpFaceAnim : GetUpBackAnim;
+			//Ragdoll.Handler.Mecanim.CrossFadeInFixedTime(anim, 0.2f);
+			
 			Ragdoll.Handler.User_TransitionToStandingMode(TransitionDuration, 0.6f, 0.1f, 0.125f);
 			Ragdoll.Handler.User_FadeMusclesPowerMultiplicator(FinalMusclePower, TransitionDuration);
 			Ragdoll.Handler.User_SwitchFallState(true);

@@ -281,7 +281,7 @@ namespace FIMSpace.FEditor
             foreach (var customEditor in System.Attribute.GetCustomAttributes(behaviourType, typeof(CustomEditor), true))
             {
                 var editor = customEditor as CustomEditor;
-                if (editor != null && editor.GetType().IsAssignableFrom(typeof(Editor)))
+                if (editor != null && editor.GetType().IsAssignableFrom(typeof(UnityEditor.Editor)))
                 {
                     return editor.GetType();
                 }
@@ -296,9 +296,9 @@ namespace FIMSpace.FEditor
             System.Type customEditorType = GetCustomEditorType(obj);
 
             if (customEditorType != null)
-                return Editor.CreateEditor(obj, customEditorType);
+                return UnityEditor.Editor.CreateEditor(obj, customEditorType);
             else
-                return Editor.CreateEditor(obj);
+                return UnityEditor.Editor.CreateEditor(obj);
         }
 
         public static void DrawObjectProperties(SerializedObject obj, int skipFirstProperties = 0)

@@ -3,7 +3,6 @@ using Unity.BossRoom.Gameplay.GameplayObjects.Character;
 using Unity.Netcode;
 using UnityEngine;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     public class DamageReceiver : NetworkBehaviour, IDamageable
@@ -23,7 +22,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             }
         }
 
-		public Transform Transform { get; }
+		public Transform Transform => transform;
 
 		public IDamageable.SpecialDamageFlags GetSpecialDamageFlags()
         {

@@ -1,5 +1,4 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -8,7 +7,7 @@ namespace Unity.BossRoom.Gameplay.UI
 {
     public class LobbyCreationUI : MonoBehaviour
     {
-        [SerializeField] TMP_InputField m_LobbyNameInputField;
+        [SerializeField] InputField m_LobbyNameInputField;
         [SerializeField] GameObject m_LoadingIndicatorObject;
         [SerializeField] Toggle m_IsPrivate;
         [SerializeField] CanvasGroup m_CanvasGroup;

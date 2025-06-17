@@ -3218,6 +3218,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kobolds.AttachableObjectGrippable
   Prompt: Pick Up
+  _attachmentPositionOffset: {x: 0, y: 0, z: 0}
+  _attachmentRotationOffset: {x: 0, y: 0, z: 0}
+  _snapToPoint: 0
+  _excludeWhenAttached:
+    serializedVersion: 2
+    m_Bits: 3072
+  _massTransferMultiplier: 1
 --- !u!4 &2251346629442680685 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1133371799382062698, guid: d8510f93429bbb944a85402237ce0f7b, type: 3}

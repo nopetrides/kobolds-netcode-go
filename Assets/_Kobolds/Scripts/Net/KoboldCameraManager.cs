@@ -15,6 +15,7 @@ namespace Kobold.Cam
 
 		[SerializeField] private CinemachineCamera _thirdPersonCamera;
 		[SerializeField] private CinemachineCamera _aimingCamera;
+		[SerializeField] private CinemachineCamera _ragdollCamera;
 		[SerializeField] private Transform _placeholderFollowTarget;
 
 		private KoboldNetworkController _currentLocalKobold;
@@ -113,9 +114,15 @@ namespace Kobold.Cam
 			if (_aimingCamera != null)
 			{
 				_aimingCamera.Follow = followTarget;
-				_thirdPersonCamera.UpdateTargetCache();
+				_aimingCamera.UpdateTargetCache();
 				// don't want the look at set, we handle it in KoboldCameraController
 				//_aimingCamera.LookAt = followTarget;
+			}
+
+			if (_ragdollCamera != null)
+			{
+				_ragdollCamera.Follow = kobold.GetRagdollFollowTarget();
+				_ragdollCamera.UpdateTargetCache();
 			}
 
 			// Get input reference for aim detection
@@ -159,14 +166,16 @@ namespace Kobold.Cam
 		private void UpdateCameraState()
 		{
 			// Switch cameras based on aim input
+			if (_currentLocalKobold.CurrentNetworkState.State >= KoboldState.Climbing)
+			{
+				SetCameraMode(CameraMode.Ragdoll);
+				return;
+			}
 			var isAiming = _koboldInputs.Aim;
 
+			CameraMode mode = isAiming ? CameraMode.Aiming : CameraMode.ThirdPerson;
 			
-			if (_thirdPersonCamera != null) //_thirdPersonCamera.Priority = isAiming ? 0 : 10;
-				_thirdPersonCamera.enabled = !isAiming;
-
-			if (_aimingCamera != null) //_aimingCamera.Priority = isAiming ? 10 : 0;
-				_aimingCamera.enabled = isAiming;
+			SetCameraMode(mode);
 		}
 
 		/// <summary>
@@ -174,24 +183,16 @@ namespace Kobold.Cam
 		/// </summary>
 		public void SetCameraMode(CameraMode mode)
 		{
-			switch (mode)
-			{
-				case CameraMode.ThirdPerson:
-					if (_thirdPersonCamera != null) _thirdPersonCamera.Priority = 10;
-					if (_aimingCamera != null) _aimingCamera.Priority = 0;
-					break;
-
-				case CameraMode.Aiming:
-					if (_thirdPersonCamera != null) _thirdPersonCamera.Priority = 0;
-					if (_aimingCamera != null) _aimingCamera.Priority = 10;
-					break;
-			}
+			_thirdPersonCamera.enabled = mode == CameraMode.ThirdPerson;
+			_aimingCamera.enabled = mode == CameraMode.Aiming;
+			_ragdollCamera.enabled = mode == CameraMode.Ragdoll;
 		}
 	}
 
 	public enum CameraMode
 	{
 		ThirdPerson,
-		Aiming
+		Aiming,
+		Ragdoll
 	}
 }

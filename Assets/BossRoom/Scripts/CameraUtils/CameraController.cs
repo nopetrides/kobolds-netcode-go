@@ -1,11 +1,9 @@
-using System;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Unity.BossRoom.CameraUtils
 {
-	[Obsolete]
     public class CameraController : MonoBehaviour
     {
         private CinemachineFreeLook _mMainCamera;

@@ -1,4 +1,6 @@
-﻿using Kobold.GameManagement;
+﻿using System;
+using System.Threading.Tasks;
+using Kobold.GameManagement;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,6 +17,8 @@ namespace Kobold.UI
 		// Main menu buttons
 		private Button _socialHubButton;
 		private Label _versionLabel;
+
+		private bool _allowInteraction;
 
 		private void Start()
 		{
@@ -79,31 +83,77 @@ namespace Kobold.UI
 
 		private void HandleSocialHubPressed()
 		{
+			if (!_allowInteraction) return;
 			Debug.Log("[KoboldHomeScreenView] Social Hub button pressed");
 
+			_allowInteraction = false;
+			KoboldEventHandler.OnSocialHubConnectionCompleted += OnSocialHubConnected;
 			// You could show a different view or fire an event
 			// For now, let's use the pattern from the original with default values
 			var playerName = PlayerPrefs.GetString("PlayerName", "Kobold");
 			var sessionName = PlayerPrefs.GetString("LastSession", nameof(SceneNames.KoboldHub));
-
+				
 			KoboldEventHandler.StartSocialHubPressed(playerName, sessionName);
 		}
 
 		private void HandleQuickMissionPressed()
 		{
+			if (!_allowInteraction) return;
 			Debug.Log("[KoboldHomeScreenView] Quick Mission button pressed");
-
+			
+			_allowInteraction = false;
+			KoboldEventHandler.OnMissionConnectionCompleted += OnMissionConnected;
+			
 			var playerName = PlayerPrefs.GetString("PlayerName", "Kobold");
 			KoboldEventHandler.QuickMissionPressed(playerName, "QuickMatch");
 		}
 
 		private void HandleSettingsPressed()
 		{
+			if (!_allowInteraction) return;
 			Debug.Log("[KoboldHomeScreenView] Settings button pressed");
-
+			
+			_allowInteraction = false;
 			// You'll need to implement settings view switching
 			// For now just log it
 			// TODO: Show settings view
+			
+			_allowInteraction = true;
+		}
+
+		private void OnSocialHubConnected(Task task, string sessionName)
+		{
+			KoboldEventHandler.OnSocialHubConnectionCompleted -= OnSocialHubConnected;
+			try
+			{
+				if (!task.IsCompletedSuccessfully)
+				{
+					// allow retry
+					_allowInteraction = true;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"[KoboldEventHandler.OnSocialHubConnected] Failed to connect with exception: {e}");
+			}
+		}
+
+		private void OnMissionConnected(Task task, string sessionName)
+		{
+			KoboldEventHandler.OnMissionConnectionCompleted -= OnMissionConnected;
+			
+			try
+			{
+				if (!task.IsCompletedSuccessfully)
+				{
+					// allow retry
+					_allowInteraction = true;
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"[KoboldEventHandler.OnMissionConnected] Failed to connect with exception: {e}");
+			}
 		}
 
 		private void HandleQuitPressed()

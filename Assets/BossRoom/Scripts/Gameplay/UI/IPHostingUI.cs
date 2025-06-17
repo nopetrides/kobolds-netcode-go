@@ -2,14 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
-using TMPro;
 
 namespace Unity.BossRoom.Gameplay.UI
 {
     public class IPHostingUI : MonoBehaviour
     {
-        [SerializeField] TMP_InputField m_IPInputField;
-        [SerializeField] TMP_InputField m_PortInputField;
+        [SerializeField] InputField m_IPInputField;
+        [SerializeField] InputField m_PortInputField;
 
         [SerializeField]
         CanvasGroup m_CanvasGroup;

@@ -9,7 +9,6 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
-
 namespace Unity.BossRoom.Gameplay.GameState
 {
     /// <summary>

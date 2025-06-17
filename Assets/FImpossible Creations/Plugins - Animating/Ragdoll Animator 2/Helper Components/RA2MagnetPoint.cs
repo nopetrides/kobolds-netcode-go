@@ -190,9 +190,9 @@ namespace FIMSpace.FProceduralAnimation
             Handles.SphereHandleCap( 0, ToMove.position, Quaternion.identity, 0.1f, EventType.Repaint );
         }
 
-        [CanEditMultipleObjects]
-        [CustomEditor( typeof( RA2MagnetPoint ), true )]
-        public class RA2MagnetPointEditor : Editor
+		[CanEditMultipleObjects]
+		[CustomEditor(typeof(RA2MagnetPoint), true)]
+		public class RA2MagnetPointEditor : UnityEditor.Editor
         {
             public RA2MagnetPoint Get
             { get { if( _get == null ) _get = (RA2MagnetPoint)target; return _get; } }

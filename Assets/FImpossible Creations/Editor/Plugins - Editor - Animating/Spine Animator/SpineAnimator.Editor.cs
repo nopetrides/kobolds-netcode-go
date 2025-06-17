@@ -7,7 +7,7 @@ using UnityEngine;
 /// FM: Editor class component to enchance controll over component from inspector window
 /// </summary>
 [CanEditMultipleObjects]
-public partial class FSpineAnimator_Editor : Editor
+public partial class FSpineAnimator_Editor : UnityEditor.Editor
 {
     [MenuItem("CONTEXT/FSpineAnimator/Switch displaying header bar")]
     private static void HideFImpossibleHeader(MenuCommand menuCommand)

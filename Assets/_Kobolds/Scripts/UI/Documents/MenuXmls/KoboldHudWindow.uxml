@@ -1,0 +1,90 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Kobolds/Scripts/UI/Documents/KoboldDefaultTheme.uss?fileID=7433441132597879392&amp;guid=278ee5504e524289813b1f72f4a989be&amp;type=3#KoboldDefaultTheme" />
+    <Kobold.UI.Components.KoboldVisualElement name="hud-window" class="kobold-hud" style="top: auto; left: auto; right: auto; bottom: 0; flex-direction: row; position: absolute; align-items: stretch; align-content: center; justify-content: space-between; align-self: center;">
+        <ui:VisualElement name="move-bg" style="flex-grow: 1; flex-wrap: nowrap; bottom: auto; position: absolute; align-items: stretch; flex-direction: column; -unity-background-scale-mode: scale-to-fit; background-position-y: center; align-content: auto; top: -204px; left: -816px;">
+            <ui:VisualElement name="move-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Move.png?fileID=2800000&amp;guid=ff7bfa7addf40784d86f62b8e4a034a6&amp;type=3#UI_Icon_Move&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="move-prompt" text="Move: Left Stick" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="sprint-bg" style="flex-grow: 1; position: absolute; top: -134px; left: -931px;">
+            <ui:VisualElement name="sprint-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Starter%20Assets/Runtime/Mobile/UI/Images/UI_Icon_Sprint.png?fileID=2800000&amp;guid=b0fa70abd2a79904cb00b175dfd8ec7e&amp;type=3#UI_Icon_Sprint&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="sprint-prompt" text="Sprint: Shift" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="look-bg" style="flex-grow: 1; position: absolute; top: -128px; left: 750px;">
+            <ui:VisualElement name="look-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Look.png?fileID=21300000&amp;guid=af0ae2dbf3d1efb4f82af377950704a2&amp;type=3#UI_Icon_Look&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="look-prompt" text="Look: Right Stick" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="jump-bg" style="flex-grow: 1; position: absolute; top: -121px; left: 509px;">
+            <ui:VisualElement name="jump-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Jump.png?fileID=2800000&amp;guid=751aa1b6637101946b2fdbb7aa27d6ad&amp;type=3#UI_Icon_Jump&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="jump-prompt" text="Jump: Space" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="grip-left-bg" style="flex-grow: 1; position: absolute; top: -307px; left: -934px;">
+            <ui:VisualElement name="grip-left-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Pickup.png?fileID=2800000&amp;guid=9c35a306c5b6f45f3924517141faa229&amp;type=3#UI_Icon_Pickup&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="grip-left-prompt" text="Left Hand: LB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="grip-right-bg" style="flex-grow: 1; position: absolute; top: -304px; left: -673px;">
+            <ui:VisualElement name="grip-right-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Pickup.png?fileID=2800000&amp;guid=9c35a306c5b6f45f3924517141faa229&amp;type=3#UI_Icon_Pickup&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="grip-right-prompt" text="Right Hand: RB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="attack-bg" style="flex-grow: 1; position: absolute; top: -205px; left: 648px;">
+            <ui:VisualElement name="attack-icon" style="flex-grow: 1; background-image: resource(&apos;Ragdoll Animator/SPR_RagdolForcer&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="attack-prompt" text="Attack: LMB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="aim-bg" style="flex-grow: 1; position: absolute; top: -197px; left: 884px;">
+            <ui:VisualElement name="aim-icon" style="flex-grow: 1; background-image: resource(&apos;Search/search_small@2x&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="aim-prompt" text="Aim: RMB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="latch-bg" style="flex-grow: 1; position: absolute; top: -130px; left: -529px;">
+            <ui:VisualElement name="latch-icon" style="flex-grow: 1; background-image: resource(&apos;Ragdoll Animator/SPR_RagdollFixedJoint&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="latch-prompt" text="Latch: F" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="flop-bg" style="flex-grow: 1; position: absolute; top: -131px; left: -644px;">
+            <ui:VisualElement name="flop-icon" style="flex-grow: 1; background-image: resource(&apos;Ragdoll Animator/SPR_RagdollAnim2&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="flop-prompt" text="Flop: Z" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement name="hp-bg" style="flex-grow: 1; position: absolute; flex-basis: 100px; background-image: url(&quot;project://database/Assets/BossRoom/Textures/UI/ui_healthbar_bg.png?fileID=2800000&amp;guid=ac1ab0ffbf410094088db89d509a3a4a&amp;type=3#ui_healthbar_bg&quot;); top: -1048px; left: -938px; right: auto; bottom: auto; height: 52px; width: 519px;">
+            <ui:VisualElement name="hp-fill" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/BossRoom/Textures/UI/ui_healthbar.png?fileID=2800000&amp;guid=ef7d52c26ae87e242b4274a30a69ab08&amp;type=3#ui_healthbar&quot;);" />
+        </ui:VisualElement>
+    </Kobold.UI.Components.KoboldVisualElement>
+    <Kobold.UI.Components.KoboldVisualElement name="hud-window-gamepad" class="kobold-hud" style="top: auto; left: auto; right: auto; bottom: 0; flex-direction: row; position: absolute; align-items: stretch; align-content: center; justify-content: space-between; align-self: center; visibility: hidden; display: none;">
+        <ui:VisualElement style="flex-grow: 1; flex-wrap: nowrap; bottom: auto; position: relative; align-items: stretch; flex-direction: column; -unity-background-scale-mode: scale-to-fit; background-position-y: center; align-content: auto;">
+            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Move.png?fileID=2800000&amp;guid=ff7bfa7addf40784d86f62b8e4a034a6&amp;type=3#UI_Icon_Move&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="move-prompt" text="Move: Left Stick" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Starter%20Assets/Runtime/Mobile/UI/Images/UI_Icon_Sprint.png?fileID=2800000&amp;guid=b0fa70abd2a79904cb00b175dfd8ec7e&amp;type=3#UI_Icon_Sprint&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="sprint-prompt" text="Sprint: Shift" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Look.png?fileID=21300000&amp;guid=af0ae2dbf3d1efb4f82af377950704a2&amp;type=3#UI_Icon_Look&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="look-prompt" text="Look: Right Stick" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Jump.png?fileID=2800000&amp;guid=751aa1b6637101946b2fdbb7aa27d6ad&amp;type=3#UI_Icon_Jump&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="jump-prompt" text="Jump: Space" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Pickup.png?fileID=2800000&amp;guid=9c35a306c5b6f45f3924517141faa229&amp;type=3#UI_Icon_Pickup&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="grip-left-prompt" text="Left Hand: LB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/SocialHub/UI/Mobile/Images/UI_Icon_Pickup.png?fileID=2800000&amp;guid=9c35a306c5b6f45f3924517141faa229&amp;type=3#UI_Icon_Pickup&quot;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="grip-right-prompt" text="Right Hand: RB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;Ragdoll Animator/SPR_RagdolForcer&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="attack-prompt" text="Attack: LMB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;Search/search_small@2x&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="aim-prompt" text="Aim: RMB" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;Ragdoll Animator/SPR_RagdollFixedJoint&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="latch-prompt" text="Latch: F" class="kobold-hud-item" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;Ragdoll Animator/SPR_RagdollAnim2&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-type: sliced; align-items: auto; align-content: auto; position: relative; flex-basis: 100px;" />
+            <Kobold.UI.Components.KoboldInputPromptLabel name="flop-prompt" text="Flop: Z" class="kobold-hud-item" />
+        </ui:VisualElement>
+    </Kobold.UI.Components.KoboldVisualElement>
+</ui:UXML>

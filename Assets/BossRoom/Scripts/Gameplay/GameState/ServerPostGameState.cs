@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using VContainer;
 
-
 namespace Unity.BossRoom.Gameplay.GameState
 {
     [RequireComponent(typeof(NetcodeHooks))]

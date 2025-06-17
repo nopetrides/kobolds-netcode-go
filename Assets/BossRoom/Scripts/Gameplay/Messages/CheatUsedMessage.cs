@@ -3,7 +3,6 @@ using Unity.BossRoom.Utils;
 using Unity.Collections;
 using Unity.Netcode;
 
-
 namespace Unity.BossRoom.Gameplay.Messages
 {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Avatar = Unity.BossRoom.Gameplay.Configuration.Avatar;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects.Character
 {
     /// <summary>

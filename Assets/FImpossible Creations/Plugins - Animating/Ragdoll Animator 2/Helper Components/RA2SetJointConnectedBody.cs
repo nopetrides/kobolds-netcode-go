@@ -68,7 +68,7 @@ namespace FIMSpace.FProceduralAnimation
 
         [CanEditMultipleObjects]
         [CustomEditor( typeof( RA2SetJointConnectedBody ), true )]
-        public class RA2SetJointConnectionEditor : Editor
+        public class RA2SetJointConnectionEditor : UnityEditor.Editor
         {
             public RA2SetJointConnectedBody Get
             { get { if( _get == null ) _get = (RA2SetJointConnectedBody)target; return _get; } }

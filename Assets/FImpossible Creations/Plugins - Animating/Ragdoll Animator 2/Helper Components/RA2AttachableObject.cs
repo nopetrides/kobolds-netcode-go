@@ -304,7 +304,7 @@ namespace FIMSpace.FProceduralAnimation
 
         [CanEditMultipleObjects]
         [CustomEditor(typeof(RA2AttachableObject), true)]
-        public class RA2AttachObjectEditor : Editor
+        public class RA2AttachObjectEditor : UnityEditor.Editor
         {
             public RA2AttachableObject Get
             { get { if (_get == null) _get = (RA2AttachableObject)target; return _get; } }

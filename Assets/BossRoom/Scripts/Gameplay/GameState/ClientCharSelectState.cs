@@ -9,7 +9,6 @@ using UnityEngine;
 using VContainer;
 using Avatar = Unity.BossRoom.Gameplay.Configuration.Avatar;
 
-
 namespace Unity.BossRoom.Gameplay.GameState
 {
     /// <summary>

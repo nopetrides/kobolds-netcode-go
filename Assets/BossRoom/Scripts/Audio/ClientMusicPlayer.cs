@@ -43,11 +43,6 @@ namespace Unity.BossRoom.Audio
 
         private void PlayTrack(AudioClip clip, bool looping, bool restart)
         {
-			if (clip == null)
-			{
-				Debug.LogWarning("Audio clip is null");
-				return;
-			}
             if (m_source.isPlaying)
             {
                 // if we dont want to restart the clip, do nothing if it is playing
@@ -66,7 +61,7 @@ namespace Unity.BossRoom.Audio
 
             if (Instance != null)
             {
-                throw new System.Exception("Multiple ClientMusicPlayers!");
+                throw new System.Exception("Multiple ClientMuscPlayers!");
             }
             DontDestroyOnLoad(gameObject);
             Instance = this;

@@ -6,7 +6,6 @@ using Unity.BossRoom.Gameplay.GameplayObjects.Character;
 using UnityEngine;
 using Action = Unity.BossRoom.Gameplay.Actions.Action;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     public class GameDataSource : MonoBehaviour

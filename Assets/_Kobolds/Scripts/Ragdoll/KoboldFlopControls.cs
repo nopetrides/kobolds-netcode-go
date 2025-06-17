@@ -1,14 +1,18 @@
 using System;
 using FIMSpace.FProceduralAnimation;
+using Kobold.GameManagement;
 using UnityEngine;
 
 namespace Kobold
 {
 	public class KoboldFlopControls : MonoBehaviour
 	{
+		[SerializeField] private Rigidbody Rigidbody;
+		[SerializeField] private Animator Animator;
 		[SerializeField] private RagdollAnimator2 TargetRagdoll;
-		private KoboldInputs Inputs { get; set; }
 		[SerializeField] private KoboldStateManager StateManager;
+		[SerializeField] private KoboldGameplayEvents GameplayEvents;
+		private KoboldInputs Inputs { get; set; }
 
 		private void Start()
 		{
@@ -23,9 +27,37 @@ namespace Kobold
 				if (StateManager.IsInState(KoboldState.Active) && KoboldInputSystemManager.Instance.IsInGameplayMode)
 				{
 					Inputs.Flop = false;
-					TargetRagdoll.User_SwitchFallState(!TargetRagdoll.Handler.IsInStandingMode);
+					Flop();
 				}
 			}
+		}
+
+		private void Flop()
+		{
+			Rigidbody.isKinematic = true;
+			Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+			Animator.enabled = false;
+			StateManager.SetState(KoboldState.Flopping);
+			
+			// Disable stand mode
+			TargetRagdoll.User_SwitchFallState();
+			TargetRagdoll.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
+			// Fully limp, maybe?
+			//animator.User_FadeMusclesPowerMultiplicator(0.05f, 0.05f);
+			
+			GameplayEvents.NotifyFlop();
+		}
+
+		public void OnAutoGetUp()
+		{
+			if (!isActiveAndEnabled) return;
+			if (!StateManager.IsInState(KoboldState.Flopping)) return;
+			
+			Rigidbody.isKinematic = false;
+			Animator.enabled = true;
+			StateManager.SetState(KoboldState.Active);
+			
+			GameplayEvents.NotifyGetUp();
 		}
 	}
 }

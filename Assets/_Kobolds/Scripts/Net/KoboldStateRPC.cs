@@ -57,6 +57,14 @@ namespace Kobold.Net
 					if (_animationController != null)
 						_animationController.enabled = false;
 					break;
+				
+				case KoboldState.Flopping:
+					// Full ragdoll, not as limp as unburying
+					_ragdollAnimator.User_SwitchFallState();
+					_ragdollAnimator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
+					if (_animationController != null)
+						_animationController.enabled = false;
+					break;
 			}
 		}
 
@@ -150,6 +158,34 @@ namespace Kobold.Net
 			ApplyRemoteRagdollState(KoboldState.Active);
 
 			Debug.Log($"[{name}] Remote player detached from latch");
+		}
+
+		/// <summary>
+		///     RPC to notify when flopping occurs.
+		/// </summary>
+		[Rpc(SendTo.NotOwner)]
+		public void OnFlopRpc()
+		{
+			if (_stateManager != null) _stateManager.SetState(KoboldState.Flopping);
+
+			// Return to active ragdoll state
+			ApplyRemoteRagdollState(KoboldState.Flopping);
+
+			Debug.Log($"[{name}] Remote player flopped");
+		}
+		
+		/// <summary>
+		///     RPC to notify when flopping occurs.
+		/// </summary>
+		[Rpc(SendTo.NotOwner)]
+		public void OnGetUpRpc()
+		{
+			if (_stateManager != null) _stateManager.SetState(KoboldState.Active);
+
+			// Return to active ragdoll state
+			ApplyRemoteRagdollState(KoboldState.Active);
+
+			Debug.Log($"[{name}] Remote player stand back up");
 		}
 	}
 }

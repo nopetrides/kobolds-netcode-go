@@ -100,7 +100,7 @@ namespace FIMSpace.FProceduralAnimation
 
         [CanEditMultipleObjects]
         [CustomEditor( typeof( RA2CopyJointToDummyBone ), true )]
-        public class RA2CopyJointToDummyBoneEditor : Editor
+        public class RA2CopyJointToDummyBoneEditor : UnityEditor.Editor
         {
             public RA2CopyJointToDummyBone Get
             { get { if( _get == null ) _get = (RA2CopyJointToDummyBone)target; return _get; } }

@@ -37,7 +37,7 @@ namespace FIMSpace.FProceduralAnimation
         }
 
         [CustomEditor( typeof( RagdollAnimatorDummyReference ), true )]
-        public class RagdollAnimatorDummyReferenceEditor : Editor
+        public class RagdollAnimatorDummyReferenceEditor : UnityEditor.Editor
         {
             public RagdollAnimatorDummyReference Get
             { get { if( _get == null ) _get = (RagdollAnimatorDummyReference)target; return _get; } }

@@ -116,7 +116,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
             }
         }
 
-		public Transform Transform { get; }
+		public Transform Transform => transform;
 
 		private void Break()
         {

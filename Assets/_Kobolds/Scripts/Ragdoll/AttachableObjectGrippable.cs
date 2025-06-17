@@ -43,7 +43,7 @@ namespace Kobold
 			_networkObject = GetComponent<NetworkObject>();
 			_originalParent = transform.parent;
 			_destructibleObject = GetComponent<DestructibleObject>();
-			_destructibleObject.OnDestruction += OnGrippedItemDestroyed;
+			if(_destructibleObject) _destructibleObject.OnDestruction += OnGrippedItemDestroyed;
 		}
 
 		public bool TryAttach(GripMagnetPoint magnet)

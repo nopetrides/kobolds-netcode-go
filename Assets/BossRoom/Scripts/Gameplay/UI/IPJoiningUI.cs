@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
-using TMPro;
 
 namespace Unity.BossRoom.Gameplay.UI
 {
@@ -11,9 +10,9 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         CanvasGroup m_CanvasGroup;
 
-        [SerializeField] TMP_InputField m_IPInputField;
+        [SerializeField] InputField m_IPInputField;
 
-        [SerializeField] TMP_InputField m_PortInputField;
+        [SerializeField] InputField m_PortInputField;
 
         [SerializeField]
         Button m_JoinButton;

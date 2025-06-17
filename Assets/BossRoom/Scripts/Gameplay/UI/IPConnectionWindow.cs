@@ -8,7 +8,6 @@ using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using VContainer;
 
-
 namespace Unity.BossRoom.Gameplay.UI
 {
     public class IPConnectionWindow : MonoBehaviour

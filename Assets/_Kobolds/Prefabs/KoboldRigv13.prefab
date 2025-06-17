@@ -4600,6 +4600,8 @@ MonoBehaviour:
   GripR: 0
   GripL: 0
   GripJaw: 0
+  Escape: 0
+  Flop: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -4615,7 +4617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2c593230016111478e8fe38ddd9a9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Inputs: {fileID: 0}
   _networkController: {fileID: 0}
   Rigb: {fileID: 5175123059626757943}
   MovementSpeed: 4
@@ -4692,7 +4693,6 @@ MonoBehaviour:
   Ragdoll: {fileID: 2757906756096797617}
   MainRigidbody: {fileID: 5175123059626757943}
   MovementController: {fileID: 4209389921519996671}
-  Input: {fileID: 6525928656619344458}
   AllowedStruggleActions:
   - Move
   - Jump
@@ -4730,7 +4730,7 @@ MonoBehaviour:
   MaxFlailForce: 2
   GroundMask:
     serializedVersion: 2
-    m_Bits: 14345
+    m_Bits: 14337
   TransitionDuration: 0.85
   GetUpFaceAnim: Get Up Face
   GetUpBackAnim: Get Up Back
@@ -4747,7 +4747,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterAnimator: {fileID: 2757906756096797617}
-  Inputs: {fileID: 4760339598987504690}
   StateManager: {fileID: 8653516153559413479}
   _gameplayEvents: {fileID: 0}
   Latcher: {fileID: 5430246158117000746}

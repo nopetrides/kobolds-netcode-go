@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using TMPro;
 using Unity.BossRoom.Infrastructure;
 using Unity.BossRoom.UnityServices.Lobbies;
 using UnityEngine;
@@ -18,7 +17,7 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         LobbyListItemUI m_LobbyListItemPrototype;
         [SerializeField]
-        TMP_InputField m_JoinCodeField;
+        InputField m_JoinCodeField;
         [SerializeField]
         CanvasGroup m_CanvasGroup;
         [SerializeField]

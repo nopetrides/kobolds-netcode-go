@@ -21,8 +21,7 @@ namespace Unity.BossRoom.ApplicationLifecycle
     /// An entry point to the application, where we bind all the common dependencies to the root DI scope.
     /// </summary>
     public class ApplicationController : LifetimeScope
-	{
-		[SerializeField] private string SceneToLoad = "KoboldsMenu";
+    {
         [SerializeField]
         UpdateRunner m_UpdateRunner;
         [SerializeField]
@@ -94,7 +93,7 @@ namespace Unity.BossRoom.ApplicationLifecycle
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(m_UpdateRunner.gameObject);
             Application.targetFrameRate = 120;
-            SceneManager.LoadScene(SceneToLoad);
+            SceneManager.LoadScene("MainMenu");
         }
 
         protected override void OnDestroy()

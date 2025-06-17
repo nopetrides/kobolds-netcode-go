@@ -8,7 +8,6 @@ using Unity.Netcode;
 using UnityEngine;
 using VContainer;
 
-
 namespace Unity.BossRoom.Gameplay.GameplayObjects
 {
     /// <summary>
@@ -41,7 +40,7 @@ namespace Unity.BossRoom.Gameplay.GameplayObjects
                 _mNameState = GetComponent<NetworkNameState>();
                 _mNetworkLifeState.LifeState.OnValueChanged += OnLifeStateChanged;
 
-                var gameState = FindFirstObjectByType<ServerBossRoomState>();
+                var gameState = FindObjectOfType<ServerBossRoomState>();
                 if (gameState != null)
                 {
                     gameState.Container.Inject(this);

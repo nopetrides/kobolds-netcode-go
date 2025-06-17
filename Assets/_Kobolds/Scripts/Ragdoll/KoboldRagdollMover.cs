@@ -15,6 +15,7 @@ namespace Kobold
 
 		private KoboldInputs Inputs { get; set; }
 		[SerializeField] private Net.KoboldNetworkController _networkController;
+		[SerializeField] private KoboldStateManager _koboldStateManager;
 		
 		public Rigidbody Rigb;
 
@@ -282,7 +283,11 @@ namespace Kobold
 
 		private void OnDisable()
 		{
-			Rigb.isKinematic = true;
+			if (_koboldStateManager.CurrentState != KoboldState.Uninitialized &&
+				_koboldStateManager.CurrentState != KoboldState.Unburying)
+			{
+				Rigb.isKinematic = true;
+			}
 			Rigb.detectCollisions = true;
 		}
 

@@ -5,7 +5,6 @@ using Unity.BossRoom.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
-using TMPro;
 
 namespace Unity.BossRoom.Gameplay.UI
 {
@@ -14,7 +13,7 @@ namespace Unity.BossRoom.Gameplay.UI
         [SerializeField]
         ProfileListItemUI m_ProfileListItemPrototype;
         [SerializeField]
-        TMP_InputField m_NewProfileField;
+        InputField m_NewProfileField;
         [SerializeField]
         Button m_CreateProfileButton;
         [SerializeField]

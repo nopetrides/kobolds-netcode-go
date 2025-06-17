@@ -9,25 +9,29 @@ namespace Kobold
 	/// </summary>
 	public enum KoboldState : byte
 	{
-		Uninitialized,
+		Uninitialized = 0,
 		/// <summary>
 		/// Kobold is buried and must struggle to escape.
 		/// Full ragdoll physics active.
 		/// </summary>
-		Unburying = 0,
+		Unburying = 1,
         
 		/// <summary>
 		/// Kobold has full player control and can move around.
 		/// Uses RagdollMover for movement.
 		/// </summary>
-		Active = 1,
+		Active = 2,
         
 		/// <summary>
 		/// Kobold is latched onto a surface by its mouth.
 		/// Body ragdolls while mouth stays fixed.
 		/// </summary>
-		Climbing = 2,
-		RagdollOnly
+		Climbing = 3,
+		
+		/// <summary>
+		/// The Kobold did the flop and is rag-dolling around
+		/// </summary>
+		Flopping = 4,
 	}
 
 	public class KoboldStateManager : MonoBehaviour

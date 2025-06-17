@@ -3,7 +3,6 @@ using Unity.BossRoom.Gameplay.UserInput;
 using Unity.Netcode;
 using UnityEngine;
 
-
 namespace Unity.BossRoom.Gameplay.UI
 {
     /// <summary>

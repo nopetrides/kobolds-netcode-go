@@ -17,7 +17,6 @@ using UnityEngine.Serialization;
 using VContainer;
 using Random = UnityEngine.Random;
 
-
 namespace Unity.BossRoom.Gameplay.GameState
 {
     /// <summary>
@@ -222,8 +221,8 @@ namespace Unity.BossRoom.Gameplay.GameState
         {
             switch (message.CharacterType)
             {
-                case CharacterTypeEnum.Default:
                 case CharacterTypeEnum.Tank:
+                case CharacterTypeEnum.Archer:
                 case CharacterTypeEnum.Mage:
                 case CharacterTypeEnum.Rogue:
                     // Every time a player's life state changes to fainted we check to see if game is over
