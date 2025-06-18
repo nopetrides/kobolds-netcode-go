@@ -33,7 +33,7 @@ namespace Kobold.UI
 		public override void Initialize(VisualElement viewRoot)
 		{
 			base.Initialize(viewRoot);
-
+			_allowInteraction = true;
 			// Find all buttons in the main menu
 			_socialHubButton = MRoot.Q<Button>("social-hub-button");
 			_quickMissionButton = MRoot.Q<Button>("quick-mission-button");
