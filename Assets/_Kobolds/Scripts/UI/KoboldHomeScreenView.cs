@@ -102,10 +102,9 @@ namespace Kobold.UI
 			Debug.Log("[KoboldHomeScreenView] Quick Mission button pressed");
 			
 			_allowInteraction = false;
-			KoboldEventHandler.OnMissionConnectionCompleted += OnMissionConnected;
 			
 			var playerName = PlayerPrefs.GetString("PlayerName", "Kobold");
-			KoboldEventHandler.QuickMissionPressed(playerName, "QuickMatch");
+			KoboldEventHandler.StartKoboldMissionPressed(playerName, "QuickMatch");
 		}
 
 		private void HandleSettingsPressed()
@@ -135,24 +134,6 @@ namespace Kobold.UI
 			catch (Exception e)
 			{
 				Debug.LogError($"[KoboldEventHandler.OnSocialHubConnected] Failed to connect with exception: {e}");
-			}
-		}
-
-		private void OnMissionConnected(Task task, string sessionName)
-		{
-			KoboldEventHandler.OnMissionConnectionCompleted -= OnMissionConnected;
-			
-			try
-			{
-				if (!task.IsCompletedSuccessfully)
-				{
-					// allow retry
-					_allowInteraction = true;
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.LogError($"[KoboldEventHandler.OnMissionConnected] Failed to connect with exception: {e}");
 			}
 		}
 

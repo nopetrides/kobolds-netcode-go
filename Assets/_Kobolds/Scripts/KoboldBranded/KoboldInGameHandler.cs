@@ -10,17 +10,22 @@ namespace Kobold
 			KoboldInputSystemManager.Instance.EnableGameplayMode();
 			KoboldEventHandler.OnReturnToMainMenuButtonPressed += LoadMainMenuScene;
 			KoboldEventHandler.OnExitedSession += LoadMainMenuScene;
+			KoboldEventHandler.OnAllBossesDefeated += LoadMainMenuScene;
 		}
 
 		void OnDestroy()
 		{
 			KoboldEventHandler.OnReturnToMainMenuButtonPressed -= LoadMainMenuScene;
 			KoboldEventHandler.OnExitedSession -= LoadMainMenuScene;
+			KoboldEventHandler.OnAllBossesDefeated -= LoadMainMenuScene;
 		}
+
 
 		private void LoadMainMenuScene()
 		{
 			KoboldEventHandler.LoadMainMenuScene(nameof(SceneNames.KoboldMainMenu));
 		}
+		
+		
 	}
 }

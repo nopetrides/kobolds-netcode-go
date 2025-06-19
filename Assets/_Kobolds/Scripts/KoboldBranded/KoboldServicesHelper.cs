@@ -167,14 +167,9 @@ namespace Kobold.Services
 
 		private void SubscribeToEvents()
 		{
-			// Session events - maintain compatibility with original UI
-			KoboldEventHandler.OnStartButtonPressed += OnStartButtonPressed;
-
 			// New specific session events
 			KoboldEventHandler.OnStartSocialHubPressed += OnStartSocialHubPressed;
-			KoboldEventHandler.OnCreateMissionPressed += OnCreateMissionPressed;
-			KoboldEventHandler.OnJoinMissionPressed += OnJoinMissionPressed;
-			KoboldEventHandler.OnLeaveMissionPressed += LeaveMissionSession;
+			KoboldEventHandler.OnStartKoboldMissionPressed += OnStartKoboldMissionPressed;
 			KoboldEventHandler.OnReturnToSocialHubPressed += OnReturnToSocialHubPressed;
 			KoboldEventHandler.OnReturnToMainMenuButtonPressed += LeaveCurrentSession;
 			KoboldEventHandler.OnQuitGameButtonPressed += OnQuitGameButtonPressed;
@@ -182,31 +177,11 @@ namespace Kobold.Services
 
 		private void UnsubscribeFromEvents()
 		{
-			KoboldEventHandler.OnStartButtonPressed -= OnStartButtonPressed;
 			KoboldEventHandler.OnStartSocialHubPressed -= OnStartSocialHubPressed;
-			KoboldEventHandler.OnCreateMissionPressed -= OnCreateMissionPressed;
-			KoboldEventHandler.OnJoinMissionPressed -= OnJoinMissionPressed;
-			KoboldEventHandler.OnLeaveMissionPressed -= LeaveMissionSession;
+			KoboldEventHandler.OnStartKoboldMissionPressed -= OnStartKoboldMissionPressed;
 			KoboldEventHandler.OnReturnToSocialHubPressed -= OnReturnToSocialHubPressed;
 			KoboldEventHandler.OnReturnToMainMenuButtonPressed -= LeaveCurrentSession;
 			KoboldEventHandler.OnQuitGameButtonPressed -= OnQuitGameButtonPressed;
-		}
-
-		// Event handlers with proper async patterns
-		private async void OnStartButtonPressed(string playerName, string sessionName)
-		{
-			Debug.Log("[KoboldServicesHelper.OnStartButtonPressed]");
-			try
-			{
-				var connectTask = ConnectToSocialHub(playerName, sessionName);
-				await connectTask;
-				KoboldEventHandler.ConnectToSessionComplete(connectTask, sessionName);
-			}
-			catch (Exception ex)
-			{
-				Debug.LogError($"[KoboldServicesHelper] Failed to connect to session: {ex}");
-				KoboldEventHandler.ConnectToSessionComplete(Task.FromException(ex), sessionName);
-			}
 		}
 
 		private async void OnStartSocialHubPressed(string playerName, string sessionName)
@@ -232,36 +207,21 @@ namespace Kobold.Services
 			GameplayEventHandler.ConnectToSessionComplete(connectTask, sessionName);
 		}*/
 
-		private async void OnCreateMissionPressed(string missionName, int maxPlayers)
+		private async void OnStartKoboldMissionPressed(string playerName, string sessionName)
 		{
-			Debug.Log("[KoboldServicesHelper.OnCreateMissionPressed]");
-			try
-			{
-				var success = await CreateMissionSession(missionName, maxPlayers);
-				if (success) KoboldEventHandler.MissionCreated(CurrentMissionSession.Code, maxPlayers);
-			}
-			catch (Exception ex)
-			{
-				Debug.LogError($"[KoboldServicesHelper] Failed to create mission: {ex}");
-			}
-		}
+			Debug.Log("[KoboldServicesHelper.OnStartKoboldMissionPressed]");
 
-		private async void OnJoinMissionPressed(string sessionCode)
-		{
-			Debug.Log("[KoboldServicesHelper.OnJoinMissionPressed]");
 			try
 			{
-				var success = await JoinMissionSession(sessionCode);
+				var success = await ConnectToKoboldMission(playerName, sessionName);
 				if (success)
 				{
-					KoboldEventHandler.MissionJoined(sessionCode);
-					KoboldEventHandler.MissionConnectionComplete(Task.CompletedTask, sessionCode);
+					KoboldEventHandler.LoadMissionScene(nameof(SceneNames.KoboldMission));
 				}
 			}
 			catch (Exception ex)
 			{
-				Debug.LogError($"[KoboldServicesHelper] Failed to join mission: {ex}");
-				KoboldEventHandler.MissionConnectionComplete(Task.FromException(ex), sessionCode);
+				Debug.LogError($"[KoboldServicesHelper] Failed to start Kobold Mission: {ex}");
 			}
 		}
 
@@ -299,65 +259,6 @@ namespace Kobold.Services
 			}
 		}
 
-		public async Task<bool> CreateMissionSession(string missionName, int maxPlayers = 0)
-		{
-			Debug.Log("[KoboldServicesHelper.CreateMissionSession]");
-			if (!IsInSocialHub)
-			{
-				Debug.LogError("Must be in social hub to create a mission");
-				return false;
-			}
-
-			try
-			{
-				if (maxPlayers <= 0) maxPlayers = _missionMaxPlayers;
-
-				_currentSessionType = SessionType.Mission;
-				var missionSessionName = $"Mission_{missionName}_{Guid.NewGuid():N}";
-				await CreateOrJoinSession(missionSessionName, maxPlayers, false);
-				return CurrentMissionSession != null;
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e);
-				return false;
-			}
-		}
-
-		public async Task<bool> JoinMissionSession(string sessionCode)
-		{
-			Debug.Log("[KoboldServicesHelper.JoinMissionSession]");
-			if (!IsInSocialHub)
-			{
-				Debug.LogError("Must be in social hub to join a mission");
-				return false;
-			}
-
-			try
-			{
-				_currentSessionType = SessionType.Mission;
-				var options = new SessionOptions
-				{
-					MaxPlayers = _missionMaxPlayers,
-					IsPrivate = false
-				}.WithDistributedAuthorityNetwork();
-
-				CurrentMissionSession = await MultiplayerService.Instance.JoinSessionByCodeAsync(sessionCode);
-
-				if (CurrentMissionSession != null)
-				{
-					CurrentMissionSession.RemovedFromSession += OnRemovedFromMissionSession;
-					CurrentMissionSession.StateChanged += OnMissionSessionStateChanged;
-				}
-
-				return CurrentMissionSession != null;
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e);
-				return false;
-			}
-		}
 
 		private async Task CreateOrJoinSession(string sessionName, int maxPlayers, bool isSocialHub)
 		{
@@ -391,6 +292,37 @@ namespace Kobold.Services
 				Debug.LogError($"[CreateOrJoinSession] Failed to connect to session: {e}");
 			}
 		}
+		
+		public async Task<bool> ConnectToKoboldMission(string playerName, string sessionName)
+		{
+			Debug.Log("[KoboldServicesHelper.ConnectToKoboldMission]");
+
+			try
+			{
+				if (AuthenticationService.Instance == null)
+					throw new InvalidOperationException("Authentication service is not available");
+
+				if (!AuthenticationService.Instance.IsSignedIn)
+					await SignIn();
+
+				await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
+
+				if (string.IsNullOrEmpty(sessionName))
+					throw new ArgumentException("Session name cannot be empty");
+
+				_currentSessionType = SessionType.Mission;
+
+				await CreateOrJoinSession(sessionName, _missionMaxPlayers, isSocialHub: false);
+
+				return CurrentMissionSession != null;
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"[ConnectToKoboldMission] Failed to connect: {e}");
+				return false;
+			}
+		}
+
 
 		public async void LeaveMissionSession()
 		{

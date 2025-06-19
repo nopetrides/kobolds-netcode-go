@@ -20,9 +20,9 @@ namespace Kobold.GameManagement
 		public static event Action<NetworkObject, ulong, ulong> OnNetworkObjectOwnershipChanged;
 
 		// Session Events - Split into Social Hub and Generic
-		public static event Action<string, string> OnStartButtonPressed; // Keep for compatibility
+		//public static event Action<string, string> OnStartButtonPressed; // Keep for compatibility
 		public static event Action<string, string> OnStartSocialHubPressed; // New - specific to social hub
-		public static event Action<string, string> OnQuickMissionPressed; // New - for direct mission join
+		public static event Action<string, string> OnStartKoboldMissionPressed;
 		public static event Action OnReturnToMainMenuButtonPressed;
 		public static event Action OnReturnToSocialHubPressed; // New - from mission to hub
 		public static event Action OnQuitGameButtonPressed;
@@ -44,9 +44,6 @@ namespace Kobold.GameManagement
 		public static event Action<PickupState, Transform> OnPickupStateChanged;
 
 		// Mission-specific Events
-		public static event Action<string, int> OnCreateMissionPressed;
-		public static event Action<string> OnJoinMissionPressed;
-		public static event Action OnLeaveMissionPressed;
 		public static event Action<string, int> OnMissionCreated;
 		public static event Action<string> OnMissionJoined;
 		public static event Action OnMissionStarting;
@@ -86,20 +83,17 @@ namespace Kobold.GameManagement
 
 #region Session Events
 
-		public static void StartButtonPressed(string playerName, string sessionName)
-		{
-			OnStartButtonPressed?.Invoke(playerName, sessionName);
-		}
-
 		public static void StartSocialHubPressed(string playerName, string sessionName)
 		{
 			OnStartSocialHubPressed?.Invoke(playerName, sessionName);
 		}
-
-		public static void QuickMissionPressed(string playerName, string missionType)
+		
+		public static void StartKoboldMissionPressed(string playerName, string sessionName)
 		{
-			OnQuickMissionPressed?.Invoke(playerName, missionType);
+			Debug.Log("[KoboldEventHandler] StartKoboldMissionPressed");
+			OnStartKoboldMissionPressed?.Invoke(playerName, sessionName);
 		}
+
 
 		public static void ReturnToMainMenuPressed()
 		{
@@ -203,22 +197,6 @@ namespace Kobold.GameManagement
 #endregion
 
 #region Mission Events
-
-		public static void CreateMissionPressed(string missionName, int maxPlayers)
-		{
-			OnCreateMissionPressed?.Invoke(missionName, maxPlayers);
-		}
-
-		public static void JoinMissionPressed(string sessionCode)
-		{
-			OnJoinMissionPressed?.Invoke(sessionCode);
-		}
-
-		public static void LeaveMissionPressed()
-		{
-			OnLeaveMissionPressed?.Invoke();
-		}
-
 		public static void MissionCreated(string missionId, int maxPlayers)
 		{
 			OnMissionCreated?.Invoke(missionId, maxPlayers);
@@ -272,6 +250,20 @@ namespace Kobold.GameManagement
 			OnSceneLoadCompleted?.Invoke(sceneName);
 		}
 
+#endregion
+		
+		
+#region Events
+		
+		// Gameplay Events
+		public static event Action OnAllBossesDefeated; // 🆕 New event
+
+		public static void AllBossesDefeated()           // 🆕 New method
+		{
+			Debug.Log("[KoboldEventHandler] AllBossesDefeated triggered");
+			OnAllBossesDefeated?.Invoke();
+		}
+		
 #endregion
 	}
 

@@ -1,5 +1,6 @@
 using System;
 using FIMSpace.FProceduralAnimation;
+using Kobolds.Bosses;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -106,8 +107,8 @@ namespace Kobold
 		[Serializable]
 		private class LatchInfo
 		{
-			private KoboldGameplayEvents _gameplayEvents;
 			private RagdollBoneProcessor _bone;
+			private KoboldGameplayEvents _gameplayEvents;
 			private Vector3 _localPos;
 			private Quaternion _localRot;
 			private Rigidbody _rb;
@@ -119,7 +120,8 @@ namespace Kobold
 
 			public void Latch(
 				RagdollBoneProcessor bone, Collider target, Vector3 worldPos,
-				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager, KoboldGameplayEvents events)
+				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager,
+				KoboldGameplayEvents events)
 			{
 				_bone = bone;
 				Target = target;
@@ -131,18 +133,24 @@ namespace Kobold
 				_rb.isKinematic = true;
 				_rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
 				IsLatched = true;
+
 				animationController.enabled = false;
 				stateManager.SetState(KoboldState.Climbing);
+
 				var autoGetUp = animator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 				if (autoGetUp != null)
 					autoGetUp.Enabled = false;
 
-				// Fully limp body and disable stand mode
 				animator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
 				animator.User_FadeMusclesPowerMultiplicator(0.05f, 0.05f);
-				
+
 				events.NotifyLatch(target, _localPos, _localRot);
+
+				// Notify damage handler
+				var handler = target.GetComponent<LatchDamageHandler>();
+				if (handler) handler.OnLatched(_rb.transform);
 			}
+
 
 			public void UpdateLatch()
 			{
@@ -152,25 +160,35 @@ namespace Kobold
 				_rb.rotation = Target.transform.rotation * _localRot;
 			}
 
-			public void Detach(RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager, KoboldGameplayEvents events)
+			public void Detach(
+				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager,
+				KoboldGameplayEvents events)
 			{
 				if (_rb != null)
 					_rb.isKinematic = false;
 
-				// Re-enable ragdoll standing
 				animator.User_TransitionToStandingMode(0.2f, 0f);
 				animator.User_FadeMusclesPowerMultiplicator(1f, 0.2f);
+
+				// Notify unlatched BEFORE clearing Target
+				if (Target)
+				{
+					var handler = Target.GetComponent<LatchDamageHandler>();
+					if (handler != null) handler.OnUnlatched(_rb?.transform);
+				}
 
 				_bone = null;
 				_rb = null;
 				Target = null;
 				IsLatched = false;
+
 				animationController.enabled = true;
 				stateManager.SetState(KoboldState.Active);
+
 				var autoGetUp = animator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 				if (autoGetUp != null)
 					autoGetUp.Enabled = true;
-				
+
 				events.NotifyDetach();
 			}
 		}
