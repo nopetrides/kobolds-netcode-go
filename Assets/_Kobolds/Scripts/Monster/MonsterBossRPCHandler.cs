@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Kobolds.Bosses
+namespace Kobold.Bosses
 {
 	/// <summary>
 	/// Client-side handler for boss visual/audio effects.
@@ -8,42 +8,22 @@ namespace Kobolds.Bosses
 	/// </summary>
 	public class MonsterBossRPCHandler : MonoBehaviour
 	{
+		[SerializeField] private BossVFXManager vfxManager;
+		
 		private void Awake()
 		{
 			if (enabled)
 			{
-				Debug.Log("[MonsterBossRPCHandler] Enabled for non-owner.");
+				Debug.Log("[MonsterBossRPCHandler] Enabled");
 			}
 		}
 
-		public void PlayToppleEffect()
-		{
-			Debug.Log("[MonsterBossRPCHandler] PlayToppleEffect()");
-			// TODO: Trigger camera shake, VFX, sound, etc.
-		}
+		public void PlayToppleEffect() => vfxManager?.PlayToppleVFX();
+		public void PlayRecoveryEffect() => vfxManager?.PlayRecoveryVFX();
+		public void PlayDeathEffect() => vfxManager?.PlayDeathVFX();
+		public void PlayCoreReveal() => vfxManager?.PlayCoreRevealVFX();
+		public void PlayAoePulse() => vfxManager?.PlayAoePulseVFX();
 
-		public void PlayRecoveryEffect()
-		{
-			Debug.Log("[MonsterBossRPCHandler] PlayRecoveryEffect()");
-			// TODO: Play limb reset or reformation visuals
-		}
-
-		public void PlayDeathEffect()
-		{
-			Debug.Log("[MonsterBossRPCHandler] PlayDeathEffect()");
-			// TODO: Show boss disintegration, explosion, or collapse
-		}
-
-		public void PlayCoreReveal()
-		{
-			Debug.Log("[MonsterBossRPCHandler] PlayCoreReveal()");
-			// TODO: FX/sound for heart core exposure
-		}
-
-		public void PlayAoePulse()
-		{
-			Debug.Log("[MonsterBossRPCHandler] PlayAOEPulse()");
-			// TODO: Shockwave particle and player detachment
-		}
+		
 	}
 }

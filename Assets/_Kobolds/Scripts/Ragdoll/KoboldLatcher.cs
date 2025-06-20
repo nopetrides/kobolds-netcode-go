@@ -1,6 +1,6 @@
 using System;
 using FIMSpace.FProceduralAnimation;
-using Kobolds.Bosses;
+using Kobold.Bosses;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -29,6 +29,8 @@ namespace Kobold
 		private Collider _currentTarget;
 
 		private bool _isGripToggled;
+		
+		public GripMagnetPoint JawLatchMagnet => JawMagnet;
 
 		private void Update()
 		{

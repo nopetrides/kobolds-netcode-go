@@ -1,9 +1,9 @@
 ﻿using Kobold.Services;
-using Kobolds.Bosses;
+using Kobold.Bosses;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Gameplay
+namespace Kobold.Gameplay
 {
 	public class KoboldPlayerSpawner : NetworkBehaviour
 	{

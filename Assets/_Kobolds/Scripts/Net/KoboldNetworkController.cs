@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using FIMSpace.FProceduralAnimation;
 using Kobold.Cam;
+using Kobold.Gameplay;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -67,7 +69,7 @@ namespace Kobold.Net
 			base.OnNetworkSpawn();
 
 			// Set up state change callbacks
-			_networkState.OnValueChanged += OnNetworkStateChanged;
+			_networkState.OnValueChanged += OnReplicatedStateChanged;
 
 			// Configure components based on authority first
 			ConfigureAuthorityComponents();
@@ -116,6 +118,13 @@ namespace Kobold.Net
 			if (networkState.State != KoboldState.Uninitialized)
 			{
 				yield return new WaitWhile(() => _ragdollAnimator?.Handler?.GetAnchorBoneController?.GameRigidbody != null);
+				
+				var autoGetUp = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
+				if (autoGetUp != null)
+					autoGetUp.Enabled = false;
+				else
+					Debug.LogError("RagdollAnimator2 component does not have RAF_AutoGetUp feature enabled");
+				
 				SyncFromNetworkState(networkState);
 				Debug.Log($"[{name}] Non-owner synced from network state: {networkState.State}");
 			}
@@ -126,7 +135,7 @@ namespace Kobold.Net
 			if (_stateManager != null)
 				_stateManager.OnStateChanged -= OnLocalStateChanged;
 
-			_networkState.OnValueChanged -= OnNetworkStateChanged;
+			_networkState.OnValueChanged -= OnReplicatedStateChanged;
 
 			// Unregister from camera manager if we're the local player
 			if (IsOwner)
@@ -138,48 +147,6 @@ namespace Kobold.Net
 
 			base.OnNetworkDespawn();
 		}
-
-		/*private void InitializeOwnerState()
-		{
-			// Check if we already have a valid state (e.g., from previous session or server)
-			var currentNetworkState = _networkState.Value;
-
-			// Only initialize if we haven't been initialized yet (check for default/uninitialized state)
-			if (currentNetworkState.State == KoboldState.Uninitialized && currentNetworkState.MaxHealth == 0f)
-			{
-				// Get current state from StateManager or use default
-				var currentGameplayState = _stateManager != null ? _stateManager.CurrentState : KoboldState.Unburying;
-
-				// Create initial state with all values
-				var initialState = new KoboldNetworkState
-				{
-					State = currentGameplayState,
-					Health = _initialHealth,
-					MaxHealth = _maxHealth,
-					PlayerName = $"{_playerNamePrefix}_{NetworkManager.LocalClientId}",
-					GrabbedObject = new NetworkObjectReference(),
-					LatchTarget = new NetworkObjectReference(),
-					LatchLocalPosition = Vector3.zero,
-					LatchLocalRotation = Quaternion.identity
-				};
-
-				// Set the NetworkVariable value
-				_networkState.Value = initialState;
-
-				Debug.Log(
-					$"[{name}] Initialized owner state: State={initialState.State}, Health={initialState.Health}/{initialState.MaxHealth}");
-			}
-			else
-			{
-				// We already have a state, sync our local components to match
-				Debug.Log(
-					$"[{name}] Owner already has network state: State={currentNetworkState.State}, Health={currentNetworkState.Health}/{currentNetworkState.MaxHealth}");
-
-				// Sync our local state manager to match the network state
-				if (_stateManager != null && _stateManager.CurrentState != currentNetworkState.State)
-					_stateManager.SetState(currentNetworkState.State);
-			}
-		}*/
 
 		private void SyncFromNetworkState(KoboldNetworkState networkState)
 		{
@@ -266,24 +233,6 @@ namespace Kobold.Net
 				$"[{name}] Configured for {(IsOwner ? "Local Player" : "Remote Player")} (Client {OwnerClientId})");
 		}
 
-		/*private void InitializeLocalPlayer()
-		{
-			// Name the GameObject for easier debugging
-			gameObject.name = $"Kobold_Local_Client{NetworkManager.LocalClientId}";
-
-			// Register with camera manager
-			var cameraManager = KoboldCameraManager.Instance;
-			if (cameraManager != null)
-			{
-				cameraManager.AssignToLocalPlayer(this);
-				Debug.Log($"[{name}] Registered with camera manager");
-			}
-			else
-			{
-				Debug.LogError($"[{name}] No KoboldCameraManager found in scene! Cameras will not work properly.");
-			}
-		}*/
-
 		private void OnLocalStateChanged(KoboldState newState)
 		{
 			if (!IsOwner) return;
@@ -299,7 +248,7 @@ namespace Kobold.Net
 			Debug.Log($"[{name}] Local state changed to: {newState}");
 		}
 
-		private void OnNetworkStateChanged(KoboldNetworkState previousState, KoboldNetworkState newState)
+		private void OnReplicatedStateChanged(KoboldNetworkState previousState, KoboldNetworkState newState)
 		{
 			// Process state changes for both owners and non-owners
 			// This ensures late-joiners get the correct state
@@ -307,9 +256,11 @@ namespace Kobold.Net
 			if (!IsOwner)
 				// Non-owners should sync all changes
 				SyncFromNetworkState(newState);
-			else if (previousState.State == KoboldState.Uninitialized && newState.State != KoboldState.Uninitialized)
-				// Owner receiving initial state from server (in case of reconnection scenarios)
-				Debug.Log($"[{name}] Owner received initial state from server: {newState.State}");
+			else if (IsOwner)
+			{
+				// If we ever hit this path as owner, something is wrong
+				Debug.LogError($"[{name}] Unexpected: state changed externally on owner object. From {previousState.State} to {newState.State}");
+			}
 
 			// Handle grab state changes for all players
 			HandleGrabStateChange(previousState, newState);
@@ -332,7 +283,41 @@ namespace Kobold.Net
 			var currentState = _networkState.Value;
 			currentState.Health = Mathf.Clamp(health, 0f, currentState.MaxHealth);
 			_networkState.Value = currentState;
+			
+			if (_networkState.Value.Health <= 0f)
+			{
+				Respawn();
+			}
 		}
+		
+		/// <summary>
+		/// Sets the speed for animator
+		/// </summary>
+		/// <param name="speed"></param>
+		public void SetMoveSpeed(float speed)
+		{
+			var state = _networkState.Value;
+			state.MoveSpeed = speed;
+			_networkState.Value = state;
+		}
+
+		private void Respawn()
+		{
+			var spawnPoint = KoboldPlayerSpawnPoints.Instance.GetRandomSpawnPoint();
+			
+			_ragdollAnimator.User_SetAllVelocity(Vector3.zero);
+			_ragdollAnimator.User_SetAllBonesVelocity(Vector3.zero);
+			var rb = _ragdollAnimator.GetComponent<Rigidbody>();
+			rb.linearVelocity = Vector3.zero;
+			rb.angularVelocity = Vector3.zero;
+			_ragdollAnimator.transform.position = spawnPoint.position;
+			_ragdollAnimator.User_Teleport();
+
+			SetHealth(_networkState.Value.MaxHealth);
+
+			Debug.Log($"[{name}] Respawned at {spawnPoint.position}");
+		}
+
 
 		/// <summary>
 		///     Updates max health value. Only call on the owner.
@@ -372,11 +357,32 @@ namespace Kobold.Net
 		{
 			// Started latching
 			if (!previousState.LatchTarget.TryGet(out _) && newState.LatchTarget.TryGet(out var latchTarget))
+			{
 				Debug.Log($"[{name}] Remote player latched to: {latchTarget.name}");
-			// Apply latch visual state if needed
+				
+				ApplyRemoteLatch(newState);
+			}
 			// Stopped latching
 			else if (previousState.LatchTarget.TryGet(out _) && !newState.LatchTarget.TryGet(out _))
 				Debug.Log($"[{name}] Remote player unlatched");
+		}
+		
+		private void ApplyRemoteLatch(KoboldNetworkState state)
+		{
+			if (_koboldLatcher == null) return;
+			if (!state.LatchTarget.TryGet(out var target)) return;
+
+			// Snap the latch bone to the latched position
+			var bone = _ragdollAnimator.Handler?.User_GetBoneSetupBySourceAnimatorBone(_koboldLatcher.JawLatchMagnet.MagnetPoint.transform)?.BoneProcessor;
+			if (bone?.rigidbody == null) return;
+
+			Vector3 worldPos = target.transform.TransformPoint(state.LatchLocalPosition);
+			Quaternion worldRot = target.transform.rotation * state.LatchLocalRotation;
+
+			var rb = bone.rigidbody;
+			rb.isKinematic = true;
+			rb.position = worldPos;
+			rb.rotation = worldRot;
 		}
 
 		/// <summary>
@@ -445,5 +451,13 @@ namespace Kobold.Net
 		{
 			return _ragdollTrackingObject != null ? _ragdollTrackingObject : transform;
 		}
+		
+		[ServerRpc(RequireOwnership = false)]
+		public void RequestDamageServerRpc(float damage)
+		{
+			if (IsOwner)
+				SetHealth(CurrentNetworkState.Health - damage);
+		}
+
 	}
 }

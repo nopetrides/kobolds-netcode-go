@@ -3,7 +3,7 @@ using Kobold.GameManagement;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Bosses
+namespace Kobold.Bosses
 {
     public class BossManager : NetworkBehaviour
     {
@@ -47,14 +47,14 @@ namespace Kobolds.Bosses
             var boss = Instantiate(bossPrefab, pos, rot);
             boss.NetworkObject.Spawn();
 			
-			// Spawn all networked child objects
-			foreach (var netObj in boss.GetComponentsInChildren<NetworkObject>(includeInactive: true))
-			{
-				if (!netObj.IsSpawned)
-				{
-					netObj.Spawn(true); // Use destroyWithScene: true for proper cleanup
-				}
-			}
+			// Spawn all networked child objects - redundant?
+			// foreach (var netObj in boss.GetComponentsInChildren<NetworkObject>(includeInactive: true))
+			// {
+			// 	if (!netObj.IsSpawned)
+			// 	{
+			// 		netObj.Spawn(true); // Use destroyWithScene: true for proper cleanup
+			// 	}
+			// }
 
             RegisterBoss(boss);
         }

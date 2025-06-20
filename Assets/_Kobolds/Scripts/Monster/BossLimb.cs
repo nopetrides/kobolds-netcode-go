@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Kobolds.Bosses
+namespace Kobold.Bosses
 {
     public class BossLimb : MonoBehaviour
     {

@@ -203,11 +203,19 @@ namespace Kobold
 				CurrentWorldAccel = Vector3.MoveTowards(
 					CurrentWorldAccel, MoveDirectionWorld * spd, Time.deltaTime * accel);
 
-			if (Mecanim)
-				if (moving)
-					Mecanim.SetFloat(Speed, CurrentWorldAccel.magnitude);
+			if (Mecanim && _networkController)
+			{
+				if (_networkController.IsOwner)
+				{
+					float speed = moving ? CurrentWorldAccel.magnitude : Rigb.linearVelocity.magnitude;
+					Mecanim.SetFloat(Speed, speed);
+					_networkController.SetMoveSpeed(speed);
+				}
 				else
-					Mecanim.SetFloat(Speed, Rigb.linearVelocity.magnitude);
+				{
+					Mecanim.SetFloat(Speed, _networkController.CurrentNetworkState.MoveSpeed);
+				}
+			}
 
 			MoveDirectionWorld = Vector3.zero;
 		}

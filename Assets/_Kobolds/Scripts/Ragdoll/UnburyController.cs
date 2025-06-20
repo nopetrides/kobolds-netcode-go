@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using FIMSpace.FProceduralAnimation;
+using Kobold.Net;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -36,6 +38,8 @@ namespace Kobold
 		/// </summary>
 		[FormerlySerializedAs("movementController")] [SerializeField]
 		private RagdollMover MovementController;
+		
+		[SerializeField] private KoboldNetworkController _networkController;
 
 		private PlayerInput Input { get; set; }
 
@@ -203,7 +207,7 @@ namespace Kobold
 				_isComplete = true;
 			}
 		}
-
+		
 		/// <summary>
 		///     Invoked when the object is destroyed.
 		///     Removes all input listeners to ensure proper cleanup and prevent memory leaks.

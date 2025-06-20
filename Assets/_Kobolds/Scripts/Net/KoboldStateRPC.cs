@@ -29,6 +29,7 @@ namespace Kobold.Net
 		/// </summary>
 		private void ApplyRemoteRagdollState(KoboldState state)
 		{
+			Debug.Log($"[ApplyRemoteRagdollState] {state} for {gameObject.transform.root.name}");
 			if (_ragdollAnimator == null) return;
 
 			switch (state)
@@ -40,6 +41,11 @@ namespace Kobold.Net
 					_ragdollAnimator.User_FadeMusclesPowerMultiplicator(0.05f, 0.05f);
 					if (_animationController != null)
 						_animationController.enabled = false;
+					// var kinematicFeet = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
+					// if (autoGetUp != null)
+					// 	autoGetUp.Enabled = false;
+					// else
+					// 	Debug.LogError("RagdollAnimator2 component does not have RAF_AutoGetUp feature enabled");
 					break;
 
 				case KoboldState.Active:
@@ -66,6 +72,8 @@ namespace Kobold.Net
 						_animationController.enabled = false;
 					break;
 			}
+			
+			_ragdollAnimator.User_UpdateRigidbodyParametersForAllBones();
 		}
 
 		/// <summary>

@@ -2,7 +2,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Bosses
+namespace Kobold.Bosses
 {
     public class MonsterBossController : NetworkBehaviour
     {
@@ -12,6 +12,10 @@ namespace Kobolds.Bosses
         [SerializeField] private float toppleDuration = 5f;
         [SerializeField] private float coreKillThreshold = 100f;
 
+		[Header("Related Components")]
+		[SerializeField] private BossMover bossMover;
+		[SerializeField] private MonsterBossRPCHandler rpcHandler;
+		
         [Header("Hierarchy References")]
         [SerializeField] private GameObject weakSpotObject;
         [SerializeField] private GameObject coreObject;
@@ -102,39 +106,61 @@ namespace Kobolds.Bosses
             }
         }
 
-        private void EnterToppleState()
-        {
-            _state = BossState.Toppled;
-            _isToppled = true;
-            _coreExposed = _currentHealth <= 0f;
-            _toppleTimer = toppleDuration;
-            _coreDamageTaken = 0f;
+		private void EnterToppleState()
+		{
+			_state = BossState.Toppled;
+			_isToppled = true;
+			_coreExposed = _currentHealth <= 0f;
+			_toppleTimer = toppleDuration;
+			_coreDamageTaken = 0f;
 
-            if (weakSpotObject) weakSpotObject.SetActive(true);
-            if (_coreExposed && coreObject) coreObject.SetActive(true);
-        }
+			if (weakSpotObject) weakSpotObject.SetActive(true);
 
-        private void ExitToppleState()
-        {
-            _state = BossState.Active;
-            _isToppled = false;
-            _coreExposed = false;
+			if (_coreExposed)
+			{
+				if (coreObject) coreObject.SetActive(true);
+				bossMover?.PlayCoreRevealMotion();
+				rpcHandler?.PlayCoreReveal();
+			}
 
-            if (weakSpotObject) weakSpotObject.SetActive(false);
-            if (coreObject) coreObject.SetActive(false);
+			bossMover?.PlayToppleMotion();
+			rpcHandler?.PlayToppleEffect();
+		}
 
-            foreach (var limb in _limbs)
-                limb.ResetLimb();
-        }
 
-        private void KillBoss()
-        {
-            _state = BossState.Dead;
-            if (coreObject) coreObject.SetActive(false);
-            if (weakSpotObject) weakSpotObject.SetActive(false);
+		private void ExitToppleState()
+		{
+			bossMover?.PlayAoePulseMotion();
+			rpcHandler?.PlayAoePulse();
+			
+			_state = BossState.Active;
+			_isToppled = false;
+			_coreExposed = false;
 
-            // TODO: trigger explosion, particles, disable colliders, etc.
-        }
+			if (weakSpotObject) weakSpotObject.SetActive(false);
+			if (coreObject) coreObject.SetActive(false);
+
+			foreach (var limb in _limbs)
+				limb.ResetLimb();
+
+			bossMover?.PlayRecoveryEffectMotion();
+			rpcHandler?.PlayRecoveryEffect();
+			
+
+		}
+
+
+		private void KillBoss()
+		{
+			_state = BossState.Dead;
+
+			if (coreObject) coreObject.SetActive(false);
+			if (weakSpotObject) weakSpotObject.SetActive(false);
+
+			bossMover?.PlayDeathMotion();
+			rpcHandler?.PlayDeathEffect();
+		}
+
 
         public bool IsToppled => _isToppled;
         public BossState State => _state;

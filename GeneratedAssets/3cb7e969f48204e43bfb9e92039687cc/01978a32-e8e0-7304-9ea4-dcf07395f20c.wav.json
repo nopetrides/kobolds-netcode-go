@@ -1,0 +1,12 @@
+{
+    "asset": "3cb7e969f48204e43bfb9e92039687cc",
+    "fileName": "01978a32-e8e0-7304-9ea4-dcf07395f20c.wav",
+    "prompt": "A rock elemental made of boulders falls apart on death crumbling into rubble.",
+    "negativePrompt": "reverb, pebbles, marbles",
+    "model": "0ee39b33-2893-4e0f-8c46-0e0bdd4eda85",
+    "customSeed": -1,
+    "w3CTraceId": "0e876a13d952c2dbb60a7d1e05803bab",
+    "duration": 3.0,
+    "autoTrim": true,
+    "hasReference": false
+}

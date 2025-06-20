@@ -2,7 +2,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Kobolds.Bosses
+namespace Kobold.Bosses
 {
 	public class LatchDamageHandler : MonoBehaviour
 	{
@@ -24,7 +24,8 @@ namespace Kobolds.Bosses
 
 		private void Update()
 		{
-			if (!_networkObject.IsOwner) return;
+			if (NetworkManager.Singleton.LocalClientId != NetworkManager.Singleton.CurrentSessionOwner) return;
+
 			if (_latchedSources.Count == 0) return;
 
 			var damage = _damagePerSecond * Time.deltaTime;
@@ -36,7 +37,8 @@ namespace Kobolds.Bosses
 		/// </summary>
 		public void OnLatched(Transform source)
 		{
-			if (!_networkObject.IsOwner) return;
+			// This is the correct way to do something like IsOwner
+			if (NetworkManager.Singleton.LocalClientId != NetworkManager.Singleton.CurrentSessionOwner) return;
 			if (_latchedSources.Contains(source)) return;
 
 			_latchedSources.Add(source);

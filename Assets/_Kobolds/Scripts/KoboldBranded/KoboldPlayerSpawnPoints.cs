@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Kobolds.Gameplay
+namespace Kobold.Gameplay
 {
 	public class KoboldPlayerSpawnPoints : MonoBehaviour
 	{
