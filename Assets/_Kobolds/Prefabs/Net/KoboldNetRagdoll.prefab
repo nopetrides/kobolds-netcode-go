@@ -8494,6 +8494,14 @@ PrefabInstance:
       propertyPath: MainRigidbody
       value: 
       objectReference: {fileID: 7882925929584570587}
+    - target: {fileID: 278733460970621646, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
+      propertyPath: StruggleDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 278733460970621646, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
+      propertyPath: _networkController
+      value: 
+      objectReference: {fileID: 1550229587333698507}
     - target: {fileID: 963293677620770765, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
       propertyPath: Ragdoll
       value: 

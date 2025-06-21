@@ -198,7 +198,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6656f796f5b1c7148ac49dc0b3f7517e, type: 2}
   _defaultTheme: {fileID: 11400000, guid: 6656f796f5b1c7148ac49dc0b3f7517e, type: 2}
   _savedThemeKey: KoboldSelectedTheme
-  _currentTheme: {fileID: 0}
+  _currentTheme: {fileID: 11400000, guid: 6656f796f5b1c7148ac49dc0b3f7517e, type: 2}
 --- !u!4 &341120911
 Transform:
   m_ObjectHideFlags: 0
@@ -249,6 +249,7 @@ MonoBehaviour:
   _requireServicesHelper: 1
   _requireInputManager: 1
   _requireVivoxManager: 1
+  _requireUINavigationManager: 1
 --- !u!4 &880674796
 Transform:
   m_ObjectHideFlags: 0
