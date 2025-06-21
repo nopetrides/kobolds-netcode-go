@@ -24,12 +24,7 @@ namespace Kobold.Net
         /// Maximum health points.
         /// </summary>
         public float MaxHealth;
-
-		/// <summary>
-		/// Current Movement Speed for animator
-		/// </summary>
-		public float MoveSpeed;
-        
+		
         /// <summary>
         /// Player's display name.
         /// </summary>
@@ -69,7 +64,6 @@ namespace Kobold.Net
                 State = KoboldState.Unburying,
                 Health = 100f,
                 MaxHealth = 100f,
-				MoveSpeed = 0f,
                 PlayerName = "Kobold",
                 GrabbedObject = new NetworkObjectReference(),
                 LatchTarget = new NetworkObjectReference(),
@@ -83,7 +77,6 @@ namespace Kobold.Net
             serializer.SerializeValue(ref State);
             serializer.SerializeValue(ref Health);
             serializer.SerializeValue(ref MaxHealth);
-			serializer.SerializeValue(ref MoveSpeed);
             serializer.SerializeValue(ref PlayerName);
             serializer.SerializeValue(ref GrabbedObject);
             serializer.SerializeValue(ref LatchTarget);

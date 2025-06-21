@@ -9,7 +9,7 @@ namespace Kobold.Bosses
     {
         public static BossManager Instance { get; private set; }
 
-        [SerializeField] private MonsterBossController bossPrefab;
+        [SerializeField] private NetworkObject bossPrefab;
         [SerializeField] private Transform[] spawnPoints;
 
         private readonly List<MonsterBossController> _activeBosses = new();
@@ -33,8 +33,6 @@ namespace Kobold.Bosses
 
         public void SpawnBossAtIndex(int spawnIndex)
         {
-            if (!IsOwner) return;
-
             if (spawnIndex < 0 || spawnIndex >= spawnPoints.Length)
             {
                 Debug.LogError($"Invalid spawn index {spawnIndex}");
@@ -43,20 +41,13 @@ namespace Kobold.Bosses
 
             Vector3 pos = spawnPoints[spawnIndex].position;
             Quaternion rot = spawnPoints[spawnIndex].rotation;
-
-            var boss = Instantiate(bossPrefab, pos, rot);
-            boss.NetworkObject.Spawn();
 			
-			// Spawn all networked child objects - redundant?
-			// foreach (var netObj in boss.GetComponentsInChildren<NetworkObject>(includeInactive: true))
-			// {
-			// 	if (!netObj.IsSpawned)
-			// 	{
-			// 		netObj.Spawn(true); // Use destroyWithScene: true for proper cleanup
-			// 	}
-			// }
+            var boss = bossPrefab.InstantiateAndSpawn(
+				NetworkManager, destroyWithScene: true, position: pos, rotation: rot);
 
-            RegisterBoss(boss);
+			var c = boss.GetComponent<MonsterBossController>();
+			if (c)
+				RegisterBoss(c);
         }
 
 		public void RegisterBoss(MonsterBossController boss)

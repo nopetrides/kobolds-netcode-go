@@ -39,8 +39,8 @@ namespace Kobold.Net
 					_ragdollAnimator.User_SwitchFallState();
 					_ragdollAnimator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
 					_ragdollAnimator.User_FadeMusclesPowerMultiplicator(0.05f, 0.05f);
-					if (_animationController != null)
-						_animationController.enabled = false;
+					// if (_animationController != null)
+					// 	_animationController.enabled = false;
 					// var kinematicFeet = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 					// if (autoGetUp != null)
 					// 	autoGetUp.Enabled = false;
@@ -52,24 +52,24 @@ namespace Kobold.Net
 					// Standing mode
 					_ragdollAnimator.User_TransitionToStandingMode(0.2f, 0f);
 					_ragdollAnimator.User_FadeMusclesPowerMultiplicator(1f, 0.2f);
-					if (_animationController != null)
-						_animationController.enabled = true;
+					// if (_animationController != null)
+					// 	_animationController.enabled = true;
 					break;
 
 				case KoboldState.Climbing:
 					// Partial ragdoll for climbing
 					_ragdollAnimator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
 					_ragdollAnimator.User_FadeMusclesPowerMultiplicator(0.05f, 0.05f);
-					if (_animationController != null)
-						_animationController.enabled = false;
+					// if (_animationController != null)
+					// 	_animationController.enabled = false;
 					break;
 				
 				case KoboldState.Flopping:
 					// Full ragdoll, not as limp as unburying
 					_ragdollAnimator.User_SwitchFallState();
 					_ragdollAnimator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Falling;
-					if (_animationController != null)
-						_animationController.enabled = false;
+					// if (_animationController != null)
+					// 	_animationController.enabled = false;
 					break;
 			}
 			

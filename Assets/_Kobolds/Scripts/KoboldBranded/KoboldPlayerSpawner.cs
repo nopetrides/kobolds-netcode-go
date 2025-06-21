@@ -14,6 +14,7 @@ namespace Kobold.Gameplay
 
 		protected override void OnNetworkSessionSynchronized()
 		{
+			base.OnNetworkSessionSynchronized();
 			Debug.Assert(_playerPrefab != null, $"Prefab reference '{nameof(_playerPrefab)}' is missing or not assigned.");
 
 			if (_playerPrefab != null)
@@ -36,7 +37,6 @@ namespace Kobold.Gameplay
 				BossManager.Instance?.SpawnBossAtIndex(0); // Replace with loop if multiple
 			}
 
-			base.OnNetworkSessionSynchronized();
 		}
 	}
 }

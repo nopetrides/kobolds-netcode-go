@@ -10,12 +10,9 @@ namespace Kobold
 	public class UnburyUIFeedback : MonoBehaviour
 	{
 		/// <summary>
-		/// Reference to the <c>UnburyController</c>, responsible for controlling the unburying process and tracking struggle progress.
+		/// Represents a group of UI elements and controls their visibility, interactability, and transparency.
 		/// </summary>
 		[Header("References")]
-		[SerializeField] private UnburyController Unbury;
-
-		/// Represents a group of UI elements and controls their visibility, interactability, and transparency.
 		[SerializeField] private CanvasGroup CanvasGroup;
 
 		/// <summary>
@@ -67,6 +64,11 @@ namespace Kobold
 		/// Stores the base position of the text used for resetting its position after applying shake effects.
 		/// </summary>
 		private Vector3 _baseTextPosition;
+		
+		/// <summary>
+		/// Reference to the <c>UnburyController</c>, responsible for controlling the unburying process and tracking struggle progress.
+		/// </summary>
+		private UnburyController _unbury;
 
 		/// <summary>
 		/// Initializes the component when the script instance is being loaded.
@@ -80,9 +82,18 @@ namespace Kobold
 		}
 
 		/// <summary>
+		/// Called before opening so it will be ready.
+		/// </summary>
+		/// <param name="unburyController"></param>
+		public void Initialize(UnburyController unburyController)
+		{
+			_unbury = unburyController;
+		}
+
+		/// <summary>
 		/// Updates the UI feedback for the unbury mechanic.
-		/// Checks the validity of the `Unbury` reference and exits early if null or disabled.
-		/// Calculates the progress of the unbury effort using `Unbury.StrugglePercentComplete`.
+		/// Checks the validity of the `_unbury` reference and exits early if null or disabled.
+		/// Calculates the progress of the unbury effort using `_unbury.StrugglePercentComplete`.
 		/// Hides the UI when the unbury process is complete by setting `CanvasGroup.alpha` to 0.
 		/// Applies a pulsing effect to the mash text using sine wave interpolation and scaling.
 		/// Updates the fill amount and gradient color of the UI image based on progress.
@@ -90,9 +101,9 @@ namespace Kobold
 		/// </summary>
 		private void Update()
 		{
-			if (!Unbury || !Unbury.enabled) return;
+			if (!_unbury || !_unbury.enabled) return;
 
-			float progress = Unbury.StrugglePercentComplete;
+			float progress = _unbury.StrugglePercentComplete;
 
 			// Hide when complete
 			if (progress >= 1f)

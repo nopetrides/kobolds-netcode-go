@@ -59,7 +59,7 @@ namespace Kobold
 		public void ToggleJawGrip()
 		{
 			_isGripToggled = !_isGripToggled;
-			AnimationController.SetBool(GripJawAnimParam, _isGripToggled);
+			//AnimationController.SetBool(GripJawAnimParam, _isGripToggled);
 
 			if (!_isGripToggled && _latch.IsLatched)
 			{
@@ -136,7 +136,7 @@ namespace Kobold
 				_rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
 				IsLatched = true;
 
-				animationController.enabled = false;
+				//animationController.enabled = false;
 				stateManager.SetState(KoboldState.Climbing);
 
 				var autoGetUp = animator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
@@ -149,7 +149,7 @@ namespace Kobold
 				events.NotifyLatch(target, _localPos, _localRot);
 
 				// Notify damage handler
-				var handler = target.GetComponent<LatchDamageHandler>();
+				var handler = target.GetComponentInParent<LatchDamageHandler>();
 				if (handler) handler.OnLatched(_rb.transform);
 			}
 
@@ -168,7 +168,8 @@ namespace Kobold
 			{
 				if (_rb != null)
 					_rb.isKinematic = false;
-
+				
+				//animator.Handler.AnimatingMode = RagdollHandler.EAnimatingMode.Standing;
 				animator.User_TransitionToStandingMode(0.2f, 0f);
 				animator.User_FadeMusclesPowerMultiplicator(1f, 0.2f);
 
@@ -184,7 +185,7 @@ namespace Kobold
 				Target = null;
 				IsLatched = false;
 
-				animationController.enabled = true;
+				//animationController.enabled = true;
 				stateManager.SetState(KoboldState.Active);
 
 				var autoGetUp = animator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();

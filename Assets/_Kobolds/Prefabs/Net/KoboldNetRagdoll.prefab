@@ -61,7 +61,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &7423812076837899772
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 666735334738078867}
   - component: {fileID: 7577361452531840509}
   - component: {fileID: 8290547779066580883}
+  - component: {fileID: 1404998979657346804}
   m_Layer: 0
   m_Name: KoboldNetRagdoll
   m_TagString: Untagged
@@ -392,8 +393,8 @@ MonoBehaviour:
   handler:
     _Editor_SelectedChain: 0
     _Editor_ChainCategory: 2
-    _EditorCategory: 2
-    _EditorMainCategory: 0
+    _EditorCategory: 4
+    _EditorMainCategory: 1
     _EditorMotionCategory: 2
     m_hemi: {fileID: -2508796484986968503, guid: 44d994eaad14fdf49a2dd378b4d62094, type: 3}
     m_cyli: {fileID: 2534964839176971238, guid: 2ea99bbc50a9266448416f21d645a771, type: 3}
@@ -940,7 +941,7 @@ MonoBehaviour:
         _rangeHelper: {x: 0, y: 0, z: 0, w: 0}
       - VariableName: 'Use On Fall Event:'
         Tooltip: 
-        _value: {x: 1, y: 0, z: 0, w: 0}
+        _value: {x: 0, y: 0, z: 0, w: 0}
         _string: 
         _curve:
           serializedVersion: 2
@@ -1049,7 +1050,7 @@ MonoBehaviour:
         _rangeHelper: {x: 0, y: 0, z: 0, w: 0}
       - VariableName: 'Use Get Up Event:'
         Tooltip: 
-        _value: {x: 1, y: 0, z: 0, w: 0}
+        _value: {x: 0, y: 0, z: 0, w: 0}
         _string: 
         _curve:
           serializedVersion: 2
@@ -1166,7 +1167,7 @@ MonoBehaviour:
     RagdollThicknessMultiplier: 1
     ReferenceMass: 5
     RigidbodiesInterpolation: 1
-    RigidbodiesDetectionMode: 1
+    RigidbodiesDetectionMode: 3
     RigidbodyDragValue: 0
     RigidbodyAngularDragValue: 0.2
     JointContactDistance: 0
@@ -1195,14 +1196,14 @@ MonoBehaviour:
     IgnoreBoundedColliders: 1
     RagdollDummyLayer: 11
     UnscaledTime: 0
-    FadeInAnimation: 0
+    FadeInAnimation: 0.1
     IgnoreSourceSkeletonColliders: 1
     WaitForInit: 1
     AnimationMatchLimits: 1
     TargetParentForRagdollDummy: {fileID: 6098410889513405131}
     BoundedCollidersIgnoreScaleup: 1.2
     UnityVelocitySolverIterations: 0
-    DisableMecanimOnSleep: 1
+    DisableMecanimOnSleep: 0
     chains:
     - ChainName: Core
       ChainType: 2
@@ -3283,6 +3284,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &1404998979657346804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598266197054209020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 6521160702986863658}
 --- !u!1 &1103934108234204671
 GameObject:
   m_ObjectHideFlags: 0
@@ -3344,7 +3360,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &4355484967427766420
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3529,7 +3545,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &6748039962187174106
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3877,7 +3893,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &4524112095908676726
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4062,7 +4078,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &1072687619482482110
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4247,7 +4263,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &4018941123347730991
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4430,7 +4446,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!153 &3419741648082225761
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -4594,7 +4610,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &6780948495365845812
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4778,7 +4794,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &7340616860120806215
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4963,7 +4979,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &3613325296132697284
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5148,7 +5164,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &1502931799452224055
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5336,7 +5352,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &8698927237489101171
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5373,9 +5389,9 @@ ConfigurableJoint:
   m_AutoConfigureConnectedAnchor: 1
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
-  m_XMotion: 2
-  m_YMotion: 2
-  m_ZMotion: 2
+  m_XMotion: 0
+  m_YMotion: 0
+  m_ZMotion: 0
   m_AngularXMotion: 2
   m_AngularYMotion: 2
   m_AngularZMotion: 2
@@ -5520,7 +5536,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &5185706291785611797
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5705,7 +5721,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &6235276088097862220
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5922,7 +5938,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &5969642368801531628
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6141,7 +6157,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &4734595481676192001
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6324,7 +6340,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!153 &8604771045077082037
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -6487,7 +6503,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &7557239227253919893
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6672,7 +6688,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &6476796354744844598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6856,7 +6872,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!136 &9110859934702368834
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -7043,7 +7059,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &3325707205927883206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7228,7 +7244,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &6340039023073976247
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7413,7 +7429,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &3354050247916190592
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7598,7 +7614,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &1826755974067840239
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7783,7 +7799,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &6261435267172954442
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7968,7 +7984,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &8681191943018210403
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8153,7 +8169,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &2601309384089427482
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8338,7 +8354,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!65 &7038781934445046054
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8556,6 +8572,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5605629050712344766, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6158023169810002529, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7429897366848485527, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7528624869358328133, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}

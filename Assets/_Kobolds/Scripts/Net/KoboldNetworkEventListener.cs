@@ -209,7 +209,7 @@ namespace Kobold.Net
 		private void HandleLatched(Collider target, Vector3 localPos, Quaternion localRot)
 		{
 			// Convert Collider to NetworkObject reference
-			var networkObject = target.GetComponent<NetworkObject>();
+			var networkObject = target.GetComponentInParent<NetworkObject>();
 			if (networkObject != null)
 			{
 				// Convert local position to world position for the RPC

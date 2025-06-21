@@ -24,7 +24,8 @@ namespace Kobold.Bosses
 
 		private void Update()
 		{
-			if (NetworkManager.Singleton.LocalClientId != NetworkManager.Singleton.CurrentSessionOwner) return;
+			if (!NetworkManager.Singleton) return;
+			if (NetworkManager.Singleton?.LocalClientId != NetworkManager.Singleton?.CurrentSessionOwner) return;
 
 			if (_latchedSources.Count == 0) return;
 

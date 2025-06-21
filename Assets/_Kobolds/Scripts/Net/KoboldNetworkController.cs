@@ -16,6 +16,7 @@ namespace Kobold.Net
 	[RequireComponent(typeof(NetworkObject))]
 	public partial class KoboldNetworkController : NetworkBehaviour
 	{
+		
 		[Header("State Management")]
 		[SerializeField] private KoboldStateManager _stateManager;
 
@@ -52,7 +53,11 @@ namespace Kobold.Net
 		public KoboldNetworkState CurrentNetworkState => _networkState.Value;
 
 		public KoboldCameraController CurrentCameraController => _cameraController;
-
+		
+		// Used to track self-authored state changes
+		private KoboldNetworkState _lastWrittenState;
+		private bool _suppressNextStateEcho;
+		
 		private void Awake()
 		{
 			ValidateComponents();
@@ -67,9 +72,6 @@ namespace Kobold.Net
 		public override void OnNetworkSpawn()
 		{
 			base.OnNetworkSpawn();
-
-			// Set up state change callbacks
-			_networkState.OnValueChanged += OnReplicatedStateChanged;
 
 			// Configure components based on authority first
 			ConfigureAuthorityComponents();
@@ -100,6 +102,7 @@ namespace Kobold.Net
 						};
 
 						_networkState.Value = initialState;
+						
 						Debug.Log(
 							$"[{name}] Owner initialized network state with current game state: {currentGameplayState}");
 					}
@@ -107,6 +110,8 @@ namespace Kobold.Net
 			}
 			else
 			{
+				// Set up state change callbacks
+				_networkState.OnValueChanged += OnReplicatedStateChanged;
 				StartCoroutine(WaitForRagdoll());
 			}
 		}
@@ -226,6 +231,9 @@ namespace Kobold.Net
 				{
 					Debug.LogError($"[{name}] No KoboldCameraManager found in scene! Cameras will not work properly.");
 				}
+				
+				
+				KoboldCanvasManager.Instance?.OnPlayerSpawned(_unburyController);
 			}
 
 			// Log for debugging
@@ -239,6 +247,8 @@ namespace Kobold.Net
 
 			// Update our network state when local state changes
 			var currentState = _networkState.Value;
+			_lastWrittenState = currentState;
+			_suppressNextStateEcho = true;
 			currentState.State = newState;
 			_networkState.Value = currentState;
 
@@ -258,8 +268,15 @@ namespace Kobold.Net
 				SyncFromNetworkState(newState);
 			else if (IsOwner)
 			{
+				if (_suppressNextStateEcho && newState.Equals(_lastWrittenState))
+				{
+					_suppressNextStateEcho = false;
+					return; // Suppress local echo
+				}
+				Debug.LogError($"[{name}] Unexpected replicated state change on owner object. This may indicate unauthorized modification. From {previousState.State} to {newState.State}");
+			}
+			{
 				// If we ever hit this path as owner, something is wrong
-				Debug.LogError($"[{name}] Unexpected: state changed externally on owner object. From {previousState.State} to {newState.State}");
 			}
 
 			// Handle grab state changes for all players
@@ -288,17 +305,6 @@ namespace Kobold.Net
 			{
 				Respawn();
 			}
-		}
-		
-		/// <summary>
-		/// Sets the speed for animator
-		/// </summary>
-		/// <param name="speed"></param>
-		public void SetMoveSpeed(float speed)
-		{
-			var state = _networkState.Value;
-			state.MoveSpeed = speed;
-			_networkState.Value = state;
 		}
 
 		private void Respawn()

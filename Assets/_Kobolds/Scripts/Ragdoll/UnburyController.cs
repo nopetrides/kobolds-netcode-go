@@ -166,7 +166,10 @@ namespace Kobold
 				else
 					Debug.LogError("RagdollAnimator2 component does not have RAF_AutoGetUp feature enabled");
 				Ragdoll.User_UpdateRigidbodyParametersForAllBones();
-
+				var feet = Ragdoll.Handler.GetExtraFeatureHelper<RAF_KinematicFeet>();
+				if (feet != null)
+					feet.Enabled = false;
+				
 				if (MovementController) MovementController.enabled = false;
 
 				// Bind all inputs to struggle

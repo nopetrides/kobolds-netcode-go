@@ -209,12 +209,10 @@ namespace Kobold
 				{
 					float speed = moving ? CurrentWorldAccel.magnitude : Rigb.linearVelocity.magnitude;
 					Mecanim.SetFloat(Speed, speed);
-					_networkController.SetMoveSpeed(speed);
 				}
-				else
-				{
-					Mecanim.SetFloat(Speed, _networkController.CurrentNetworkState.MoveSpeed);
-				}
+				//else
+				//	NetworkAnimator should take care of it
+				
 			}
 
 			MoveDirectionWorld = Vector3.zero;
