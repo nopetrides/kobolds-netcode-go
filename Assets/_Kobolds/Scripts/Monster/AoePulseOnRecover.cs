@@ -30,16 +30,18 @@ namespace Kobold.Monster
 
 		private void CheckOverlap(float currentRadius)
 		{
-			if (!NetworkManager.Singleton.IsServer) return; // Session owner logic only
+			// Use session owner check for distributed authority
+			if (!NetworkManager.Singleton.IsServer) return;
 
 			var hits = Physics.OverlapSphere(transform.position, currentRadius, LayerMask.GetMask("Player"));
 
 			foreach (var hit in hits)
 			{
 				var controller = hit.GetComponentInParent<KoboldNetworkController>();
-				if (controller != null && controller.IsOwner)
-					if (controller != null)
-						controller.RequestDamageServerRpc(_damageAmount);
+				if (controller != null && controller.HasAuthority) // Use HasAuthority instead of IsOwner
+				{
+					controller.RequestDamageServerRpc(_damageAmount);
+				}
 			}
 		}
 		

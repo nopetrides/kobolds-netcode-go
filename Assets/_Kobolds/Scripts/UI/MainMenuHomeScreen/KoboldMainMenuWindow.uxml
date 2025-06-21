@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Kobolds/Scripts/UI/Documents/KoboldDefaultTheme.uss?fileID=7433441132597879392&amp;guid=278ee5504e524289813b1f72f4a989be&amp;type=3#KoboldDefaultTheme" />
+    <ui:VisualElement name="main-menu-window" picking-mode="Ignore" class="kobold-window" style="flex-grow: 1; top: 1px; bottom: 0; right: 0; left: 1px;">
+        <ui:VisualElement name="window-content" picking-mode="Ignore" class="window-content" style="position: absolute; top: auto; left: auto; right: auto; bottom: auto; flex-direction: column; flex-wrap: nowrap; max-width: none;">
+            <ui:Label text="GO BOLD! KOBOLDS!" picking-mode="Ignore" class="game-title" style="color: rgb(255, 255, 255); font-size: 72px; white-space: nowrap; text-overflow: clip;" />
+            <ui:VisualElement picking-mode="Ignore" class="kobold-spacer-large" />
+            <ui:VisualElement name="menu-buttons" picking-mode="Ignore" class="menu-buttons-container">
+                <ui:Button name="social-hub-button" text="Social Hub" class="menu-button primary" style="overflow: visible;">
+                    <ui:VisualElement name="focus-indicator" class="menu-button__focus-indicator" />
+                </ui:Button>
+                <ui:Button name="quick-mission-button" text="Quick Mission" class="menu-button" style="overflow: visible;">
+                    <ui:VisualElement name="focus-indicator" class="menu-button__focus-indicator" />
+                </ui:Button>
+                <ui:Button name="settings-button" text="Settings" class="menu-button" style="overflow: visible;">
+                    <ui:VisualElement name="focus-indicator" class="menu-button__focus-indicator" />
+                </ui:Button>
+                <ui:Button name="quit-button" text="Quit" class="menu-button danger" style="overflow: visible;">
+                    <ui:VisualElement name="focus-indicator" class="menu-button__focus-indicator" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement picking-mode="Ignore" class="kobold-spacer-large" />
+            <ui:Label name="version-label" text="Version 0.0.1" class="version-text" style="color: rgb(255, 255, 255);" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

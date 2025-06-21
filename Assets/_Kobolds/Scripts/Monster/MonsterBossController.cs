@@ -33,7 +33,18 @@ namespace Kobold.Bosses
 
         public override void OnNetworkSpawn()
         {
-            if (IsOwner)
+            base.OnNetworkSpawn();
+            
+            // Configure distributed authority ownership status
+            if (HasAuthority)
+            {
+                // Make the boss distributable and transferable for proper authority management
+                NetworkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.Distributable, true);
+                NetworkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.Transferable);
+            }
+            
+            // Initialize boss state only on authority
+            if (HasAuthority)
             {
                 _currentHealth = maxHealth;
 				
@@ -60,7 +71,8 @@ namespace Kobold.Bosses
 
         private void Update()
         {
-            if (!IsOwner || _state != BossState.Toppled) return;
+            // Use HasAuthority for distributed authority
+            if (!HasAuthority || _state != BossState.Toppled) return;
 
             _toppleTimer -= Time.deltaTime;
             if (_toppleTimer <= 0f)
@@ -85,7 +97,8 @@ namespace Kobold.Bosses
 
         public void ApplyDamage(float amount, bool isWeakSpot = false, bool isCore = false)
         {
-            if (!IsOwner || _state == BossState.Dead) return;
+            // Use HasAuthority for distributed authority
+            if (!HasAuthority || _state == BossState.Dead) return;
 
             float scaled = isWeakSpot ? amount * weakSpotMultiplier : amount;
 

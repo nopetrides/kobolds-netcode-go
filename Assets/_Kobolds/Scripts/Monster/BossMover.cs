@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Kobold.Bosses
 {
 	/// <summary>
-	///     Owner only networked kinematic body mover using animator.
+	///     Authority-controlled networked kinematic body mover using animator.
 	///     Only responsible for updating position information so that NetworkTransform and NetworkRigidbody
 	///     sync the clients.
 	/// </summary>
@@ -34,7 +34,7 @@ namespace Kobold.Bosses
 
 		private void Start()
 		{
-			Debug.Log($"[BossMover] Start() owns: {HasAuthority}");
+			Debug.Log($"[BossMover] Start() has authority: {HasAuthority}");
 		}
 		
 		public override void OnNetworkSpawn()
@@ -45,28 +45,51 @@ namespace Kobold.Bosses
 
 		private void Initialize()
 		{
-			Debug.Log($"[BossMover] Initialize() owns: {HasAuthority}");
-			Animator.enabled = HasAuthority;
-			if (!HasAuthority)
-				return;
-
-			Animator.SetBool(Walk, true); // Loops a movement animation
+			Debug.Log($"[BossMover] Initialize() has authority: {HasAuthority}");
+			
+			// Only authority controls the animator
+			if (Animator != null)
+			{
+				Animator.enabled = HasAuthority;
+				if (HasAuthority)
+				{
+					Animator.SetBool(Walk, true); // Loops a movement animation
+				}
+			}
 		}
 
 		private void Update()
 		{
-			if (!IsOwner || !Animator) return;
+			// Use HasAuthority instead of IsOwner for distributed authority
+			if (!HasAuthority || !Animator) return;
 
-			// Orbit around world origin at a constant speed
-			var orbitSpeed = 10f;
-			transform.RotateAround(Vector3.zero, Vector3.up, orbitSpeed * Time.deltaTime);
+			// Current position and direction to center
+			Vector3 toCenter = -transform.position;
+			float distance = toCenter.magnitude;
+
+			// Check if we're not on the circle edge
+			if (Mathf.Abs(distance - 10) > 0.01f)
+			{
+				// Compute direction to rotate toward (tangent to the circle)
+				Vector3 outward = toCenter.normalized;
+				Vector3 tangent = Vector3.Cross(Vector3.up, outward); // Clockwise around Y axis
+
+				// Smoothly rotate forward to match the tangent direction
+				Quaternion targetRotation = Quaternion.LookRotation(tangent, Vector3.up);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 5 * Time.deltaTime);
+			}
 		}
 
 		protected override void OnOwnershipChanged(ulong previousOwner, ulong currentOwner)
 		{
-			Debug.Log($"[BossMover] OnOwnershipChanged owns: {HasAuthority} ({previousOwner}, {currentOwner})");
+			Debug.Log($"[BossMover] OnOwnershipChanged has authority: {HasAuthority} ({previousOwner}, {currentOwner})");
 			base.OnOwnershipChanged(previousOwner, currentOwner);
-			Animator.enabled = HasAuthority;
+			
+			// Reconfigure animator when authority changes
+			if (Animator != null)
+			{
+				Animator.enabled = HasAuthority;
+			}
 		}
 
 
@@ -77,9 +100,10 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void PlayToppleMotion()
 		{
-			if (!IsOwner)
+			// Use HasAuthority for distributed authority
+			if (!HasAuthority)
 			{
-				Debug.LogWarning("[BossMover] Motion called by non-owner. Ignoring.");
+				Debug.LogWarning("[BossMover] Motion called by non-authority. Ignoring.");
 				return;
 			}
 
@@ -101,9 +125,10 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void PlayRecoveryEffectMotion()
 		{
-			if (!IsOwner)
+			// Use HasAuthority for distributed authority
+			if (!HasAuthority)
 			{
-				Debug.LogWarning("[BossMover] Motion called by non-owner. Ignoring.");
+				Debug.LogWarning("[BossMover] Motion called by non-authority. Ignoring.");
 				return;
 			}
 
@@ -139,9 +164,10 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void PlayDeathMotion()
 		{
-			if (!IsOwner)
+			// Use HasAuthority for distributed authority
+			if (!HasAuthority)
 			{
-				Debug.LogWarning("[BossMover] Motion called by non-owner. Ignoring.");
+				Debug.LogWarning("[BossMover] Motion called by non-authority. Ignoring.");
 				return;
 			}
 
@@ -164,9 +190,10 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void PlayCoreRevealMotion()
 		{
-			if (!IsOwner)
+			// Use HasAuthority for distributed authority
+			if (!HasAuthority)
 			{
-				Debug.LogWarning("[BossMover] Motion called by non-owner. Ignoring.");
+				Debug.LogWarning("[BossMover] Motion called by non-authority. Ignoring.");
 				return;
 			}
 
@@ -191,7 +218,8 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void PlayAoePulseMotion()
 		{
-			if (!IsOwner) return;
+			// Use HasAuthority for distributed authority
+			if (!HasAuthority) return;
 			Debug.Log("[BossMover] PlayAOEPulseMotion()");
 
 			foreach (var aoe in GetComponentsInChildren<AoePulseOnRecover>()) aoe.TriggerPulse();

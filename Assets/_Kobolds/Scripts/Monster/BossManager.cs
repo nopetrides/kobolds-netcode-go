@@ -77,11 +77,27 @@ namespace Kobold.Bosses
 
         public void ConfigureAuthority(MonsterBossController boss)
         {
-            bool isOwner = boss.IsOwner;
-            boss.enabled = isOwner;
-
+            // Use HasAuthority instead of IsOwner for distributed authority
+            bool hasAuthority = boss.HasAuthority;
+            
+            // Configure boss controller - always enabled, but logic controlled by authority
+            boss.enabled = true;
+            
+            // Configure RPC handler - enabled on non-authority clients for visual effects
             var rpcHandler = boss.GetComponent<MonsterBossRPCHandler>();
-            if (rpcHandler != null) rpcHandler.enabled = !isOwner;
+            if (rpcHandler != null) 
+            {
+                rpcHandler.enabled = !hasAuthority;
+            }
+            
+            // Configure boss mover - only authority controls movement
+            var bossMover = boss.GetComponent<BossMover>();
+            if (bossMover != null)
+            {
+                bossMover.enabled = hasAuthority;
+            }
+            
+            Debug.Log($"[BossManager] Configured boss {boss.name} - Authority: {hasAuthority}");
         }
 		
 		

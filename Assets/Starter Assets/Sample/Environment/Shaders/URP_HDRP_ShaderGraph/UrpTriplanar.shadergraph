@@ -2302,7 +2302,7 @@
     "m_ObjectId": "1e70ac49558440ab908c6d2d5fd62b3f",
     "m_Title": "Emissive",
     "m_Position": {
-        "x": -1436.0001220703125,
+        "x": -1436.0,
         "y": 764.0
     }
 }
@@ -5990,7 +5990,7 @@
     "m_ObjectId": "9f3d4299ad724dddb6e062a8482ebbe9",
     "m_Title": "Color",
     "m_Position": {
-        "x": -4043.00048828125,
+        "x": -4043.0,
         "y": -182.0
     }
 }
@@ -6905,8 +6905,8 @@
     "m_ObjectId": "c3a88ba1f64c443ca696cd1ae17cb1d0",
     "m_Title": "Distance fade",
     "m_Position": {
-        "x": -5129.00048828125,
-        "y": 1270.0001220703125
+        "x": -5129.0,
+        "y": 1270.0
     }
 }
 
@@ -8122,7 +8122,7 @@
     "m_ObjectId": "eac3a0bb704b4e92b69f43a18a422c11",
     "m_Title": "Opacity",
     "m_Position": {
-        "x": 754.0000610351563,
+        "x": 754.0,
         "y": -272.0
     }
 }

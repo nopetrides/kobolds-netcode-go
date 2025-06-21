@@ -164,12 +164,38 @@
 }
 
 .menu-button:active {
-    scale: 0.98;
+    background-color: var(--kobold-secondary-pressed);
 }
 
 .menu-button:disabled {
     background-color: var(--kobold-text-disabled);
     color: var(--kobold-text-secondary);
+}
+
+.menu-button:focus .menu-button__focus-indicator {
+    opacity: 1;
+    background-image: url("project://database/Assets/_Kobolds/Textures/KoboldSelection.png?fileID=2800000&guid=166a69309bce7c54eb918e495930bb17&type=3#KoboldSelection");
+}
+
+.menu-button:active .menu-button__focus-indicator {
+    opacity: 1;
+    background-image: url("project://database/Assets/_Kobolds/Textures/KoboldSelection.png?fileID=2800000&guid=166a69309bce7c54eb918e495930bb17&type=3#KoboldSelection");
+}
+
+.menu-button__focus-indicator {
+    position: absolute;
+    height: 100%;
+    width: 40px;
+    -unity-background-scale-mode: scale-to-fit;
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: linear;
+    background-color: rgba(255, 255, 255, 0);
+    display: flex;
+    top: 0;
+    left: -41px;
+    background-image: url("project://database/Assets/_Kobolds/Textures/KoboldSelection.png?fileID=2800000&guid=166a69309bce7c54eb918e495930bb17&type=3#KoboldSelection");
+    opacity: 0;
 }
 
 .menu-button.primary {
@@ -654,7 +680,10 @@ TemplateContainer {
 
 .modal-overlay {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;

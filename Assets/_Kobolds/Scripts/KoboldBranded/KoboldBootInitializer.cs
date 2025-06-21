@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Kobold.Services;
+using Kobold.UI;
 using Kobold.UI.Theming;
 using Kobold.Vivox;
 using Unity.Services.Core;
@@ -27,6 +28,7 @@ namespace Kobold.GameManagement
 		[SerializeField] private bool _requireServicesHelper = true;
 		[SerializeField] private bool _requireInputManager = true;
 		[SerializeField] private bool _requireVivoxManager = true;
+		[SerializeField] private bool _requireUINavigationManager = true;
 
 		private float _bootStartTime;
 		private bool _isBooting;
@@ -87,21 +89,24 @@ namespace Kobold.GameManagement
 			// Step 1: Initialize Theme Manager
 			if (_requireThemeManager) yield return InitializeThemeManager();
 
-			// Step 2: Verify other required systems are present
+			// Step 2: Initialize UI Navigation Manager
+			if (_requireUINavigationManager) yield return InitializeUINavigationManager();
+
+			// Step 3: Verify other required systems are present
 			if (!VerifyRequiredSystems())
 			{
 				Debug.LogError("[KoboldBootInitializer] Required systems missing. Boot sequence failed.");
 				yield break;
 			}
 
-			// Step 3: Wait for Services Helper to initialize
+			// Step 4: Wait for Services Helper to initialize
 			if (_requireServicesHelper) yield return WaitForServicesHelper();
 
-			// Step 4: Ensure minimum load time for smooth transition
+			// Step 5: Ensure minimum load time for smooth transition
 			var elapsedTime = Time.time - _bootStartTime;
 			if (elapsedTime < _minimumLoadTime) yield return new WaitForSeconds(_minimumLoadTime - elapsedTime);
 
-			// Step 5: Load main menu
+			// Step 6: Load main menu
 			Debug.Log("[KoboldBootInitializer] Boot sequence complete. Loading main menu...");
 			LoadMainMenu();
 		}
@@ -117,6 +122,7 @@ namespace Kobold.GameManagement
 				CleanupDuplicateObjects<KoboldThemeManager>(ddolRoot);
 				CleanupDuplicateObjects<KoboldInputSystemManager>(ddolRoot);
 				CleanupDuplicateObjects<KoboldVivoxManager>(ddolRoot);
+				CleanupDuplicateObjects<KoboldUINavigationManager>(ddolRoot);
 			}
 		}
 
@@ -184,6 +190,28 @@ namespace Kobold.GameManagement
 			yield return null;
 		}
 
+		private IEnumerator InitializeUINavigationManager()
+		{
+			Debug.Log("[KoboldBootInitializer] Initializing UI Navigation Manager...");
+
+			// Check if UI Navigation Manager already exists
+			var existingUINavManager = FindFirstObjectByType<KoboldUINavigationManager>();
+			if (existingUINavManager == null)
+			{
+				// Create UI Navigation Manager
+				var uiNavManagerGo = new GameObject("KoboldUINavigationManager");
+				var uiNavManager = uiNavManagerGo.AddComponent<KoboldUINavigationManager>();
+				DontDestroyOnLoad(uiNavManagerGo);
+				Debug.Log("[KoboldBootInitializer] Created UI Navigation Manager");
+			}
+			else
+			{
+				Debug.Log("[KoboldBootInitializer] UI Navigation Manager already exists");
+			}
+
+			yield return null;
+		}
+
 		private bool VerifyRequiredSystems()
 		{
 			var allSystemsPresent = true;
@@ -197,6 +225,12 @@ namespace Kobold.GameManagement
 			if (_requireInputManager && FindFirstObjectByType<KoboldInputSystemManager>() == null)
 			{
 				Debug.LogError("[KoboldBootInitializer] KoboldInputSystemManager not found!");
+				allSystemsPresent = false;
+			}
+
+			if (_requireUINavigationManager && FindFirstObjectByType<KoboldUINavigationManager>() == null)
+			{
+				Debug.LogError("[KoboldBootInitializer] KoboldUINavigationManager not found!");
 				allSystemsPresent = false;
 			}
 
