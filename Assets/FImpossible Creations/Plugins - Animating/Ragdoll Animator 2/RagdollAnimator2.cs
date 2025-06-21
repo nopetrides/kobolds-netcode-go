@@ -145,7 +145,7 @@ namespace FIMSpace.FProceduralAnimation
         {
             #region Editor Application Quitting Check
 #if UNITY_EDITOR
-            if (_isQuitting) return;
+            if (_isQuitting || !Application.isPlaying) return;
 #endif
             #endregion
 
