@@ -1,6 +1,9 @@
 using Kobold.GameManagement;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Kobold.Bosses;
+using Kobold.Net;
 
 namespace Kobold
 {
@@ -10,10 +13,12 @@ namespace Kobold
 		private UnburyUIFeedback _unburyUI;
 
 		[SerializeField] private PlayerHudCanvas _playerHudCanvas;
+		[SerializeField] private PauseMenu _pauseMenu;
 		public static KoboldCanvasManager Instance { get; private set; }
 		
 		// local player events
 		private KoboldGameplayEvents _gameplayEvents;
+		private KoboldNetworkController _networkController;
 
 		protected void Awake()
 		{
@@ -28,6 +33,8 @@ namespace Kobold
 				return;
 			}
 			KoboldEventHandler.OnAllBossesDefeated += OnGameComplete;
+			_pauseMenu.Initialize(this);
+			_pauseMenu.gameObject.SetActive(false);
 			SetState(HudState.Unbury);
 		}
 
@@ -44,11 +51,14 @@ namespace Kobold
 		{
 			_unburyUI.gameObject.SetActive(s == HudState.Unbury);
 			_playerHudCanvas.gameObject.SetActive(s == HudState.InGame);
+			_pauseMenu.gameObject.SetActive(s == HudState.Pause);
 		}
 
 		public void OnPlayerSpawned(UnburyController unburyController)
 		{
+			_networkController = unburyController.GetComponent<KoboldNetworkController>();
 			_gameplayEvents = unburyController.GetComponent<KoboldGameplayEvents>();
+			
 			if (_gameplayEvents != null)
 			{
 				_gameplayEvents.OnUnburyComplete += OnUnburyComplete;
@@ -57,6 +67,12 @@ namespace Kobold
 			{
 				Debug.LogError("KoboldGameplayEvents not found on the player prefab with UnburyController.", unburyController);
 			}
+
+			if (_networkController == null)
+			{
+				Debug.LogError("KoboldNetworkController not found on the player prefab with UnburyController.", unburyController);
+			}
+			
 			_unburyUI.gameObject.SetActive(true);
 			_unburyUI.Initialize(unburyController);
 		}
@@ -67,6 +83,14 @@ namespace Kobold
 		public void OnUnburyComplete()
 		{
 			SetState(HudState.InGame);
+			if (BossManager.Instance != null && BossManager.Instance.GetAllBosses()?.Count > 0)
+			{
+				_playerHudCanvas.Initialize(BossManager.Instance.GetAllBosses()[0], _networkController, _gameplayEvents, _networkController?.GetComponent<KoboldLatcher>());
+			}
+			else
+			{
+				Debug.LogError("Failed to initialize PlayerHudCanvas: Boss not found.");
+			}
 		}
 
 		/// <summary>
@@ -83,6 +107,7 @@ namespace Kobold
 		/// </summary>
 		public void OnPlayerPause()
 		{
+			SetState(HudState.Pause);
 		}
 
 		/// <summary>
@@ -90,6 +115,7 @@ namespace Kobold
 		/// </summary>
 		public void OnPlayerUnpause()
 		{
+			SetState(HudState.InGame);
 		}
 
 		private enum HudState

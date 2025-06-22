@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using Kobold;
+using Kobold.Bosses;
+using Kobold.Net;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,6 +60,11 @@ public class PlayerHudCanvas : MonoBehaviour
 	// Dictionary to map latch states to their corresponding UI Images for efficient access.
 	private Dictionary<LatchState, Image> _latchStateImages;
 
+	private MonsterBossController _bossController;
+	private KoboldNetworkController _networkController;
+	private KoboldGameplayEvents _gameplayEvents;
+	private KoboldLatcher _latcher;
+
 	// Awake is called when the script instance is being loaded.
 	private void Awake()
 	{
@@ -74,6 +81,86 @@ public class PlayerHudCanvas : MonoBehaviour
 
 		// Set the initial latch state display to 'None'.
 		SetLatchState(LatchState.None);
+	}
+
+	private void OnDestroy()
+	{
+		if (_networkController != null)
+		{
+			_networkController.OnNetworkStateChanged -= UpdatePlayerHealthFromState;
+		}
+		if (_bossController != null)
+		{
+			_bossController.OnHealthChanged -= UpdateBossHealth;
+		}
+		if (_gameplayEvents != null)
+		{
+			_gameplayEvents.OnLatched -= HandleLatch;
+			_gameplayEvents.OnDetached -= HandleDetach;
+		}
+		if (_latcher != null)
+		{
+			_latcher.OnLatchableTargetChanged -= HandleLatchableTargetChanged;
+		}
+	}
+
+	public void Initialize(MonsterBossController bossController, KoboldNetworkController networkController, KoboldGameplayEvents gameplayEvents, KoboldLatcher latcher)
+	{
+		_bossController = bossController;
+		_networkController = networkController;
+		_gameplayEvents = gameplayEvents;
+		_latcher = latcher;
+
+		if (_networkController != null)
+		{
+			_networkController.OnNetworkStateChanged += UpdatePlayerHealthFromState;
+			UpdatePlayerHealthFromState(_networkController.CurrentNetworkState);
+		}
+
+		if (_bossController != null)
+		{
+			_bossController.OnHealthChanged += UpdateBossHealth;
+			UpdateBossHealth(_bossController.CurrentHealth, _bossController.MaxHealth);
+		}
+
+		if (_gameplayEvents != null)
+		{
+			_gameplayEvents.OnLatched += HandleLatch;
+			_gameplayEvents.OnDetached += HandleDetach;
+		}
+		if (_latcher != null)
+		{
+			_latcher.OnLatchableTargetChanged += HandleLatchableTargetChanged;
+		}
+	}
+	
+	private void HandleLatchableTargetChanged(bool isTargetInRange)
+	{
+		if (_latcher.IsLatched) return;
+		
+		if (isTargetInRange)
+		{
+			SetLatchState(LatchState.Searching);
+		}
+		else
+		{
+			SetLatchState(LatchState.None);
+		}
+	}
+
+	private void HandleLatch(Collider target, Vector3 localPos, Quaternion localRot)
+	{
+		SetLatchState(LatchState.Gnawing);
+	}
+
+	private void HandleDetach()
+	{
+		SetLatchState(LatchState.None);
+	}
+
+	private void UpdatePlayerHealthFromState(KoboldNetworkState state)
+	{
+		UpdatePlayerHealth(state.Health, state.MaxHealth);
 	}
 
 	// Update is called once per frame.

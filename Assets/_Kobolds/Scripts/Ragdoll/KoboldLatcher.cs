@@ -3,11 +3,14 @@ using FIMSpace.FProceduralAnimation;
 using Kobold.Bosses;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.InputSystem;
 
 namespace Kobold
 {
 	public class KoboldLatcher : MonoBehaviour
 	{
+		public event Action<bool> OnLatchableTargetChanged;
+
 		[Header("References")]
 		[SerializeField] private KoboldStateManager StateManager;
 
@@ -25,12 +28,16 @@ namespace Kobold
 
 		[SerializeField] private float LatchRadius = 0.2f;
 		private readonly LatchInfo _latch = new();
-		private readonly Collider[] _overlapBuffer = new Collider[6];
+		private readonly Collider[] _overlapBuffer = new Collider[16];
 		private Collider _currentTarget;
 
 		private bool _isGripToggled;
+		private bool _isLatchableTargetInRange;
+
+		private PlayerInput Input { get; set; }
 		
 		public GripMagnetPoint JawLatchMagnet => JawMagnet;
+		public bool IsLatched => _latch.IsLatched;
 
 		private void Update()
 		{
@@ -80,6 +87,7 @@ namespace Kobold
 			var origin = bone.rigidbody.position;
 			var hits = Physics.OverlapSphereNonAlloc(origin, LatchRadius, _overlapBuffer, LatchableLayers);
 
+			bool foundTarget = false;
 			for (var i = 0; i < hits; i++)
 			{
 				var col = _overlapBuffer[i];
@@ -91,7 +99,16 @@ namespace Kobold
 
 				var dir = (col.bounds.center - origin).normalized;
 				if (col.Raycast(new Ray(origin, dir), out var rayHit, LatchRadius * 2f))
+				{
 					attachPos = rayHit.point;
+					foundTarget = true;
+					// Try Latch
+					if (_isGripToggled)
+					{
+						_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents);
+					}
+					break;
+				}
 				else if (col is BoxCollider or SphereCollider or CapsuleCollider ||
 						(col is MeshCollider mesh && mesh.convex))
 					attachPos = col.ClosestPoint(origin); // safe
@@ -103,8 +120,18 @@ namespace Kobold
 				_currentTarget = col;
 				return;
 			}
+			
+			if (foundTarget != _isLatchableTargetInRange)
+			{
+				_isLatchableTargetInRange = foundTarget;
+				OnLatchableTargetChanged?.Invoke(_isLatchableTargetInRange);
+			}
 		}
 
+		private void OnEnable()
+		{
+			// ... existing code ...
+		}
 
 		[Serializable]
 		private class LatchInfo

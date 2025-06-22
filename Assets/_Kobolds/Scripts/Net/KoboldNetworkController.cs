@@ -16,6 +16,7 @@ namespace Kobold.Net
 	[RequireComponent(typeof(NetworkObject))]
 	public partial class KoboldNetworkController : NetworkBehaviour
 	{
+		public event Action<KoboldNetworkState> OnNetworkStateChanged;
 		
 		[Header("State Management")]
 		[SerializeField] private KoboldStateManager _stateManager;
@@ -57,6 +58,9 @@ namespace Kobold.Net
 		// Used to track self-authored state changes
 		private KoboldNetworkState _lastWrittenState;
 		private bool _suppressNextStateEcho;
+		
+		private bool _isPaused;
+		private bool _escapeWasPressed;
 		
 		private void Awake()
 		{
@@ -465,5 +469,35 @@ namespace Kobold.Net
 				SetHealth(CurrentNetworkState.Health - damage);
 		}
 
+		private void OnStateChanged(KoboldNetworkState previous, KoboldNetworkState current)
+		{
+			OnNetworkStateChanged?.Invoke(current);
+			// Future: Sync health to health component
+			// if (_healthComponent != null)
+		}
+
+		private void Update()
+		{
+			if (!IsOwner) return;
+
+			if (KoboldInputSystemManager.Instance.Inputs.Escape && !_escapeWasPressed)
+			{
+				_isPaused = !_isPaused;
+				if (_isPaused)
+				{
+					KoboldCanvasManager.Instance.OnPlayerPause();
+				}
+				else
+				{
+					KoboldCanvasManager.Instance.OnPlayerUnpause();
+				}
+			}
+			_escapeWasPressed = KoboldInputSystemManager.Instance.Inputs.Escape;
+		}
+
+		private void FixedUpdate()
+		{
+			// Not owner, do nothing.
+		}
 	}
 }

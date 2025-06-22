@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ namespace Kobold.Bosses
 {
     public class MonsterBossController : NetworkBehaviour
     {
+        public event Action<float, float> OnHealthChanged;
+        
         [Header("Boss Parameters")]
         [SerializeField] private float maxHealth = 500f;
         [SerializeField] private float weakSpotMultiplier = 3f;
@@ -47,6 +50,7 @@ namespace Kobold.Bosses
             if (HasAuthority)
             {
                 _currentHealth = maxHealth;
+                OnHealthChanged?.Invoke(_currentHealth, maxHealth);
 				
 				foreach (var netObj in gameObject.GetComponentsInChildren<Rigidbody>(includeInactive: true))
 				{
@@ -113,6 +117,7 @@ namespace Kobold.Bosses
             }
 
             _currentHealth -= scaled;
+            OnHealthChanged?.Invoke(_currentHealth, maxHealth);
             if (_currentHealth <= 0f && _state != BossState.Toppled)
             {
                 EnterToppleState();
@@ -177,5 +182,7 @@ namespace Kobold.Bosses
 
         public bool IsToppled => _isToppled;
         public BossState State => _state;
+        public float CurrentHealth => _currentHealth;
+        public float MaxHealth => maxHealth;
     }
 }
