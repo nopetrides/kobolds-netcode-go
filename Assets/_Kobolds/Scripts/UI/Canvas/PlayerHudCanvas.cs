@@ -96,10 +96,6 @@ public class PlayerHudCanvas : MonoBehaviour
 			_gameplayEvents.OnLatched -= HandleLatch;
 			_gameplayEvents.OnDetached -= HandleDetach;
 		}
-		if (_latcher != null)
-		{
-			_latcher.OnLatchableTargetChanged -= HandleLatchableTargetChanged;
-		}
 	}
 
 	public void Initialize(MonsterBossController bossController, KoboldNetworkController networkController, KoboldGameplayEvents gameplayEvents, KoboldLatcher latcher)
@@ -125,24 +121,6 @@ public class PlayerHudCanvas : MonoBehaviour
 		{
 			_gameplayEvents.OnLatched += HandleLatch;
 			_gameplayEvents.OnDetached += HandleDetach;
-		}
-		if (_latcher != null)
-		{
-			_latcher.OnLatchableTargetChanged += HandleLatchableTargetChanged;
-		}
-	}
-	
-	private void HandleLatchableTargetChanged(bool isTargetInRange)
-	{
-		if (_latcher.IsLatched) return;
-		
-		if (isTargetInRange)
-		{
-			SetLatchState(LatchState.Searching);
-		}
-		else
-		{
-			SetLatchState(LatchState.None);
 		}
 	}
 

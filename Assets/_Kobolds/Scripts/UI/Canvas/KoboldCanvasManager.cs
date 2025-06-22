@@ -119,6 +119,7 @@ namespace Kobold.UI
 		/// </summary>
 		public void OnPlayerUnpause()
 		{
+			KoboldInputSystemManager.Instance.EnableGameplayMode();
 			SetState(HudState.InGame);
 		}
 
