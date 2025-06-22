@@ -3,6 +3,7 @@ using System.Collections;
 using FIMSpace.FProceduralAnimation;
 using Kobold.Cam;
 using Kobold.Gameplay;
+using Kobold.UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -60,7 +61,6 @@ namespace Kobold.Net
 		private bool _suppressNextStateEcho;
 		
 		private bool _isPaused;
-		private bool _escapeWasPressed;
 		
 		private void Awake()
 		{
@@ -480,19 +480,22 @@ namespace Kobold.Net
 		{
 			if (!IsOwner) return;
 
-			if (KoboldInputSystemManager.Instance.Inputs.Escape && !_escapeWasPressed)
+			if (KoboldInputSystemManager.Instance.Inputs.Escape)
 			{
 				_isPaused = !_isPaused;
 				if (_isPaused)
 				{
 					KoboldCanvasManager.Instance.OnPlayerPause();
+					KoboldInputSystemManager.Instance.EnableUIMode();
 				}
 				else
 				{
 					KoboldCanvasManager.Instance.OnPlayerUnpause();
+					KoboldInputSystemManager.Instance.EnableGameplayMode();
 				}
 			}
-			_escapeWasPressed = KoboldInputSystemManager.Instance.Inputs.Escape;
+
+			KoboldInputSystemManager.Instance.Inputs.Escape = false;
 		}
 
 		private void FixedUpdate()

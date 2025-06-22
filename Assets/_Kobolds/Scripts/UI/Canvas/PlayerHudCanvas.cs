@@ -1,5 +1,3 @@
-// Import necessary namespaces for Unity functionality, UI elements, and TextMeshPro.
-
 using System.Collections.Generic;
 using Kobold;
 using Kobold.Bosses;

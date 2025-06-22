@@ -24,10 +24,12 @@ namespace Kobold.GameManagement
 
 		[Header("Required Systems")]
 		[SerializeField] private bool _requireThemeManager = true;
-
 		[SerializeField] private bool _requireServicesHelper = true;
 		[SerializeField] private bool _requireInputManager = true;
 		[SerializeField] private bool _requireVivoxManager = true;
+		
+		[Header("UI Toolkit")]
+		[Tooltip("Only needed for UI Toolkit runtime UI")]
 		[SerializeField] private bool _requireUINavigationManager = true;
 
 		private float _bootStartTime;
@@ -84,7 +86,7 @@ namespace Kobold.GameManagement
 			Debug.Log("[KoboldBootInitializer] Starting boot sequence...");
 
 			// Clean up any leftover DontDestroyOnLoad objects from previous sessions
-			CleanupPreviousSessionObjects();
+			// CleanupPreviousSessionObjects();
 
 			// Step 1: Initialize Theme Manager
 			if (_requireThemeManager) yield return InitializeThemeManager();
@@ -101,16 +103,15 @@ namespace Kobold.GameManagement
 
 			// Step 4: Wait for Services Helper to initialize
 			if (_requireServicesHelper) yield return WaitForServicesHelper();
-
-			// Step 5: Ensure minimum load time for smooth transition
-			var elapsedTime = Time.time - _bootStartTime;
-			if (elapsedTime < _minimumLoadTime) yield return new WaitForSeconds(_minimumLoadTime - elapsedTime);
-
-			// Step 6: Load main menu
-			Debug.Log("[KoboldBootInitializer] Boot sequence complete. Loading main menu...");
+			
+			// The main menu is loaded by the services helper once it finishes.
 			LoadMainMenu();
 		}
 
+		/// <summary>
+		/// Cleanup all dont destroy objects
+		/// </summary>
+		[Obsolete("Might be nice if we want to do a clean start, but not useful in the boot scene itself")]
 		private void CleanupPreviousSessionObjects()
 		{
 			// Find all DontDestroyOnLoad objects
@@ -267,9 +268,14 @@ namespace Kobold.GameManagement
 				yield return null;
 			}
 
+			yield return new WaitUntil(() => KoboldServicesHelper.HasInitialized);
+
 			Debug.Log("[KoboldBootInitializer] Services Helper ready");
 		}
 
+		/// <summary>
+		/// Loads the next scene
+		/// </summary>
 		private void LoadMainMenu()
 		{
 			try
@@ -278,14 +284,14 @@ namespace Kobold.GameManagement
 				SceneManager.sceneLoaded += OnMainMenuLoaded;
 
 				// Load the main menu scene
-				//SceneManager.LoadScene(_mainMenuSceneName);
+				SceneManager.LoadScene(_mainMenuSceneName);
 			}
 			catch (Exception ex)
 			{
 				Debug.LogError($"[KoboldBootInitializer] Failed to load main menu: {ex}");
 			}
 		}
-
+		
 		private void OnMainMenuLoaded(Scene scene, LoadSceneMode mode)
 		{
 			if (scene.name == _mainMenuSceneName)

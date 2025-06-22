@@ -67,6 +67,7 @@ namespace Kobold.Core
             // Check if we should persist
             if (!KoboldPersistentObjectManager.RegisterPersistentObject(this))
             {
+				Debug.LogWarning($"[{typeof(T).Name}] Duplicate instance found. Destroying duplicate on {gameObject.name}");
                 Destroy(gameObject);
                 return;
             }

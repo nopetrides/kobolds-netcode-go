@@ -26,6 +26,8 @@ namespace Kobold.Services
 		private static readonly object InitLock = new();
 		private static bool _isInitializing;
 		private static bool _hasInitialized;
+		
+		public static bool HasInitialized => _hasInitialized;
 
 		// Configuration
 		[Header("Session Configuration")]
@@ -136,8 +138,8 @@ namespace Kobold.Services
 				}
 
 				// Only load main menu if we're not already in a scene
-				if (SceneManager.GetActiveScene().name == "KoboldBoot") 
-					KoboldEventHandler.LoadMainMenuScene(nameof(SceneNames.KoboldMainMenu));
+				//if (SceneManager.GetActiveScene().name == "KoboldBoot") 
+					//KoboldEventHandler.LoadMainMenuScene(nameof(SceneNames.KoboldMainMenu));
 			}
 			catch (Exception ex)
 			{
@@ -184,9 +186,14 @@ namespace Kobold.Services
 			KoboldEventHandler.OnQuitGameButtonPressed -= OnQuitGameButtonPressed;
 		}
 
-		private async void OnStartSocialHubPressed(string playerName, string sessionName)
+		private void OnStartSocialHubPressed(string playerName, string sessionName)
 		{
 			Debug.Log("[KoboldServicesHelper.OnStartSocialHubPressed]");
+			_ = StartSocialHubTask(playerName, sessionName); // fire and forget
+		}
+		
+		private async Task StartSocialHubTask(string playerName, string sessionName)
+		{
 			try
 			{
 				var connectTask = ConnectToSocialHub(playerName, sessionName);
@@ -199,31 +206,28 @@ namespace Kobold.Services
 				KoboldEventHandler.SocialHubConnectionComplete(Task.FromException(ex), sessionName);
 			}
 		}
-		
-		/*async void OnStartButtonPressed(string playerName, string sessionName)
-		{
-			var connectTask = ConnectToSession(playerName, sessionName);
-			await connectTask;
-			GameplayEventHandler.ConnectToSessionComplete(connectTask, sessionName);
-		}*/
 
-		private async void OnStartKoboldMissionPressed(string playerName, string sessionName)
+		private void OnStartKoboldMissionPressed(string playerName, string sessionName)
 		{
 			Debug.Log("[KoboldServicesHelper.OnStartKoboldMissionPressed]");
-
+			_ = StartMissionTask(playerName, sessionName); // fire and forget
+		}
+		
+		private async Task StartMissionTask(string playerName, string sessionName)
+		{
 			try
 			{
-				var success = await ConnectToKoboldMission(playerName, sessionName);
-				if (success)
-				{
-					KoboldEventHandler.LoadMissionScene(nameof(SceneNames.KoboldMission));
-				}
+				var connectTask = ConnectToKoboldMission(playerName, sessionName);
+				await connectTask;
+				KoboldEventHandler.MissionConnectionComplete(connectTask, sessionName);
 			}
 			catch (Exception ex)
 			{
-				Debug.LogError($"[KoboldServicesHelper] Failed to start Kobold Mission: {ex}");
+				Debug.LogError($"[KoboldServicesHelper] Failed to connect to social hub: {ex}");
+				KoboldEventHandler.MissionConnectionComplete(Task.FromException(ex), sessionName);
 			}
 		}
+		
 
 		private void OnReturnToSocialHubPressed()
 		{

@@ -10,15 +10,16 @@ namespace Kobold.UI
 		private void Start()
 		{
 			KoboldInputSystemManager.Instance.EnableUIMode();
-			KoboldEventHandler.OnConnectToSessionCompleted += OnConnectToSessionCompleted;
 			KoboldEventHandler.OnSocialHubConnectionCompleted += OnConnectToSessionCompleted;
+			KoboldEventHandler.OnMissionConnectionCompleted += OnConnectToMissionCompleted;
 		}
 
 		private void OnDestroy()
 		{
-			KoboldEventHandler.OnConnectToSessionCompleted -= OnConnectToSessionCompleted;
 			KoboldEventHandler.OnSocialHubConnectionCompleted -= OnConnectToSessionCompleted;
+			KoboldEventHandler.OnMissionConnectionCompleted -= OnConnectToMissionCompleted;
 		}
+
 
 		private void OnConnectToSessionCompleted(Task task, string sessionName)
 		{
@@ -27,9 +28,23 @@ namespace Kobold.UI
 				if (task.IsCompletedSuccessfully) KoboldEventHandler.LoadInGameScene("KoboldHub");
 				else Debug.LogError("[KoboldEventHandler.OnConnectToSessionCompleted] Failed to connect");
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Debug.LogError("[KoboldEventHandler.OnConnectToSessionCompleted] Failed to connect");
+				Debug.LogError($"[KoboldEventHandler.OnConnectToSessionCompleted] Failed to connect {ex}");
+			}
+		}
+
+
+		private void OnConnectToMissionCompleted(Task task, string sessionName)
+		{
+			try
+			{
+				if (task.IsCompletedSuccessfully) KoboldEventHandler.LoadInGameScene("KoboldMission");
+				else Debug.LogError("[KoboldEventHandler.OnConnectToMissionCompleted] Failed to connect");
+			}
+			catch (Exception ex)
+			{
+				Debug.LogError($"[KoboldEventHandler.OnConnectToMissionCompleted] Failed to connect {ex}");
 			}
 		}
 	}

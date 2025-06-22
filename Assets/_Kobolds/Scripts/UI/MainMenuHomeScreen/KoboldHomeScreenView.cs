@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Kobold.GameManagement;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -157,7 +156,7 @@ namespace Kobold.UI
 			Debug.Log("[KoboldHomeScreenView] Quit button pressed");
 
 #if UNITY_EDITOR
-			EditorApplication.isPlaying = false;
+			UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif

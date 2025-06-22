@@ -1,46 +1,51 @@
+using System;
 using Kobold.GameManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Kobold
+namespace Kobold.UI
 {
-    public class PauseMenu : MonoBehaviour
-    {
-        [SerializeField] private Button _resumeButton;
-        [SerializeField] private Button _mainMenuButton;
-        [SerializeField] private Button _quitButton;
+	public class PauseMenu : MonoBehaviour
+	{
+		[SerializeField] private Button _resumeButton;
+		[SerializeField] private Button _settingsButton;
+		[SerializeField] private Button _mainMenuButton;
 
-        private KoboldCanvasManager _canvasManager;
+		private KoboldCanvasManager _canvasManager;
 
-        public void Initialize(KoboldCanvasManager canvasManager)
-        {
-            _canvasManager = canvasManager;
-            
-            _resumeButton.onClick.AddListener(OnResume);
-            _mainMenuButton.onClick.AddListener(OnMainMenu);
-            _quitButton.onClick.AddListener(OnQuit);
-        }
+		public Action OnResume;
+		public Action OnSettings;
 
-        private void OnDestroy()
-        {
-            _resumeButton.onClick.RemoveListener(OnResume);
-            _mainMenuButton.onClick.RemoveListener(OnMainMenu);
-            _quitButton.onClick.RemoveListener(OnQuit);
-        }
+		public void OnEnable()
+		{
+			_resumeButton.onClick.AddListener(OnResumePressed);
+			_settingsButton.onClick.AddListener(OnSettingsPressed);
+			_mainMenuButton.onClick.AddListener(OnMainMenuPressed);
+			
+			_resumeButton.Select();
+			UISelectionIndicator.LastValidSelectable = _resumeButton.gameObject;
+		}
 
-        private void OnResume()
-        {
-            _canvasManager.OnPlayerUnpause();
-        }
+		private void OnDisable()
+		{
+			_resumeButton.onClick.RemoveListener(OnResumePressed);
+			_mainMenuButton.onClick.RemoveListener(OnMainMenuPressed);
+			_settingsButton.onClick.RemoveListener(OnSettingsPressed);
+		}
 
-        private void OnMainMenu()
-        {
-            KoboldEventHandler.ReturnToMainMenuPressed();
-        }
+		private void OnResumePressed()
+		{
+			OnResume?.Invoke();
+		}
 
-        private void OnQuit()
-        {
-            KoboldEventHandler.QuitGamePressed();
-        }
-    }
-} 
+		private void OnSettingsPressed()
+		{
+			OnSettings?.Invoke();
+		}
+
+		private void OnMainMenuPressed()
+		{
+			KoboldEventHandler.ReturnToMainMenuPressed();
+		}
+	}
+}
