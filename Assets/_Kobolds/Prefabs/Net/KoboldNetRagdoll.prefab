@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 232315589
+  GlobalObjectIdHash: 1836083603
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 0
@@ -369,15 +369,15 @@ MonoBehaviour:
   _ragdollMover: {fileID: 6965394787087793183}
   _flopControls: {fileID: 5275091591120537408}
   _unburyController: {fileID: 6612560178652264818}
+  _koboldLatcher: {fileID: 1269118372126713034}
+  _ragdollAnimator: {fileID: 8262904334106445971}
   _mouthBone: {fileID: 6740537932542261689}
   _leftHandBone: {fileID: 6869410007263197964}
   _rightHandBone: {fileID: 6755193184454163706}
   _cameraTrackingObject: {fileID: 4975526964688346221}
   _ragdollTrackingObject: {fileID: 4870364252416067372}
-  _ragdollAnimator: {fileID: 8262904334106445971}
   _animationController: {fileID: 6521160702986863658}
   _koboldGrabber: {fileID: 4912367855471861610}
-  _koboldLatcher: {fileID: 1269118372126713034}
 --- !u!114 &8262904334106445971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8542,6 +8542,10 @@ PrefabInstance:
       propertyPath: RagdollAnimator
       value: 
       objectReference: {fileID: 8262904334106445971}
+    - target: {fileID: 5297951177912457078, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
+      propertyPath: enableLatchDebugLogging
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5605629050712344766, guid: 2947534f8ba3de34e89d29091229c62f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

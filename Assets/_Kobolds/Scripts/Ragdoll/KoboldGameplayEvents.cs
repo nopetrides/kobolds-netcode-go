@@ -24,7 +24,7 @@ namespace Kobold
 		// Latch events  
 		public event Action<Collider, Vector3, Quaternion> OnLatched;
 		public event Action OnDetached;
-		
+
 		// New latch state events
 		public event Action<LatchState> OnLatchStateChanged;
 		public event Action<LatchState, LatchState> OnLatchStateTransitioned; // from, to

@@ -84,12 +84,6 @@ namespace Kobold.UI
 
 			if (_bossController != null) _bossController.OnHealthChanged -= UpdateBossHealth;
 
-			if (_gameplayEvents != null)
-			{
-				_gameplayEvents.OnLatched -= HandleLatch;
-				_gameplayEvents.OnDetached -= HandleDetach;
-			}
-
 			if (_latcher != null) _latcher.OnLatchStateChanged -= HandleLatchStateChange;
 		}
 
@@ -114,28 +108,12 @@ namespace Kobold.UI
 				UpdateBossHealth(_bossController.CurrentHealth, _bossController.MaxHealth);
 			}
 
-			if (_gameplayEvents != null)
-			{
-				_gameplayEvents.OnLatched += HandleLatch;
-				_gameplayEvents.OnDetached += HandleDetach;
-			}
-
 			if (_latcher != null)
 			{
 				_latcher.OnLatchStateChanged += HandleLatchStateChange;
 				// Set initial state
 				SetLatchState(_latcher.CurrentLatchState);
 			}
-		}
-
-		private void HandleLatch(Collider target, Vector3 localPos, Quaternion localRot)
-		{
-			SetLatchState(LatchState.Gnawing);
-		}
-
-		private void HandleDetach()
-		{
-			SetLatchState(LatchState.None);
 		}
 
 		private void HandleLatchStateChange(LatchState newState)

@@ -45,10 +45,10 @@ namespace Kobold
 			// Handle jaw grip object attachment when in Open state
 			if (Latcher.CurrentLatchState == LatchState.Open && !JawGrip.HasTargetAttached)
 			{
-				if (JawGrip.TryAttachNearby())
-				{
-					Animator.SetBool(GripJawAnimParam, true);
-					_gameplayEvents?.NotifyGrab(JawGrip.CurrentTarget.GetObject(), GripType.Jaw);
+			if (JawGrip.TryAttachNearby())
+			{
+				Animator.SetBool(GripJawAnimParam, true);
+				_gameplayEvents?.NotifyGrab(JawGrip.CurrentTarget.GetObject(), GripType.Jaw);
 				}
 			}
 		}
@@ -111,13 +111,13 @@ namespace Kobold
 			
 			// Toggle the latch state
 			Latcher.ToggleJawGrip();
-			
+
 			// If we're closing our mouth (going to None state), release any attached objects
 			if (Latcher.CurrentLatchState == LatchState.None && JawGrip.HasTargetAttached)
-			{
-				JawGrip.ReleaseGrip();
-				_gameplayEvents?.NotifyRelease(GripType.Jaw);
-			}
+				{
+					JawGrip.ReleaseGrip();
+					_gameplayEvents?.NotifyRelease(GripType.Jaw);
+				}
 			
 			Inputs.GripJaw = false;
 		}

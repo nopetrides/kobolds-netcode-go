@@ -30,6 +30,8 @@ namespace Kobold.Net
 		[SerializeField] private RagdollMover _ragdollMover;
 		[SerializeField] private KoboldFlopControls _flopControls;
 		[SerializeField] private UnburyController _unburyController;
+		[SerializeField] private KoboldLatcher _koboldLatcher;
+		[SerializeField] private RagdollAnimator2 _ragdollAnimator;
 
 		[Header("Transform References")]
 		[SerializeField] private Transform _mouthBone;
@@ -97,6 +99,18 @@ namespace Kobold.Net
 		private void FixedUpdate()
 		{
 			// Not owner, do nothing.
+		}
+
+		private void LateUpdate()
+		{
+			if (IsOwner) return;
+
+			var currentState = _networkState.Value;
+			if (currentState.LatchState == LatchState.Gnawing)
+			{
+				// Continuously apply the latch position to keep up with moving targets
+				ApplyRemoteLatch(currentState);
+			}
 		}
 
 		public event Action<KoboldNetworkState> OnNetworkStateChanged;
@@ -242,6 +256,13 @@ namespace Kobold.Net
 
 			if (_unburyController != null)
 				_unburyController.enabled = IsOwner;
+
+			if (_koboldLatcher != null) 
+				_koboldLatcher.enabled = IsOwner;
+			
+			var grabber = GetComponentInChildren<KoboldGrabber>();
+			if (grabber != null) 
+				grabber.enabled = IsOwner;
 
 			var autoGetUp = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 			if (autoGetUp != null)
@@ -396,28 +417,26 @@ namespace Kobold.Net
 		/// </summary>
 		private void HandleLatchStateChange(KoboldNetworkState previousState, KoboldNetworkState newState)
 		{
-			// Handle latch target changes
-			if (!previousState.LatchTarget.TryGet(out _) && newState.LatchTarget.TryGet(out var latchTarget))
+			if (previousState.LatchState == newState.LatchState) return;
+
+			// This logic should run on all clients, including the owner, to properly reflect the networked state.
+			UpdateRemoteLatchState(newState.LatchState);
+
+			if (newState.LatchState == LatchState.Gnawing)
 			{
-				Debug.Log($"[{name}] Remote player latched to: {latchTarget.name}");
+				// This is a one-time setup call when the state transitions TO Gnawing.
+				// The continuous update will be handled in LateUpdate.
 				ApplyRemoteLatch(newState);
 			}
-			else if (previousState.LatchTarget.TryGet(out _) && !newState.LatchTarget.TryGet(out _))
+			else if (previousState.LatchState == LatchState.Gnawing)
 			{
-				Debug.Log($"[{name}] Remote player unlatched");
-			}
-
-			// Handle latch state changes
-			if (previousState.LatchState != newState.LatchState)
-			{
-				Debug.Log($"[{name}] Remote player latch state changed from {previousState.LatchState} to {newState.LatchState}");
-				
-				// Update remote kobold's latch state
-				if (_koboldLatcher != null)
+				// Unlatch logic
+				var boneProcessor = _ragdollAnimator.Handler
+					?.User_GetBoneSetupBySourceAnimatorBone(_koboldLatcher.JawLatchMagnet.MagnetPoint.transform)
+					?.BoneProcessor;
+				if (boneProcessor?.rigidbody != null)
 				{
-					// For remote players, we need to update their visual state
-					// The actual latch logic is handled by the network state
-					UpdateRemoteLatchState(newState.LatchState);
+					boneProcessor.rigidbody.isKinematic = false;
 				}
 			}
 		}
@@ -453,21 +472,52 @@ namespace Kobold.Net
 		private void ApplyRemoteLatch(KoboldNetworkState state)
 		{
 			if (_koboldLatcher == null) return;
-			if (!state.LatchTarget.TryGet(out var target)) return;
-
-			// Snap the latch bone to the latched position
 			var bone = _ragdollAnimator.Handler
 				?.User_GetBoneSetupBySourceAnimatorBone(_koboldLatcher.JawLatchMagnet.MagnetPoint.transform)
 				?.BoneProcessor;
 			if (bone?.rigidbody == null) return;
-
-			var worldPos = target.transform.TransformPoint(state.LatchLocalPosition);
-			var worldRot = target.transform.rotation * state.LatchLocalRotation;
-
 			var rb = bone.rigidbody;
 			rb.isKinematic = true;
-			rb.position = worldPos;
-			rb.rotation = worldRot;
+
+			if (state.LatchIsNetworked)
+			{
+				if (!state.LatchTarget.TryGet(out var networkObject)) return;
+
+				var indexer = networkObject.GetComponent<LatchableColliderIndexer>();
+				if (indexer == null)
+				{
+					Debug.LogError($"[KoboldNetworkController] Latch target {networkObject.name} is missing LatchableColliderIndexer! Attaching to root.");
+					var worldPosFallback = networkObject.transform.TransformPoint(state.LatchLocalPosition);
+					var worldRotFallback = networkObject.transform.rotation * state.LatchLocalRotation;
+					rb.position = worldPosFallback;
+					rb.rotation = worldRotFallback;
+					return;
+				}
+
+				var targetCollider = indexer.GetColliderByIndex(state.LatchColliderIndex);
+				if (targetCollider == null)
+				{
+					Debug.LogError($"[KoboldNetworkController] Latch collider index {state.LatchColliderIndex} is out of bounds for {networkObject.name}! Attaching to root.");
+					var worldPosFallback = networkObject.transform.TransformPoint(state.LatchLocalPosition);
+					var worldRotFallback = networkObject.transform.rotation * state.LatchLocalRotation;
+					rb.position = worldPosFallback;
+					rb.rotation = worldRotFallback;
+					return;
+				}
+
+				// Use the specific collider's transform for correct offset
+				var worldPos = targetCollider.transform.TransformPoint(state.LatchLocalPosition);
+				var worldRot = targetCollider.transform.rotation * state.LatchLocalRotation;
+				
+				rb.position = worldPos;
+				rb.rotation = worldRot;
+			}
+			else
+			{
+				// Static geometry logic
+				rb.position = state.LatchWorldPosition;
+				rb.rotation = state.LatchWorldRotation;
+			}
 		}
 
 		/// <summary>
@@ -565,6 +615,46 @@ namespace Kobold.Net
 			OnNetworkStateChanged?.Invoke(current);
 			// Future: Sync health to health component
 			// if (_healthComponent != null)
+		}
+
+		// Hybrid latch setter for both networked and static geometry
+		public void SetHybridLatchTarget(NetworkObject latchTarget, int colliderIndex, Vector3 localPos, Quaternion localRot, bool isNetworked, Vector3 worldPos, Quaternion worldRot)
+		{
+			if (!IsOwner)
+			{
+				Debug.LogWarning("Attempted to set latch target on non-owner!");
+				return;
+			}
+			var currentState = _networkState.Value;
+			if (isNetworked && latchTarget != null)
+			{
+				currentState.LatchTarget = new NetworkObjectReference(latchTarget);
+				currentState.LatchLocalPosition = localPos;
+				currentState.LatchLocalRotation = localRot;
+				currentState.LatchColliderIndex = colliderIndex;
+				currentState.LatchWorldPosition = Vector3.zero;
+				currentState.LatchWorldRotation = Quaternion.identity;
+				currentState.LatchIsNetworked = true;
+				if (_koboldLatcher != null && _koboldLatcher.enableLatchDebugLogging)
+				{
+					Debug.Log($"[KoboldNetworkController] SetHybridLatchTarget: NetObj={latchTarget.NetworkObjectId}, idx={colliderIndex}, localPos={localPos}, localRot={localRot}");
+				}
+			}
+			else
+			{
+				currentState.LatchTarget = new NetworkObjectReference();
+				currentState.LatchLocalPosition = Vector3.zero;
+				currentState.LatchLocalRotation = Quaternion.identity;
+				currentState.LatchColliderIndex = -1;
+				currentState.LatchWorldPosition = worldPos;
+				currentState.LatchWorldRotation = worldRot;
+				currentState.LatchIsNetworked = false;
+				if (_koboldLatcher != null && _koboldLatcher.enableLatchDebugLogging)
+				{
+					Debug.Log($"[KoboldNetworkController] SetHybridLatchTarget: Static world, worldPos={worldPos}, worldRot={worldRot}");
+				}
+			}
+			_networkState.Value = currentState;
 		}
 	}
 }

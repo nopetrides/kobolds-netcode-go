@@ -4,6 +4,7 @@ using Kobold.Bosses;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 namespace Kobold
 {
@@ -59,6 +60,9 @@ namespace Kobold
 
 		private PlayerInput Input { get; set; }
 		private Audio.KoboldLatchAudioManager _audioManager;
+
+		[Header("Debug")]
+		public bool enableLatchDebugLogging = false;
 
 		public GripMagnetPoint JawLatchMagnet => JawMagnet;
 		public bool IsLatched => _latch.IsLatched;
@@ -163,10 +167,13 @@ namespace Kobold
 				{
 					attachPos = rayHit.point;
 					foundTarget = true;
-					// Try Latch
+					if (enableLatchDebugLogging)
+					{
+						Debug.Log($"[LATCH-LOCAL] Found collider: {col.name} (ID: {col.GetInstanceID()}) at attachPos: {attachPos}, localPos: {col.transform.InverseTransformPoint(attachPos)}, localRot: {Quaternion.Inverse(col.transform.rotation) * bone.rigidbody.rotation}");
+					}
 					if (_currentLatchState == LatchState.Open)
 					{
-						_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents);
+						_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents, this);
 						SetLatchState(LatchState.Gnawing);
 					}
 					break;
@@ -177,9 +184,12 @@ namespace Kobold
 				else
 					continue; // skip this collider, no safe point
 
-				_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents);
+				if (enableLatchDebugLogging)
+				{
+					Debug.Log($"[LATCH-LOCAL] Found collider (fallback): {col.name} (ID: {col.GetInstanceID()}) at attachPos: {attachPos}, localPos: {col.transform.InverseTransformPoint(attachPos)}, localRot: {Quaternion.Inverse(col.transform.rotation) * bone.rigidbody.rotation}");
+				}
+				_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents, this);
 				SetLatchState(LatchState.Gnawing);
-
 				_currentTarget = col;
 				return;
 			}
@@ -207,6 +217,9 @@ namespace Kobold
 			private Rigidbody _rb;
 			public Collider Target { get; private set; }
 
+			private Vector3 _worldPos;
+			private Quaternion _worldRot;
+
 			public Vector3 WorldAttachPosition => Target ? Target.transform.TransformPoint(_localPos) : Vector3.zero;
 
 			public bool IsLatched { get; private set; }
@@ -214,7 +227,7 @@ namespace Kobold
 			public void Latch(
 				RagdollBoneProcessor bone, Collider target, Vector3 worldPos,
 				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager,
-				KoboldGameplayEvents events)
+				KoboldGameplayEvents events, KoboldLatcher latcher)
 			{
 				_bone = bone;
 				Target = target;
@@ -222,6 +235,12 @@ namespace Kobold
 
 				_localPos = target.transform.InverseTransformPoint(worldPos);
 				_localRot = Quaternion.Inverse(target.transform.rotation) * _rb.rotation;
+
+				if (latcher.enableLatchDebugLogging)
+				{
+					Debug.Log($"[LATCH-NETWORK] Latching to collider: {target.name} (ID: {target.GetInstanceID()}) on object: {target.gameObject.name} (NetObj: {target.GetComponentInParent<NetworkObject>()?.NetworkObjectId})");
+					Debug.Log($"[LATCH-NETWORK] localPos: {_localPos}, localRot: {_localRot}, worldPos: {worldPos}, rb.rotation: {_rb.rotation}");
+				}
 
 				_rb.isKinematic = true;
 				_rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -242,23 +261,122 @@ namespace Kobold
 				// Notify damage handler
 				var handler = target.GetComponentInParent<LatchDamageHandler>();
 				if (handler) handler.OnLatched(_rb.transform);
+
+				// Hybrid networking logic
+				var networkController = latcher.GetComponentInParent<Kobold.Net.KoboldNetworkController>();
+				if (networkController != null && networkController.IsOwner)
+				{
+					var netObj = target.GetComponentInParent<NetworkObject>();
+					var indexer = netObj != null ? netObj.GetComponent<LatchableColliderIndexer>() : null;
+					if (netObj != null && indexer != null)
+					{
+						int idx = indexer.GetColliderIndex(target);
+						if (latcher.enableLatchDebugLogging)
+						{
+							Debug.Log($"[LATCH-NETWORK] Sending SetLatchTarget: NetObj={netObj.NetworkObjectId}, idx={idx}, localPos={_localPos}, localRot={_localRot}");
+						}
+						networkController.SetHybridLatchTarget(netObj, idx, _localPos, _localRot, true, Vector3.zero, Quaternion.identity);
+					}
+					else
+					{
+						if (latcher.enableLatchDebugLogging)
+						{
+							Debug.Log($"[LATCH-NETWORK] Sending SetLatchTarget: Static world, worldPos={worldPos}, worldRot={_rb.rotation}");
+						}
+						networkController.SetHybridLatchTarget(null, -1, Vector3.zero, Quaternion.identity, false, worldPos, _rb.rotation);
+					}
+				}
 			}
 
+			// Add a method to set latch info from networked data (for remotes)
+			public void SetNetworkedLatch(
+				NetworkObject targetObj, int colliderIndex, Vector3 localPos, Quaternion localRot,
+				bool isNetworked, Vector3 worldPos, Quaternion worldRot, KoboldLatcher latcher)
+			{
+				if (isNetworked)
+				{
+					if (targetObj == null)
+					{
+						if (latcher != null && latcher.enableLatchDebugLogging)
+						{
+							Debug.LogWarning($"[LATCH-REMOTE] SetNetworkedLatch: Expected networked object, but targetObj is null! Falling back to static geometry.");
+						}
+						GotoStaticFallback();
+						return;
+					}
+					var indexer = targetObj.GetComponent<LatchableColliderIndexer>();
+					if (indexer == null)
+					{
+						if (latcher != null && latcher.enableLatchDebugLogging)
+						{
+							Debug.LogWarning($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId} has no LatchableColliderIndexer! Falling back to static geometry.");
+						}
+						GotoStaticFallback();
+						return;
+					}
+					Target = indexer.GetColliderByIndex(colliderIndex);
+					if (Target == null)
+					{
+						if (latcher != null && latcher.enableLatchDebugLogging)
+						{
+							Debug.LogWarning($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId}, idx={colliderIndex}, Target is null! Falling back to static geometry.");
+						}
+						GotoStaticFallback();
+						return;
+					}
+					_localPos = localPos;
+					_localRot = localRot;
+					IsLatched = true;
+					if (latcher != null && latcher.enableLatchDebugLogging)
+					{
+						Debug.Log($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId}, idx={colliderIndex}, Target={Target.name} (ID: {Target.GetInstanceID()}), localPos={localPos}, localRot={localRot}, worldPos={Target.transform.TransformPoint(localPos)}, worldRot={Target.transform.rotation * localRot}");
+					}
+					return;
+				}
+				// Static geometry fallback
+				GotoStaticFallback();
+				return;
+
+				void GotoStaticFallback()
+				{
+					Target = null;
+					_localPos = Vector3.zero;
+					_localRot = Quaternion.identity;
+					_worldPos = worldPos;
+					_worldRot = worldRot;
+					IsLatched = true;
+					if (latcher != null && latcher.enableLatchDebugLogging)
+					{
+						Debug.Log($"[LATCH-REMOTE] SetNetworkedLatch: Static world, worldPos={worldPos}, worldRot={worldRot}");
+					}
+				}
+			}
 
 			public void UpdateLatch()
 			{
-				if (!IsLatched || Target == null || _rb == null) return;
+				if (!IsLatched || _rb == null) return;
 
-				// Check if target has been destroyed
-				if (Target == null)
+				if (Target != null)
 				{
-					// Target was destroyed, clean up
-					IsLatched = false;
-					return;
+					var worldPos = Target.transform.TransformPoint(_localPos);
+					var worldRot = Target.transform.rotation * _localRot;
+					if (((KoboldLatcher)Target.GetComponentInParent<KoboldLatcher>())?.enableLatchDebugLogging ?? false)
+					{
+						Debug.Log($"[LATCH-UPDATE] Target={Target.name} (ID: {Target.GetInstanceID()}), worldPos={worldPos}, worldRot={worldRot}");
+					}
+					_rb.position = worldPos;
+					_rb.rotation = worldRot;
 				}
-
-				_rb.position = Target.transform.TransformPoint(_localPos);
-				_rb.rotation = Target.transform.rotation * _localRot;
+				else
+				{
+					// Static geometry: use _worldPos/_worldRot directly
+					if (((KoboldLatcher)FindObjectOfType(typeof(KoboldLatcher)))?.enableLatchDebugLogging ?? false)
+					{
+						Debug.Log($"[LATCH-UPDATE] Static world, using direct _worldPos/_worldRot");
+					}
+					_rb.position = _worldPos;
+					_rb.rotation = _worldRot;
+				}
 			}
 
 			public void Detach(

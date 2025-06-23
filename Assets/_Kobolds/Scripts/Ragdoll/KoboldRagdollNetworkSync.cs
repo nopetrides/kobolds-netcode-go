@@ -43,11 +43,14 @@ namespace Kobold
 				_latcher = GetComponent<KoboldLatcher>();
 
 			// Subscribe to state changes
-			if (_stateManager != null)
-				_stateManager.OnStateChanged += OnStateChanged;
-			
-			if (_latcher != null)
-				_latcher.OnLatchStateChanged += OnLatchStateChanged;
+			if (IsOwner)
+			{
+				if (_stateManager != null)
+					_stateManager.OnStateChanged += OnStateChanged;
+
+				if (_latcher != null)
+					_latcher.OnLatchStateChanged += OnLatchStateChanged;
+			}
 
 			// Initialize with current state
 			UpdateNetworkSync();

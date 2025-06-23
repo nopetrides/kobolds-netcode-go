@@ -60,6 +60,23 @@ namespace Kobold.Net
         public LatchState LatchState;
 
         /// <summary>
+        /// Index of the collider on the latch target (if networked object).
+        /// </summary>
+        public int LatchColliderIndex;
+        /// <summary>
+        /// World position of the latch point (if static geometry).
+        /// </summary>
+        public Vector3 LatchWorldPosition;
+        /// <summary>
+        /// World rotation of the latch point (if static geometry).
+        /// </summary>
+        public Quaternion LatchWorldRotation;
+        /// <summary>
+        /// True if latching to a networked object, false if static geometry.
+        /// </summary>
+        public bool LatchIsNetworked;
+
+        /// <summary>
         /// Creates a default initialized state for a new player.
         /// </summary>
         public static KoboldNetworkState CreateDefault()
@@ -74,6 +91,10 @@ namespace Kobold.Net
                 LatchTarget = new NetworkObjectReference(),
                 LatchLocalPosition = Vector3.zero,
                 LatchLocalRotation = Quaternion.identity,
+                LatchColliderIndex = -1,
+                LatchWorldPosition = Vector3.zero,
+                LatchWorldRotation = Quaternion.identity,
+                LatchIsNetworked = false,
                 LatchState = Kobold.LatchState.None
             };
         }
@@ -88,6 +109,10 @@ namespace Kobold.Net
             serializer.SerializeValue(ref LatchTarget);
             serializer.SerializeValue(ref LatchLocalPosition);
             serializer.SerializeValue(ref LatchLocalRotation);
+            serializer.SerializeValue(ref LatchColliderIndex);
+            serializer.SerializeValue(ref LatchWorldPosition);
+            serializer.SerializeValue(ref LatchWorldRotation);
+            serializer.SerializeValue(ref LatchIsNetworked);
             serializer.SerializeValue(ref LatchState);
         }
     }

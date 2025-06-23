@@ -692,6 +692,7 @@ GameObject:
   - component: {fileID: 5830076676772025221}
   - component: {fileID: 541511082629397646}
   - component: {fileID: 8117562132156138126}
+  - component: {fileID: 5662303258297604835}
   m_Layer: 13
   m_Name: ExampleMonsterBossRoot
   m_TagString: Untagged
@@ -880,6 +881,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterAnimationEvents
   StepLeft: {fileID: 1749069346615476890}
   StepRight: {fileID: 8079457100193892942}
+--- !u!114 &5662303258297604835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028935348867130272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33f73903652e1964791c3f849cbd4e8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LatchableColliderIndexer
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &6625706642513686142
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,15 +14,10 @@ namespace Kobold.Net
 		private static readonly int GripR = Animator.StringToHash("Grip_R");
 		private static readonly int GripJaw = Animator.StringToHash("Grip_Jaw");
 
-		[Header("Ragdoll Components")]
-		[SerializeField] private RagdollAnimator2 _ragdollAnimator;
-
 		[SerializeField] private Animator _animationController;
 
 		[Header("Interaction Components")]
 		[SerializeField] private KoboldGrabber _koboldGrabber;
-
-		[SerializeField] private KoboldLatcher _koboldLatcher;
 
 		/// <summary>
 		///     Handles remote ragdoll state changes based on KoboldState.
