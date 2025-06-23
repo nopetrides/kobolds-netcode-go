@@ -80,6 +80,8 @@ namespace Kobold.Net
 			_gameplayEvents.OnObjectReleased += HandleObjectReleased;
 			_gameplayEvents.OnLatched += HandleLatched;
 			_gameplayEvents.OnDetached += HandleDetached;
+			_gameplayEvents.OnLatchStateChanged += HandleLatchStateChanged;
+			_gameplayEvents.OnLatchStateTransitioned += HandleLatchStateTransitioned;
 			_gameplayEvents.OnUnburyComplete += HandleUnburyComplete;
 			_gameplayEvents.OnFlop += HandleFlop;
 			_gameplayEvents.OnGetUp += HandleGetUp;
@@ -93,6 +95,8 @@ namespace Kobold.Net
 			_gameplayEvents.OnObjectReleased -= HandleObjectReleased;
 			_gameplayEvents.OnLatched -= HandleLatched;
 			_gameplayEvents.OnDetached -= HandleDetached;
+			_gameplayEvents.OnLatchStateChanged -= HandleLatchStateChanged;
+			_gameplayEvents.OnLatchStateTransitioned -= HandleLatchStateTransitioned;
 			_gameplayEvents.OnUnburyComplete -= HandleUnburyComplete;
 			_gameplayEvents.OnFlop -= HandleFlop;
 			_gameplayEvents.OnGetUp -= HandleGetUp;
@@ -217,6 +221,7 @@ namespace Kobold.Net
 
 				_networkController.OnLatchRpc(networkObject, worldPos);
 				_networkController.SetLatchTarget(networkObject, localPos, localRot);
+				_networkController.SetLatchState(LatchState.Gnawing);
 			}
 			else
 			{
@@ -228,6 +233,19 @@ namespace Kobold.Net
 		{
 			_networkController.OnDetachRpc();
 			_networkController.SetLatchTarget(null, Vector3.zero, Quaternion.identity);
+			_networkController.SetLatchState(LatchState.None);
+		}
+		
+		private void HandleLatchStateChanged(LatchState newState)
+		{
+			// Handle latch state changed event
+			Debug.Log($"[{name}] Latch state changed to: {newState}");
+		}
+
+		private void HandleLatchStateTransitioned(LatchState oldState, LatchState newState)
+		{
+			// Handle latch state transitioned event
+			Debug.Log($"[{name}] Latch state transitioned from: {oldState} to: {newState}");
 		}
 
 		private void HandleUnburyComplete()

@@ -55,6 +55,11 @@ namespace Kobold.Net
         public Quaternion LatchLocalRotation;
 
         /// <summary>
+        /// Current latch state for immediate network synchronization.
+        /// </summary>
+        public LatchState LatchState;
+
+        /// <summary>
         /// Creates a default initialized state for a new player.
         /// </summary>
         public static KoboldNetworkState CreateDefault()
@@ -68,7 +73,8 @@ namespace Kobold.Net
                 GrabbedObject = new NetworkObjectReference(),
                 LatchTarget = new NetworkObjectReference(),
                 LatchLocalPosition = Vector3.zero,
-                LatchLocalRotation = Quaternion.identity
+                LatchLocalRotation = Quaternion.identity,
+                LatchState = Kobold.LatchState.None
             };
         }
 
@@ -82,6 +88,7 @@ namespace Kobold.Net
             serializer.SerializeValue(ref LatchTarget);
             serializer.SerializeValue(ref LatchLocalPosition);
             serializer.SerializeValue(ref LatchLocalRotation);
+            serializer.SerializeValue(ref LatchState);
         }
     }
 }

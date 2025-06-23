@@ -17,8 +17,6 @@ namespace Kobold.Net
 	[RequireComponent(typeof(NetworkObject))]
 	public partial class KoboldNetworkController : NetworkBehaviour
 	{
-		public event Action<KoboldNetworkState> OnNetworkStateChanged;
-		
 		[Header("State Management")]
 		[SerializeField] private KoboldStateManager _stateManager;
 
@@ -27,9 +25,6 @@ namespace Kobold.Net
 
 		[SerializeField] private float _maxHealth = 100f;
 		[SerializeField] private string _playerNamePrefix = "Kobold";
-
-		[Header("Authority-Controlled Components")]
-		private PlayerInput PlayerInput { get; set; }
 
 		[SerializeField] private KoboldCameraController _cameraController;
 		[SerializeField] private RagdollMover _ragdollMover;
@@ -44,10 +39,20 @@ namespace Kobold.Net
 		[SerializeField] private Transform _cameraTrackingObject;
 		[SerializeField] private Transform _ragdollTrackingObject;
 
+		private bool _isPaused;
+
+		// Used to track self-authored state changes
+		private KoboldNetworkState _lastWrittenState;
+
 		/// <summary>
 		///     Main network variable containing all synchronized state.
 		/// </summary>
 		private NetworkVariable<KoboldNetworkState> _networkState;
+
+		private bool _suppressNextStateEcho;
+
+		[Header("Authority-Controlled Components")]
+		private PlayerInput PlayerInput { get; set; }
 
 		/// <summary>
 		///     Gets the current network state.
@@ -55,13 +60,7 @@ namespace Kobold.Net
 		public KoboldNetworkState CurrentNetworkState => _networkState.Value;
 
 		public KoboldCameraController CurrentCameraController => _cameraController;
-		
-		// Used to track self-authored state changes
-		private KoboldNetworkState _lastWrittenState;
-		private bool _suppressNextStateEcho;
-		
-		private bool _isPaused;
-		
+
 		private void Awake()
 		{
 			ValidateComponents();
@@ -72,6 +71,35 @@ namespace Kobold.Net
 				NetworkVariableReadPermission.Everyone,
 				NetworkVariableWritePermission.Owner);
 		}
+
+		private void Update()
+		{
+			if (!IsOwner) return;
+
+			if (KoboldInputSystemManager.Instance.Inputs.Escape)
+			{
+				_isPaused = !_isPaused;
+				if (_isPaused)
+				{
+					KoboldCanvasManager.Instance.OnPlayerPause();
+					KoboldInputSystemManager.Instance.EnableUIMode();
+				}
+				else
+				{
+					KoboldCanvasManager.Instance.OnPlayerUnpause();
+					KoboldInputSystemManager.Instance.EnableGameplayMode();
+				}
+			}
+
+			KoboldInputSystemManager.Instance.Inputs.Escape = false;
+		}
+
+		private void FixedUpdate()
+		{
+			// Not owner, do nothing.
+		}
+
+		public event Action<KoboldNetworkState> OnNetworkStateChanged;
 
 		public override void OnNetworkSpawn()
 		{
@@ -106,7 +134,7 @@ namespace Kobold.Net
 						};
 
 						_networkState.Value = initialState;
-						
+
 						Debug.Log(
 							$"[{name}] Owner initialized network state with current game state: {currentGameplayState}");
 					}
@@ -126,14 +154,15 @@ namespace Kobold.Net
 			var networkState = _networkState.Value;
 			if (networkState.State != KoboldState.Uninitialized)
 			{
-				yield return new WaitWhile(() => _ragdollAnimator?.Handler?.GetAnchorBoneController?.GameRigidbody != null);
-				
+				yield return new WaitWhile(() =>
+					_ragdollAnimator?.Handler?.GetAnchorBoneController?.GameRigidbody != null);
+
 				var autoGetUp = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 				if (autoGetUp != null)
 					autoGetUp.Enabled = false;
 				else
 					Debug.LogError("RagdollAnimator2 component does not have RAF_AutoGetUp feature enabled");
-				
+
 				SyncFromNetworkState(networkState);
 				Debug.Log($"[{name}] Non-owner synced from network state: {networkState.State}");
 			}
@@ -180,19 +209,19 @@ namespace Kobold.Net
 				Debug.LogError($"[{name}] KoboldStateManager is not assigned!");
 
 			PlayerInput = KoboldInputSystemManager.Instance.NewInputSystem;
-			
+
 			if (PlayerInput == null)
 				Debug.LogError($"[{name}] PlayerInput is not assigned!");
-			
+
 			if (_ragdollMover == null)
 				Debug.LogError($"[{name}] RagdollMover is not assigned!");
-			
+
 			if (_flopControls == null)
 				Debug.LogError($"[{name}] KoboldFlopControls is not assigned!");
-			
+
 			if (_unburyController == null)
 				Debug.LogError($"[{name}] UnburyController is not assigned!");
-				
+
 			if (_cameraController == null)
 				Debug.LogError($"[{name}] KoboldCameraController is not assigned!");
 
@@ -207,13 +236,13 @@ namespace Kobold.Net
 
 			if (_ragdollMover != null)
 				_ragdollMover.enabled = IsOwner;
-			
+
 			if (_flopControls != null)
 				_flopControls.enabled = IsOwner;
-			
+
 			if (_unburyController != null)
 				_unburyController.enabled = IsOwner;
-			
+
 			var autoGetUp = _ragdollAnimator.Handler.GetExtraFeatureHelper<RAF_AutoGetUp>();
 			if (autoGetUp != null)
 				autoGetUp.Enabled = false;
@@ -235,8 +264,8 @@ namespace Kobold.Net
 				{
 					Debug.LogError($"[{name}] No KoboldCameraManager found in scene! Cameras will not work properly.");
 				}
-				
-				
+
+
 				KoboldCanvasManager.Instance?.OnPlayerSpawned(_unburyController);
 			}
 
@@ -269,7 +298,9 @@ namespace Kobold.Net
 
 			if (!IsOwner)
 				// Non-owners should sync all changes
+			{
 				SyncFromNetworkState(newState);
+			}
 			else if (IsOwner)
 			{
 				if (_suppressNextStateEcho && newState.Equals(_lastWrittenState))
@@ -277,8 +308,11 @@ namespace Kobold.Net
 					_suppressNextStateEcho = false;
 					return; // Suppress local echo
 				}
-				Debug.LogError($"[{name}] Unexpected replicated state change on owner object. This may indicate unauthorized modification. From {previousState.State} to {newState.State}");
+
+				Debug.LogError(
+					$"[{name}] Unexpected replicated state change on owner object. This may indicate unauthorized modification. From {previousState.State} to {newState.State}");
 			}
+
 			{
 				// If we ever hit this path as owner, something is wrong
 			}
@@ -304,17 +338,14 @@ namespace Kobold.Net
 			var currentState = _networkState.Value;
 			currentState.Health = Mathf.Clamp(health, 0f, currentState.MaxHealth);
 			_networkState.Value = currentState;
-			
-			if (_networkState.Value.Health <= 0f)
-			{
-				Respawn();
-			}
+
+			if (_networkState.Value.Health <= 0f) Respawn();
 		}
 
 		private void Respawn()
 		{
 			var spawnPoint = KoboldPlayerSpawnPoints.Instance.GetRandomSpawnPoint();
-			
+
 			_ragdollAnimator.User_SetAllVelocity(Vector3.zero);
 			_ragdollAnimator.User_SetAllBonesVelocity(Vector3.zero);
 			var rb = _ragdollAnimator.GetComponent<Rigidbody>();
@@ -365,29 +396,73 @@ namespace Kobold.Net
 		/// </summary>
 		private void HandleLatchStateChange(KoboldNetworkState previousState, KoboldNetworkState newState)
 		{
-			// Started latching
+			// Handle latch target changes
 			if (!previousState.LatchTarget.TryGet(out _) && newState.LatchTarget.TryGet(out var latchTarget))
 			{
 				Debug.Log($"[{name}] Remote player latched to: {latchTarget.name}");
-				
 				ApplyRemoteLatch(newState);
 			}
-			// Stopped latching
 			else if (previousState.LatchTarget.TryGet(out _) && !newState.LatchTarget.TryGet(out _))
+			{
 				Debug.Log($"[{name}] Remote player unlatched");
+			}
+
+			// Handle latch state changes
+			if (previousState.LatchState != newState.LatchState)
+			{
+				Debug.Log($"[{name}] Remote player latch state changed from {previousState.LatchState} to {newState.LatchState}");
+				
+				// Update remote kobold's latch state
+				if (_koboldLatcher != null)
+				{
+					// For remote players, we need to update their visual state
+					// The actual latch logic is handled by the network state
+					UpdateRemoteLatchState(newState.LatchState);
+				}
+			}
 		}
-		
+
+		/// <summary>
+		/// Updates the remote kobold's latch state for visual feedback.
+		/// </summary>
+		private void UpdateRemoteLatchState(LatchState latchState)
+		{
+			if (_koboldLatcher == null) return;
+
+			// Update animator for remote players
+			var animator = _koboldLatcher.GetComponent<Animator>();
+			if (animator != null)
+			{
+				animator.SetBool("Grip_Jaw", latchState != LatchState.None);
+			}
+
+			// Update state manager for remote players
+			if (_stateManager != null)
+			{
+				if (latchState == LatchState.Gnawing && _stateManager.CurrentState != KoboldState.Climbing)
+				{
+					_stateManager.SetState(KoboldState.Climbing);
+				}
+				else if (latchState == LatchState.None && _stateManager.CurrentState == KoboldState.Climbing)
+				{
+					_stateManager.SetState(KoboldState.Active);
+				}
+			}
+		}
+
 		private void ApplyRemoteLatch(KoboldNetworkState state)
 		{
 			if (_koboldLatcher == null) return;
 			if (!state.LatchTarget.TryGet(out var target)) return;
 
 			// Snap the latch bone to the latched position
-			var bone = _ragdollAnimator.Handler?.User_GetBoneSetupBySourceAnimatorBone(_koboldLatcher.JawLatchMagnet.MagnetPoint.transform)?.BoneProcessor;
+			var bone = _ragdollAnimator.Handler
+				?.User_GetBoneSetupBySourceAnimatorBone(_koboldLatcher.JawLatchMagnet.MagnetPoint.transform)
+				?.BoneProcessor;
 			if (bone?.rigidbody == null) return;
 
-			Vector3 worldPos = target.transform.TransformPoint(state.LatchLocalPosition);
-			Quaternion worldRot = target.transform.rotation * state.LatchLocalRotation;
+			var worldPos = target.transform.TransformPoint(state.LatchLocalPosition);
+			var worldRot = target.transform.rotation * state.LatchLocalRotation;
 
 			var rb = bone.rigidbody;
 			rb.isKinematic = true;
@@ -434,6 +509,22 @@ namespace Kobold.Net
 		}
 
 		/// <summary>
+		///     Updates the latch state. Only call on the owner.
+		/// </summary>
+		public void SetLatchState(LatchState latchState)
+		{
+			if (!IsOwner)
+			{
+				Debug.LogWarning("Attempted to set latch state on non-owner!");
+				return;
+			}
+
+			var currentState = _networkState.Value;
+			currentState.LatchState = latchState;
+			_networkState.Value = currentState;
+		}
+
+		/// <summary>
 		///     Gets the mouth bone transform for latching calculations.
 		/// </summary>
 		public Transform GetMouthBone()
@@ -461,7 +552,7 @@ namespace Kobold.Net
 		{
 			return _ragdollTrackingObject != null ? _ragdollTrackingObject : transform;
 		}
-		
+
 		[ServerRpc(RequireOwnership = false)]
 		public void RequestDamageServerRpc(float damage)
 		{
@@ -474,33 +565,6 @@ namespace Kobold.Net
 			OnNetworkStateChanged?.Invoke(current);
 			// Future: Sync health to health component
 			// if (_healthComponent != null)
-		}
-
-		private void Update()
-		{
-			if (!IsOwner) return;
-
-			if (KoboldInputSystemManager.Instance.Inputs.Escape)
-			{
-				_isPaused = !_isPaused;
-				if (_isPaused)
-				{
-					KoboldCanvasManager.Instance.OnPlayerPause();
-					KoboldInputSystemManager.Instance.EnableUIMode();
-				}
-				else
-				{
-					KoboldCanvasManager.Instance.OnPlayerUnpause();
-					KoboldInputSystemManager.Instance.EnableGameplayMode();
-				}
-			}
-
-			KoboldInputSystemManager.Instance.Inputs.Escape = false;
-		}
-
-		private void FixedUpdate()
-		{
-			// Not owner, do nothing.
 		}
 	}
 }

@@ -24,6 +24,10 @@ namespace Kobold
 		// Latch events  
 		public event Action<Collider, Vector3, Quaternion> OnLatched;
 		public event Action OnDetached;
+		
+		// New latch state events
+		public event Action<LatchState> OnLatchStateChanged;
+		public event Action<LatchState, LatchState> OnLatchStateTransitioned; // from, to
 
 		// Unbury events
 		public event Action<float> OnUnburyProgress;
@@ -66,6 +70,20 @@ namespace Kobold
 		{
 			if (!ShouldFireEvents()) return;
 			OnDetached?.Invoke();
+		}
+
+		// Called by KoboldLatcher when latch state changes
+		public void NotifyLatchStateChanged(LatchState newState)
+		{
+			if (!ShouldFireEvents()) return;
+			OnLatchStateChanged?.Invoke(newState);
+		}
+
+		// Called by KoboldLatcher when latch state transitions
+		public void NotifyLatchStateTransitioned(LatchState fromState, LatchState toState)
+		{
+			if (!ShouldFireEvents()) return;
+			OnLatchStateTransitioned?.Invoke(fromState, toState);
 		}
 
 		// Called by UnburyController during struggle

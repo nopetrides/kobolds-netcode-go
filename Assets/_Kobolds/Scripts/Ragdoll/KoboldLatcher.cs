@@ -7,9 +7,31 @@ using UnityEngine.InputSystem;
 
 namespace Kobold
 {
+	/// <summary>
+	/// Represents the current state of the kobold's latch system.
+	/// </summary>
+	public enum LatchState
+	{
+		/// <summary>
+		/// Mouth closed, no interaction.
+		/// </summary>
+		None,
+		
+		/// <summary>
+		/// Mouth open, searching for something to bite.
+		/// </summary>
+		Open,
+		
+		/// <summary>
+		/// Actively biting a target.
+		/// </summary>
+		Gnawing
+	}
+
 	public class KoboldLatcher : MonoBehaviour
 	{
 		public event Action<bool> OnLatchableTargetChanged;
+		public event Action<LatchState> OnLatchStateChanged;
 
 		[Header("References")]
 		[SerializeField] private KoboldStateManager StateManager;
@@ -31,17 +53,21 @@ namespace Kobold
 		private readonly Collider[] _overlapBuffer = new Collider[16];
 		private Collider _currentTarget;
 
-		private bool _isGripToggled;
+		// Replace bool with LatchState enum
+		private LatchState _currentLatchState = LatchState.None;
 		private bool _isLatchableTargetInRange;
 
 		private PlayerInput Input { get; set; }
-		
+		private Audio.KoboldLatchAudioManager _audioManager;
+
 		public GripMagnetPoint JawLatchMagnet => JawMagnet;
 		public bool IsLatched => _latch.IsLatched;
+		public LatchState CurrentLatchState => _currentLatchState;
 
 		private void Update()
 		{
-			if (!_isGripToggled || JawMagnet.HasTargetAttached)
+			// Only try to latch if we're in Open state and not already latched
+			if (_currentLatchState != LatchState.Open || JawMagnet.HasTargetAttached)
 				return;
 
 			TryLatchToSurface();
@@ -63,16 +89,51 @@ namespace Kobold
 			Gizmos.DrawWireSphere(JawMagnet.transform.position, LatchRadius);
 		}
 
+		/// <summary>
+		/// Toggles the jaw grip state and updates latch state accordingly.
+		/// </summary>
 		public void ToggleJawGrip()
 		{
-			_isGripToggled = !_isGripToggled;
-			//AnimationController.SetBool(GripJawAnimParam, _isGripToggled);
+			// Toggle between None and Open states
+			var newState = _currentLatchState == LatchState.None ? LatchState.Open : LatchState.None;
+			SetLatchState(newState);
 
-			if (!_isGripToggled && _latch.IsLatched)
+			// If we're closing our mouth and we're latched, detach
+			if (newState == LatchState.None && _latch.IsLatched)
 			{
-				_latch.Detach(RagdollAnimator, AnimationController, StateManager, GameplayEvents);
+				_latch.Detach(RagdollAnimator, AnimationController, StateManager, GameplayEvents, _audioManager);
 				_currentTarget = null;
 			}
+		}
+
+		/// <summary>
+		/// Sets the latch state and fires events.
+		/// </summary>
+		private void SetLatchState(LatchState newState)
+		{
+			if (_currentLatchState == newState) return;
+			
+			var previousState = _currentLatchState;
+			_currentLatchState = newState;
+			
+			// Update animator
+			AnimationController?.SetBool(GripJawAnimParam, newState != LatchState.None);
+			
+			// Fire state change event
+			OnLatchStateChanged?.Invoke(newState);
+			
+			// Notify gameplay events system
+			GameplayEvents?.NotifyLatchStateChanged(newState);
+			GameplayEvents?.NotifyLatchStateTransitioned(previousState, newState);
+			
+			// Update network state if we have authority
+			var networkController = GetComponentInParent<Kobold.Net.KoboldNetworkController>();
+			if (networkController != null && networkController.IsOwner)
+			{
+				networkController.SetLatchState(newState);
+			}
+			
+			Debug.Log($"[KoboldLatcher] Latch state changed from {previousState} to {newState}");
 		}
 
 		private void TryLatchToSurface()
@@ -103,9 +164,10 @@ namespace Kobold
 					attachPos = rayHit.point;
 					foundTarget = true;
 					// Try Latch
-					if (_isGripToggled)
+					if (_currentLatchState == LatchState.Open)
 					{
 						_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents);
+						SetLatchState(LatchState.Gnawing);
 					}
 					break;
 				}
@@ -116,6 +178,7 @@ namespace Kobold
 					continue; // skip this collider, no safe point
 
 				_latch.Latch(bone, col, attachPos, RagdollAnimator, AnimationController, StateManager, GameplayEvents);
+				SetLatchState(LatchState.Gnawing);
 
 				_currentTarget = col;
 				return;
@@ -130,7 +193,8 @@ namespace Kobold
 
 		private void OnEnable()
 		{
-			// ... existing code ...
+			// Get audio manager reference
+			_audioManager = GetComponent<Audio.KoboldLatchAudioManager>();
 		}
 
 		[Serializable]
@@ -185,13 +249,21 @@ namespace Kobold
 			{
 				if (!IsLatched || Target == null || _rb == null) return;
 
+				// Check if target has been destroyed
+				if (Target == null)
+				{
+					// Target was destroyed, clean up
+					IsLatched = false;
+					return;
+				}
+
 				_rb.position = Target.transform.TransformPoint(_localPos);
 				_rb.rotation = Target.transform.rotation * _localRot;
 			}
 
 			public void Detach(
 				RagdollAnimator2 animator, Animator animationController, KoboldStateManager stateManager,
-				KoboldGameplayEvents events)
+				KoboldGameplayEvents events, Audio.KoboldLatchAudioManager audioManager = null)
 			{
 				if (_rb != null)
 					_rb.isKinematic = false;
@@ -220,6 +292,9 @@ namespace Kobold
 					autoGetUp.Enabled = true;
 
 				events.NotifyDetach();
+				
+				// Play latch end sound
+				audioManager?.PlayLatchEndSound();
 			}
 		}
 	}
