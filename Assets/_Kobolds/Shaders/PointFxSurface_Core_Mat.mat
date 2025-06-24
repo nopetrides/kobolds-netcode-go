@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1670494196934094509
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PointFxSurface_Core_Mat
+  m_Shader: {fileID: -6465566751694194690, guid: 2539fce0933d63347a4976ca39318a0e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Cubemap:
+        m_Texture: {fileID: 8600000, guid: df70649cc777f5341806e43d615844af, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubemapDistortion:
+        m_Texture: {fileID: 8900000, guid: 6359009f903831f4a87cbec60d453961, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubemapTex:
+        m_Texture: {fileID: 8900000, guid: 6359009f903831f4a87cbec60d453961, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubemapTex2:
+        m_Texture: {fileID: 8900000, guid: 6359009f903831f4a87cbec60d453961, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distortion:
+        m_Texture: {fileID: 2800000, guid: 8a5b3af15db0b3d4e9b5fd91fe2e7c30, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Gradient:
+        m_Texture: {fileID: 2800000, guid: 0e9ea27979f7a4a5bb15caa2e6729425, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: 5c1bc500c0752bb4f93e891d21ebc8d5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DOther:
+        m_Texture: {fileID: 2800000, guid: 09ff3236ed6851c44b22b13107c206f5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Alpha: 1
+    - _AlphaClip: 0
+    - _ColorIntensity: 1
+    - _ColorIntensity2: 1
+    - _Distort: 0.5
+    - _DistortSpeed: 0.1
+    - _FinalStrength: 1
+    - _Intensity: 10
+    - _Offset: 0.1
+    - _PrimaryCutoff: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SecondaryCutoff: 0
+    - _SecondaryLayerStrength: 0
+    - _Smoothness: 0
+    - _Speed: 0.02
+    - _Speed2: 0.01
+    - _Stretch: 1
+    - _Transparent: 0
+    m_Colors:
+    - _Color: {r: 0.6037736, g: 0, b: 0, a: 1}
+    - _Color2: {r: 0.53773576, g: 0.32576406, b: 0.19023666, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

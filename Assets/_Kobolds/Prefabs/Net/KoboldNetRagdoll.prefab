@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 8290547779066580883}
   - component: {fileID: 1404998979657346804}
   - component: {fileID: 1591018150753800}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: KoboldNetRagdoll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 232315589
+  GlobalObjectIdHash: 1836083603
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 0

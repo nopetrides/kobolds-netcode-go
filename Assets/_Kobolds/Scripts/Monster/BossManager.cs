@@ -68,7 +68,7 @@ namespace Kobold.Bosses
 		{
 			foreach (var boss in _activeBosses)
 			{
-				if (boss.State != MonsterBossController.BossState.Dead)
+				if (boss.CurrentState != MonsterBossController.BossState.Dead)
 				{
 					return;
 				}

@@ -1,72 +1,118 @@
-﻿using UnityEngine;
+﻿using Unity.Netcode;
+using UnityEngine;
 
 namespace Kobold.Bosses
 {
-    public class BossLimb : MonoBehaviour
-    {
+	public class BossLimb : NetworkBehaviour
+	{
 		[SerializeField] private MonsterBossController _controller;
+
 		[Header("Limb Settings")]
-        [SerializeField] private float _maxHealth = 100f;
-        [SerializeField] private Rigidbody _rigidbody;
-        [SerializeField] private Collider _collider;
+		[SerializeField] private float _maxHealth = 100f;
 
-        private float _currentHealth;
-        private bool _isBroken;
-        public bool IsBroken => _isBroken;
+		[SerializeField] private Rigidbody _rigidbody;
+		[SerializeField] private Collider _collider;
+		[SerializeField] private Material _defaultMaterial;
+		[SerializeField] private Material _brokenMaterial;
 
-        private void Awake()
-        {
-            _currentHealth = _maxHealth;
-			if (!_rigidbody || !_collider || !_controller)
+		private float _currentHealth;
+
+		private readonly NetworkVariable<bool> _isBroken = new(
+			false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+		public bool IsBroken => _isBroken.Value;
+
+		private void Awake()
+		{
+			_currentHealth = _maxHealth;
+
+			if (!_rigidbody || !_collider || !_controller || !_defaultMaterial || !_brokenMaterial)
+				Debug.LogError($"[BossLimb] {name} has invalid setup!");
+
+			// Subscribe to network state changes
+			_isBroken.OnValueChanged += OnBrokenStateChanged;
+		}
+
+		public override void OnDestroy()
+		{
+			// Unsubscribe from network events to avoid potential memory leaks.
+			_isBroken.OnValueChanged -= OnBrokenStateChanged;
+			
+			base.OnDestroy();
+		}
+
+		public void ApplyDamage(float amount)
+		{
+			if (IsBroken) return;
+
+			_currentHealth -= amount;
+			if (_currentHealth <= 0f) BreakLimb();
+
+			_controller?.ApplyDamage(amount);
+		}
+
+		private void BreakLimb()
+		{
+			if (!HasAuthority)
 			{
-				Debug.LogError($"[BossLimb] Invalid setup {name}");
+				Debug.LogError("[BossLimb] BreakLimb called on non-owner client!");
+				return;
 			}
-        }
 
-        public void ApplyDamage(float amount)
-        {
-            if (_isBroken) return;
+			_isBroken.Value = true;
+			Debug.Log($"[BossLimb] {name} has broken!");
 
-            _currentHealth -= amount;
-            if (_currentHealth <= 0f)
-            {
-                BreakLimb();
-            }
+			_controller?.ReportLimbBroken(this);
 
-            _controller?.ApplyDamage(amount);
-        }
+			// Optional: physics tweak to simulate collapse
+			if (_rigidbody != null)
+			{
+				_rigidbody.constraints = RigidbodyConstraints.None;
+				_rigidbody.mass *= 0.5f;
+			}
 
-        private void BreakLimb()
-        {
-            _isBroken = true;
-            Debug.Log($"[BossLimb] {name} has broken!");
+			// Could also disable joint or visuals if needed
+		}
 
-            _controller?.ReportLimbBroken(this);
+		public void ResetLimb()
+		{
+			if (!HasAuthority)
+			{
+				Debug.LogError("[ResetLimb] BreakLimb called on non-owner client!");
+				return;
+			}
 
-            // Optional: physics tweak to simulate collapse
-            if (_rigidbody != null)
-            {
-                _rigidbody.constraints = RigidbodyConstraints.None;
-                _rigidbody.mass *= 0.5f;
-            }
+			_isBroken.Value = false;
+			_currentHealth = _maxHealth;
 
-            // Could also disable joint or visuals if needed
-        }
+			Debug.Log($"[BossLimb] {name} reset to full health");
 
-        public void ResetLimb()
-        {
-            _isBroken = false;
-            _currentHealth = _maxHealth;
+			if (_rigidbody != null)
+			{
+				_rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+				_rigidbody.mass = 1f;
+				_rigidbody.linearVelocity = Vector3.zero;
+				_rigidbody.angularVelocity = Vector3.zero;
+			}
+		}
 
-            Debug.Log($"[BossLimb] {name} reset to full health");
+		/// <summary>
+		///     Callback for when the broken state changes.
+		///     Controls material updates across all players.
+		/// </summary>
+		private void OnBrokenStateChanged(bool previousState, bool newState)
+		{
+			Debug.Log($"[BossLimb] {name} broken state changed to {newState}");
+			UpdateMaterial(newState);
+		}
 
-            if (_rigidbody != null)
-            {
-                _rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                _rigidbody.mass = 1f;
-                _rigidbody.linearVelocity = Vector3.zero;
-                _rigidbody.angularVelocity = Vector3.zero;
-            }
-        }
-    }
+		/// <summary>
+		///     Updates the material of the limb based on its state.
+		/// </summary>
+		private void UpdateMaterial(bool isBroken)
+		{
+			foreach (var r in GetComponentsInChildren<Renderer>())
+				r.material = isBroken ? _brokenMaterial : _defaultMaterial;
+		}
+	}
 }

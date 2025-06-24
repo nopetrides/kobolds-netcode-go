@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using Kobold.Net;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace Kobold.Monster
@@ -8,41 +6,74 @@ namespace Kobold.Monster
 	public class AoePulseOnRecover : MonoBehaviour
 	{
 		[SerializeField] private float _pulseRadius = 5f;
-		[SerializeField] private float _expandDuration = 0.5f;
 		[SerializeField] private float _damageAmount = 100f;
-
-		public void TriggerPulse()
+		[SerializeField] private GameObject _sphereVisualPrefab; // A prefab for the sphere visual effect
+		
+		private GameObject _sphereVisualInstance;               // Instance of the visual sphere
+		private Transform _sphereTransform;                     // Cached transform of the sphere
+		private Collider[] _hitBuffer = new Collider[20];       // Buffer for overlap detection
+		
+		/// <summary>
+		/// Starts visualizing the sphere growth during the charge phase.
+		/// </summary>
+		/// <param name="duration">Duration of the sphere charge</param>
+		public void StartChargeVisual(float duration)
 		{
-			StartCoroutine(Pulse());
+			if (_sphereVisualInstance == null)
+			{
+				_sphereVisualInstance = Instantiate(_sphereVisualPrefab, transform.position, Quaternion.identity, transform);
+				_sphereTransform = _sphereVisualInstance.transform;
+				_sphereTransform.localScale = Vector3.zero; // Start at zero scale
+			}
+
+			// Grow the sphere over time
+			StartCoroutine(GrowSphere(duration));
 		}
 
-		private IEnumerator Pulse()
+		/// <summary>
+		/// Coroutine to grow the sphere visually over time.
+		/// </summary>
+		private IEnumerator GrowSphere(float duration)
 		{
-			var t = 0f;
-			while (t < _expandDuration)
+			float t = 0f;
+
+			while (t < duration)
 			{
 				t += Time.deltaTime;
-				var radius = Mathf.Lerp(0f, _pulseRadius, t / _expandDuration);
-				CheckOverlap(radius);
+				float scale = Mathf.Lerp(0f, _pulseRadius * 2f, t / duration); // Diameter-based scaling
+				_sphereTransform.localScale = new Vector3(scale, scale, scale);
 				yield return null;
 			}
 		}
-
-		private void CheckOverlap(float currentRadius)
+		
+		/// <summary>
+		/// Trigger the actual pulse, causing damage to all players in range.
+		/// </summary>
+		public void TriggerPulse()
 		{
-			// Use session owner check for distributed authority
-			if (!NetworkManager.Singleton.IsServer) return;
+			// Trigger visual impact
+			if (_sphereVisualInstance != null) Destroy(_sphereVisualInstance);
 
-			var hits = Physics.OverlapSphere(transform.position, currentRadius, LayerMask.GetMask("Player"));
+			Pulse();
+		}
 
-			foreach (var hit in hits)
+		/// <summary>
+		/// Performs the pulse attack by detecting overlapping players inside the radius.
+		/// </summary>
+		private void Pulse()
+		{
+			var hits = Physics.OverlapSphereNonAlloc(transform.position, _pulseRadius, _hitBuffer, LayerMask.GetMask("Latch"));
+
+			for (int i = 0; i < hits; i++)
 			{
-				var controller = hit.GetComponentInParent<KoboldNetworkController>();
-				if (controller != null && controller.HasAuthority) // Use HasAuthority instead of IsOwner
+				var koboldController = _hitBuffer[i].GetComponentInParent<Kobold.Net.KoboldNetworkController>();
+				if (koboldController != null)
 				{
-					controller.RequestDamageServerRpc(_damageAmount);
+					koboldController.ApplyAoePulseDamage(_damageAmount); // Players apply the damage (including to themselves)
 				}
 			}
+
+			_hitBuffer = new Collider[20];
 		}
 		
 #if UNITY_EDITOR

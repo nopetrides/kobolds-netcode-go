@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Kobold.Bosses;
 using Kobold.Net;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -103,11 +104,19 @@ namespace Kobold.UI
 				_networkController.OnNetworkStateChanged += UpdatePlayerHealthFromState;
 				UpdatePlayerHealthFromState(_networkController.CurrentNetworkState);
 			}
+			else 
+			{
+				Debug.LogError("[PlayerHudCanvas] Initialize called with null _networkController!");
+			}
 
 			if (_bossController != null)
 			{
 				_bossController.OnHealthChanged += UpdateBossHealth;
 				UpdateBossHealth(_bossController.CurrentHealth, _bossController.MaxHealth);
+			}
+			else 
+			{
+				Debug.LogError("[PlayerHudCanvas] Initialize called with null _bossController!");
 			}
 
 			if (_latcher != null)

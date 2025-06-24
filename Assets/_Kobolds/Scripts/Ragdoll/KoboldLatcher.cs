@@ -466,7 +466,7 @@ namespace Kobold
 				// Notify unlatched BEFORE clearing Target
 				if (Target)
 				{
-					var handler = Target.GetComponent<LatchDamageHandler>();
+					var handler = Target.GetComponentInParent<LatchDamageHandler>();
 					if (handler != null) handler.OnUnlatched(_rb?.transform);
 				}
 

@@ -1,194 +1,270 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kobold.Monster;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace Kobold.Bosses
 {
-    public class MonsterBossController : NetworkBehaviour
-    {
-        public event Action<float, float> OnHealthChanged;
-        
-        [Header("Boss Parameters")]
-        [SerializeField] private float maxHealth = 500f;
-        [SerializeField] private float weakSpotMultiplier = 3f;
-        [SerializeField] private float toppleDuration = 5f;
-        [SerializeField] private float coreKillThreshold = 100f;
+	public class MonsterBossController : NetworkBehaviour
+	{
+		public enum BossState
+		{
+			Active,
+			Toppled,
+			Dead
+		}
+
+		[Header("Boss Parameters")]
+		[SerializeField] private float _maxHealth = 500f;
+
+		[SerializeField] private float _weakSpotMultiplier = 3f;
+		[SerializeField] private float _toppleDuration = 5f;
+		[SerializeField] private float _aoeChargeDuration = 2f; // Duration of the warning before the pulse
+		[SerializeField] private float _coreKillThreshold = 5;
 
 		[Header("Related Components")]
-		[SerializeField] private BossMover bossMover;
-		[SerializeField] private MonsterBossRPCHandler rpcHandler;
+		[SerializeField] private BossMover _bossMover;
+		[SerializeField] private MonsterBossRPCHandler _rpcHandler;
+		[SerializeField] private List<AoePulseOnRecover> _aoePulseHandlers; // Add references to AOE pulse handlers in the scene
+
+		[Header("Hierarchy References")]
+		[SerializeField] private GameObject _weakSpotObject;
+
+		[SerializeField] private GameObject _coreObject;
+		[SerializeField] private List<BossLimb> _limbs;
 		
-        [Header("Hierarchy References")]
-        [SerializeField] private GameObject weakSpotObject;
-        [SerializeField] private GameObject coreObject;
-        [SerializeField] private List<BossLimb> _limbs;
+		// Network variables
+		private NetworkVariable<float> _currentHealth = new(
+			500f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+		
+		private float _coreDamageTaken; // Tracks damage dealt to the core
+		private float _aoeChargeTimer; // Used to track the charge duration for the pulse
+		private bool _isChargingPulse;
+		private float _toppleTimer;
 
-        private float _currentHealth;
-        private float _coreDamageTaken;
-        private float _toppleTimer;
+		public bool IsToppled { get; private set; }
+		public BossState CurrentState { get; private set; } = BossState.Active;
+		public float MaxHealth => _maxHealth;
+		public float CurrentHealth => _currentHealth.Value;
 
-        private bool _isToppled;
-        private bool _coreExposed;
-
-        public enum BossState { Active, Toppled, Dead }
-        private BossState _state = BossState.Active;
-
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-            
-            // Configure distributed authority ownership status
-            if (HasAuthority)
-            {
-                // Make the boss distributable and transferable for proper authority management
-                NetworkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.Distributable, true);
-                NetworkObject.SetOwnershipStatus(NetworkObject.OwnershipStatus.Transferable);
-            }
-            
-            // Initialize boss state only on authority
-            if (HasAuthority)
-            {
-                _currentHealth = maxHealth;
-                OnHealthChanged?.Invoke(_currentHealth, maxHealth);
-				
-				foreach (var netObj in gameObject.GetComponentsInChildren<Rigidbody>(includeInactive: true))
+		public event Action<float, float> OnHealthChanged; // Broadcast health updates
+		public event Action<BossState> OnStateChanged; // Notify listeners of state changes
+		
+		private void Awake()
+		{
+			_currentHealth.OnValueChanged += SyncHealthLocal;
+		}
+		
+		private void Update()
+		{
+			if (HasAuthority && CurrentState == BossState.Toppled)
+			{
+				if (!_isChargingPulse)
 				{
-					netObj.isKinematic = true;
+					// Topple timer logic
+					_toppleTimer -= Time.deltaTime;
+					if (_toppleTimer <= 0f)
+					{
+						TriggerPulseCharge(); // Start the charge timer for AOE pulse
+					}
 				}
-            }
+				else
+				{
+					// AOE pulse charge timer logic
+					_aoeChargeTimer -= Time.deltaTime;
+					if (_aoeChargeTimer <= 0f)
+					{
+						TriggerAoePulse(); // Trigger AOE pulse after charge timer ends
+						ExitToppleState();
+					}
+				}
+			}
+		}
 
-            BossManager.Instance?.RegisterBoss(this);
-            BossManager.Instance?.ConfigureAuthority(this);
-        }
+		public override void OnNetworkSpawn()
+		{
+			base.OnNetworkSpawn();
+			
+			// Initialize boss health and states only on the server
+			if (HasAuthority)
+			{
+				_currentHealth.Value = _maxHealth;
+				OnHealthChanged?.Invoke(_currentHealth.Value, _maxHealth);
 
-        protected override void OnOwnershipChanged(ulong previousOwner,ulong currentOwner)
-        {
-            base.OnOwnershipChanged(previousOwner, currentOwner);
-            BossManager.Instance?.ConfigureAuthority(this);
-        }
+				foreach (var rb in GetComponentsInChildren<Rigidbody>(true)) rb.isKinematic = true;
+			}
 
-        public override void OnNetworkDespawn()
-        {
-            BossManager.Instance?.UnregisterBoss(this);
-        }
+			BossManager.Instance?.RegisterBoss(this);
+		}
 
-        private void Update()
-        {
-            // Use HasAuthority for distributed authority
-            if (!HasAuthority || _state != BossState.Toppled) return;
+		public override void OnNetworkDespawn()
+		{
+			base.OnNetworkDespawn();
+			if (HasAuthority)
+				BossManager.Instance?.UnregisterBoss(this);
+		}
 
-            _toppleTimer -= Time.deltaTime;
-            if (_toppleTimer <= 0f)
-            {
-                ExitToppleState();
-            }
-        }
+#region State Transitions
 
-        public void ReportLimbBroken(BossLimb limb)
-        {
-            if (_state != BossState.Active) return;
+		private void ChangeState(BossState newState)
+		{
+			Debug.Log($"[MonsterBossController] ChangeState({newState})");
+			if (CurrentState == newState) return;
 
-            int brokenCount = 0;
-            foreach (var l in _limbs)
-                if (l.IsBroken) brokenCount++;
+			CurrentState = newState;
+			OnStateChanged?.Invoke(newState);
 
-            if (brokenCount >= 2) // Threshold A — hardcoded
-            {
-                EnterToppleState();
-            }
-        }
+			// Notify the RPC handler to propagate effects as needed
+			switch (newState)
+			{
+				case BossState.Active:
+					_rpcHandler.TriggerEffectRpc(BossEffectType.Recovery);
+					break;
 
-        [ServerRpc(RequireOwnership = false)]
-        public void ApplyDamageServerRpc(float amount, bool isWeakSpot = false, bool isCore = false)
-        {
-            ApplyDamage(amount, isWeakSpot, isCore);
-        }
+				case BossState.Toppled:
+					_rpcHandler.TriggerEffectRpc(BossEffectType.Topple);
+					break;
 
-        public void ApplyDamage(float amount, bool isWeakSpot = false, bool isCore = false)
-        {
-            // Use HasAuthority for distributed authority
-            if (!HasAuthority || _state == BossState.Dead) return;
-
-            float scaled = isWeakSpot ? amount * weakSpotMultiplier : amount;
-
-            if (isCore)
-            {
-                _coreDamageTaken += scaled;
-                if (_coreDamageTaken >= coreKillThreshold)
-                {
-                    KillBoss();
-                }
-                return;
-            }
-
-            _currentHealth -= scaled;
-            OnHealthChanged?.Invoke(_currentHealth, maxHealth);
-            if (_currentHealth <= 0f && _state != BossState.Toppled)
-            {
-                EnterToppleState();
-            }
-        }
+				case BossState.Dead:
+					_rpcHandler.TriggerEffectRpc(BossEffectType.Death);
+					break;
+			}
+		}
+		
+		private void SyncHealthLocal(float previousValue, float newValue)
+		{
+			OnHealthChanged?.Invoke(newValue, _maxHealth); // Update player HUD
+		}
 
 		private void EnterToppleState()
 		{
-			_state = BossState.Toppled;
-			_isToppled = true;
-			_coreExposed = _currentHealth <= 0f;
-			_toppleTimer = toppleDuration;
-			_coreDamageTaken = 0f;
+			Debug.Log($"[MonsterBossController] EnterToppleState");
+			ChangeState(BossState.Toppled);
 
-			if (weakSpotObject) weakSpotObject.SetActive(true);
+			IsToppled = true;
+			_toppleTimer = _toppleDuration;
 
-			if (_coreExposed)
+			if (_weakSpotObject != null) _weakSpotObject.SetActive(true);
+
+			_bossMover.PlayToppleMotion();
+			
+			if (_currentHealth.Value <= 0f)
 			{
-				if (coreObject) coreObject.SetActive(true);
-				bossMover?.PlayCoreRevealMotion();
-				rpcHandler?.PlayCoreReveal();
+				if (_coreObject != null) _coreObject.SetActive(true);
+				_bossMover.PlayCoreRevealMotion();
+				_rpcHandler.TriggerEffectRpc(BossEffectType.CoreReveal); // Core reveal feedback
 			}
-
-			bossMover?.PlayToppleMotion();
-			rpcHandler?.PlayToppleEffect();
 		}
-
 
 		private void ExitToppleState()
 		{
-			bossMover?.PlayAoePulseMotion();
-			rpcHandler?.PlayAoePulse();
-			
-			_state = BossState.Active;
-			_isToppled = false;
-			_coreExposed = false;
+			Debug.Log($"[MonsterBossController] ExitToppleState");
+			ChangeState(BossState.Active);
 
-			if (weakSpotObject) weakSpotObject.SetActive(false);
-			if (coreObject) coreObject.SetActive(false);
+			IsToppled = false;
 
-			foreach (var limb in _limbs)
-				limb.ResetLimb();
+			if (_coreObject != null) _coreObject.SetActive(false);
 
-			bossMover?.PlayRecoveryEffectMotion();
-			rpcHandler?.PlayRecoveryEffect();
-			
+			foreach (var limb in _limbs) limb.ResetLimb();
 
+			_bossMover.PlayRecoveryEffectMotion();
+		}
+		
+		private void TriggerPulseCharge()
+		{
+			Debug.Log($"[MonsterBossController] TriggerPulseCharge");
+			_isChargingPulse = true;
+			_aoeChargeTimer = _aoeChargeDuration;
+
+			// Notify clients to start the AOE pulse charge effect
+			_rpcHandler.TriggerEffectRpc(BossEffectType.AoePulseCharge);
+
+			// Start visualizing the growing spheres in each AOE pulse handler
+			foreach (var handler in _aoePulseHandlers)
+			{
+				handler.StartChargeVisual(_aoeChargeDuration);
+			}
 		}
 
+		private void TriggerAoePulse()
+		{
+			Debug.Log($"[MonsterBossController] TriggerAoePulse");
+			_isChargingPulse = false;
+
+			// Notify AOE pulse handlers to process the actual damage
+			foreach (var handler in _aoePulseHandlers)
+			{
+				handler.TriggerPulse();
+			}
+
+			// Notify clients of the AOE pulse effect
+			_rpcHandler.TriggerEffectRpc(BossEffectType.AoePulseAttack);
+		}
 
 		private void KillBoss()
 		{
-			_state = BossState.Dead;
+			Debug.Log($"[MonsterBossController] KillBoss");
+			ChangeState(BossState.Dead);
 
-			if (coreObject) coreObject.SetActive(false);
-			if (weakSpotObject) weakSpotObject.SetActive(false);
+			if (_coreObject != null) _coreObject.SetActive(false);
+			if (_weakSpotObject != null) _weakSpotObject.SetActive(false);
 
-			bossMover?.PlayDeathMotion();
-			rpcHandler?.PlayDeathEffect();
+			_bossMover.PlayDeathMotion();
+		}
+
+#endregion
+
+#region Gameplay Logic
+
+		public void ReportLimbBroken(BossLimb limb)
+		{
+			if (CurrentState != BossState.Active) return;
+
+			var brokenCount = 0;
+			foreach (var l in _limbs)
+				if (l.IsBroken)
+					brokenCount++;
+
+			if (brokenCount >= _limbs.Count) EnterToppleState();
+		}
+
+		public void ApplyDamage(float amount, bool isWeakSpot = false, bool isCore = false, string limbName = null)
+		{
+			if (!HasAuthority || CurrentState == BossState.Dead) return;
+
+			var damageToApply = isWeakSpot ? amount * _weakSpotMultiplier : amount;
+
+			if (isCore)
+			{
+				_coreDamageTaken += damageToApply;
+				if (_coreDamageTaken >= _coreKillThreshold)
+				{
+					KillBoss();
+				}
+				return;
+			}
+
+			if (limbName != null)
+			{
+				var limb = _limbs.Find(l => l.name == limbName);
+				if (limb != null)
+				{
+					limb.ApplyDamage(damageToApply);
+					return;
+				}
+			}
+
+			_currentHealth.Value -= damageToApply;
+			OnHealthChanged?.Invoke(_currentHealth.Value, _maxHealth);
+
+			if (_currentHealth.Value <= 0f && CurrentState != BossState.Toppled)
+			{
+				EnterToppleState();
+			}
 		}
 
 
-        public bool IsToppled => _isToppled;
-        public BossState State => _state;
-        public float CurrentHealth => _currentHealth;
-        public float MaxHealth => maxHealth;
-    }
+#endregion
+	}
 }

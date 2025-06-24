@@ -36,7 +36,7 @@ namespace Kobold
 		{
 			Rigidbody.isKinematic = true;
 			Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-			Animator.enabled = false;
+			//Animator.enabled = false;
 			StateManager.SetState(KoboldState.Flopping);
 			
 			// Disable stand mode
@@ -52,7 +52,7 @@ namespace Kobold
 		{
 			if (!isActiveAndEnabled) return;
 			if (!StateManager.IsInState(KoboldState.Flopping)) return;
-			
+
 			Rigidbody.isKinematic = false;
 			Animator.enabled = true;
 			StateManager.SetState(KoboldState.Active);

@@ -179,55 +179,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kobold.Services.KoboldServicesHelper
   _socialHubMaxPlayers: 64
   _missionMaxPlayers: 8
---- !u!1 &341120909
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 341120911}
-  - component: {fileID: 341120910}
-  m_Layer: 0
-  m_Name: KoboldThemeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &341120910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341120909}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9eef4aba91164e76afa54bc3d411e843, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Kobold.UI.Theming.KoboldThemeManager
-  _availableThemes:
-  - {fileID: 11400000, guid: 6656f796f5b1c7148ac49dc0b3f7517e, type: 2}
-  _defaultTheme: {fileID: 11400000, guid: 6656f796f5b1c7148ac49dc0b3f7517e, type: 2}
-  _savedThemeKey: KoboldSelectedTheme
-  _currentTheme: {fileID: 11400000, guid: 6656f796f5b1c7148ac49dc0b3f7517e, type: 2}
---- !u!4 &341120911
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 341120909}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &349533935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1117,5 +1068,4 @@ SceneRoots:
   - {fileID: 7448202838410164805}
   - {fileID: 880674796}
   - {fileID: 1247579326}
-  - {fileID: 341120911}
   - {fileID: 2071648510}

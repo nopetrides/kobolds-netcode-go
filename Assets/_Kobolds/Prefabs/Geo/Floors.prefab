@@ -510,10 +510,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3080529519910554512}
     m_Modifications:
-    - target: {fileID: 4530327606312954295, guid: 2e44164e90964854f90e6856b471e821, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 857371659756054738, guid: ce847f851955194458b1f222a2932e5d, type: 3}
       propertyPath: m_Name
       value: Plane

@@ -17,19 +17,28 @@ namespace Kobold.Bosses
 		[SerializeField] private Animator Animator;
 		[SerializeField] private List<Rigidbody> OnToppledRigidbodies;
 		[SerializeField] private Rigidbody CoreRigidbody;
+		[SerializeField] private float _recoverySpeed = 2f;
+		[SerializeField] private float _maxDistanceFromCenter = 8f;
+		[SerializeField] private float _maxRotationSpeed = 15f;
 
-		private readonly Dictionary<Rigidbody, Transform> _originalPoseTargets = new();
+		private readonly Dictionary<Rigidbody, Vector3> _originalLocalPositions = new();
+		private readonly Dictionary<Rigidbody, Quaternion> _originalLocalRotations = new();
 
 		private void Awake()
 		{
-			// foreach (var rb in OnToppledRigidbodies)
-			// {
-			// 	var t = new GameObject($"{rb.name}_PoseTarget").transform;
-			// 	t.position = rb.position;
-			// 	t.rotation = rb.rotation;
-			// 	t.SetParent(transform); // maintain hierarchy space
-			// 	_originalPoseTargets[rb] = t;
-			// }
+			// Cache local positions and rotations for all rigidbodies
+			foreach (var rb in OnToppledRigidbodies)
+			{
+				_originalLocalPositions[rb] = rb.transform.localPosition;
+				_originalLocalRotations[rb] = rb.transform.localRotation;
+			}
+
+			if (CoreRigidbody != null)
+			{
+				_originalLocalPositions[CoreRigidbody] = CoreRigidbody.transform.localPosition;
+				_originalLocalRotations[CoreRigidbody] = CoreRigidbody.transform.localRotation;
+			}
+
 		}
 
 		private void Start()
@@ -68,7 +77,7 @@ namespace Kobold.Bosses
 			float distance = toCenter.magnitude;
 
 			// Check if we're not on the circle edge
-			if (Mathf.Abs(distance - 10) > 0.01f)
+			if (Mathf.Abs(distance - _maxDistanceFromCenter) > 0.01f)
 			{
 				// Compute direction to rotate toward (tangent to the circle)
 				Vector3 outward = toCenter.normalized;
@@ -76,7 +85,7 @@ namespace Kobold.Bosses
 
 				// Smoothly rotate forward to match the tangent direction
 				Quaternion targetRotation = Quaternion.LookRotation(tangent, Vector3.up);
-				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 5 * Time.deltaTime);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _maxRotationSpeed * Time.deltaTime);
 			}
 		}
 
@@ -109,7 +118,7 @@ namespace Kobold.Bosses
 
 			Debug.Log("[BossMover] PlayToppleMotion()");
 			Animator.SetBool(Walk, false);
-			
+			Animator.enabled = false;
 			foreach (var rb in OnToppledRigidbodies)
 			{
 				rb.isKinematic = false; // make all rigidbodies not kinematic so they fall
@@ -135,27 +144,44 @@ namespace Kobold.Bosses
 			Debug.Log("[BossMover] PlayRecoveryEffectMotion()");
 
 			foreach (var rb in OnToppledRigidbodies)
-				if (_originalPoseTargets.TryGetValue(rb, out var target))
-					StartCoroutine(InterpolateLimbToPose(rb, target));
+			{
+				if (_originalLocalPositions.TryGetValue(rb, out var localPos) &&
+					_originalLocalRotations.TryGetValue(rb, out var localRot))
+				{
+					StartCoroutine(InterpolatePartToPose(rb, localPos, localRot));
+				}
+			}
 
-			Animator.SetBool(Walk, true); // Loops a movement animation
+			if (CoreRigidbody != null && CoreRigidbody.gameObject.activeSelf &&
+				_originalLocalPositions.TryGetValue(CoreRigidbody, out var coreLocalPos) &&
+				_originalLocalRotations.TryGetValue(CoreRigidbody, out var coreLocalRot))
+			{
+				CoreRigidbody.gameObject.SetActive(true);
+				StartCoroutine(InterpolatePartToPose(CoreRigidbody, coreLocalPos, coreLocalRot));
+			}
 		}
 
-		public IEnumerator InterpolateLimbToPose(Rigidbody limb, Transform target)
+		public IEnumerator InterpolatePartToPose(Rigidbody limb, Vector3 localTargetPos, Quaternion localTargetRot)
 		{
 			var t = 0f;
-			var startPos = limb.position;
-			var startRot = limb.rotation;
+			var startPos = limb.transform.localPosition;
+			var startRot = limb.transform.localRotation;
 			limb.isKinematic = true;
 
 			while (t < 1f)
 			{
-				t += Time.deltaTime / 2f; // 2s duration
-				limb.position = Vector3.Lerp(startPos, target.position, t);
-				limb.rotation = Quaternion.Slerp(startRot, target.rotation, t);
+				t += Time.deltaTime / _recoverySpeed; // where _recoverySpeed is duration
+				limb.transform.localPosition = Vector3.Lerp(startPos, localTargetPos, t);
+				limb.transform.localRotation = Quaternion.Slerp(startRot, localTargetRot, t);
 				yield return null;
 			}
+			
+			Animator.enabled = true;
+			Animator.Rebind();
+			Animator.Update(0f);
+			Animator.SetBool(Walk, true); // Loops a movement animation
 		}
+
 
 
 		/// <summary>
@@ -173,9 +199,7 @@ namespace Kobold.Bosses
 
 			Debug.Log("[BossMover] PlayDeathMotion()");
 			Animator.SetBool(Walk, false); // Loops a movement animation
-			// TODO: shake and have the entire boss fall apart
-			// Animator should already be disabled, but just in case
-			//Animator.enabled = false;
+
 			foreach (var rb in gameObject.GetComponentsInChildren<Rigidbody>())
 			{
 				rb.isKinematic = false; // make all rigidbodies not kinematic so they fall
@@ -216,25 +240,11 @@ namespace Kobold.Bosses
 				CoreRigidbody.isKinematic = false;
 				CoreRigidbody.useGravity = true;
 
-				var c = CoreRigidbody.GetComponent<Collider>();
+				var c = CoreRigidbody.GetComponentInChildren<Collider>();
 				if (c) c.enabled = true;
 			}
 
 			if (CoreRigidbody) CoreRigidbody.gameObject.SetActive(true);
-		}
-
-
-		/// <summary>
-		///     Vibrates the limbs to warn about the incoming shockwave.
-		///     Also see <see cref="MonsterBossRPCHandler.PlayAoePulse()" /> for non rigidbody visuals/>
-		/// </summary>
-		public void PlayAoePulseMotion()
-		{
-			// Use HasAuthority for distributed authority
-			if (!HasAuthority) return;
-			Debug.Log("[BossMover] PlayAOEPulseMotion()");
-
-			foreach (var aoe in GetComponentsInChildren<AoePulseOnRecover>()) aoe.TriggerPulse();
 		}
 	}
 }

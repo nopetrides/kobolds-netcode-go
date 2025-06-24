@@ -151,7 +151,6 @@ namespace Kobold.Net
 						};
 
 						_networkState.Value = initialState;
-
 						Debug.Log(
 							$"[{name}] Owner initialized network state with current game state: {currentGameplayState}");
 					}
@@ -367,15 +366,11 @@ namespace Kobold.Net
 
 		private void Respawn()
 		{
+			Debug.Log($"[{name}] Respawning...");
 			var spawnPoint = KoboldPlayerSpawnPoints.Instance.GetRandomSpawnPoint();
 
-			_ragdollAnimator.User_SetAllVelocity(Vector3.zero);
-			_ragdollAnimator.User_SetAllBonesVelocity(Vector3.zero);
-			var rb = _ragdollAnimator.GetComponent<Rigidbody>();
-			rb.linearVelocity = Vector3.zero;
-			rb.angularVelocity = Vector3.zero;
-			_ragdollAnimator.transform.position = spawnPoint.position;
-			_ragdollAnimator.User_Teleport();
+			if (CurrentLatcher.IsLatched) CurrentLatcher.ToggleJawGrip();
+			_ragdollAnimator.User_Teleport(spawnPoint.position);
 
 			SetHealth(_networkState.Value.MaxHealth);
 
@@ -604,19 +599,26 @@ namespace Kobold.Net
 		{
 			return _ragdollTrackingObject != null ? _ragdollTrackingObject : transform;
 		}
-
-		[ServerRpc(RequireOwnership = false)]
-		public void RequestDamageServerRpc(float damage)
+		
+		
+		// Applies damage from an AOE pulse and handles respawns if the Kobold's health reaches 0
+		public void ApplyAoePulseDamage(float damage)
 		{
-			if (IsOwner)
-				SetHealth(CurrentNetworkState.Health - damage);
-		}
+			Debug.Log($"[{name}] Applying AOE pulse damage: {damage} to health {CurrentNetworkState.Health}");
+			
+			// Reduce the current health
+			var newHealth = Mathf.Clamp(CurrentNetworkState.Health - damage, 0f, CurrentNetworkState.MaxHealth);
 
-		private void OnStateChanged(KoboldNetworkState previous, KoboldNetworkState current)
-		{
-			OnNetworkStateChanged?.Invoke(current);
-			// Future: Sync health to health component
-			// if (_healthComponent != null)
+			if (newHealth <= 0f)
+			{
+				// Respawn the player if their health reaches 0
+				Respawn();
+			}
+			else
+			{
+				// Update health through the existing SetHealth logic
+				SetHealth(newHealth);
+			}
 		}
 
 		// Hybrid latch setter for both networked and static geometry

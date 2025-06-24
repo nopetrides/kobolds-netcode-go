@@ -1,11 +1,29 @@
 using UnityEngine;
 
-public class MonsterAnimationEvents : MonoBehaviour
+namespace Kobold.Bosses
 {
-    [SerializeField] private ParticleSystem StepLeft;
-	[SerializeField] private ParticleSystem StepRight;
+	public class MonsterAnimationEvents : MonoBehaviour
+	{
+		[SerializeField] private BossEffectManager _effectManager;
 
-	// TODO replace with RPC
-	public void OnStepLeft() => StepLeft.Play();
-	public void OnStepRight() => StepRight.Play();
+		public void OnStepLeft()
+		{
+			_effectManager.TriggerEffect(BossEffectType.StepLeft);
+		}
+
+		public void OnStepRight()
+		{
+			_effectManager.TriggerEffect(BossEffectType.StepRight);
+		}
+
+		public void OnAoePulseCharge()
+		{
+			_effectManager.TriggerEffect(BossEffectType.AoePulseCharge);
+		}
+		
+		public void OnAoePulseAttack()
+		{
+			_effectManager.TriggerEffect(BossEffectType.AoePulseAttack);
+		}
+	}
 }
