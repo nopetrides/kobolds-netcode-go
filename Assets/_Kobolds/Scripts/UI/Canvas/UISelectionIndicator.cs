@@ -144,14 +144,18 @@ namespace Kobold.UI
 
 			if (raycastResults.Count > 0)
 			{
-				var hovered = raycastResults[0].gameObject;
-
-				if (hovered &&
-					hovered.GetComponent<Selectable>() &&
-					hovered != _lastHovered)
+				foreach (var result in raycastResults)
 				{
-					_lastHovered = hovered;
-					KoboldAudio.PlayUINavigateSound();
+					if (!result.gameObject) continue;
+					if (result.gameObject.TryGetComponent<Selectable>(out var hovered))
+					{
+						if (hovered.gameObject != _lastHovered)
+						{
+							_lastHovered = hovered.gameObject;
+							KoboldAudio.PlayUINavigateSound();
+							return;
+						}
+					}
 				}
 			}
 		}
@@ -179,7 +183,12 @@ namespace Kobold.UI
 				var current = EventSystem.current.currentSelectedGameObject;
 				if (current != null)
 					LastValidSelectable = current;
-				else return;
+				else 
+				{
+					if (_indicator && _indicator.gameObject.activeSelf)
+						_indicator.gameObject.SetActive(false);
+					return;
+				}
 
 				if (current != _lastSelected)
 				{

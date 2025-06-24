@@ -178,16 +178,7 @@ namespace Kobold
 						if (!AllowedStruggleActions.Contains(action.name)) continue;
 
 						var a = action; // Capture local copy for closure
-						a.performed += ctx =>
-						{
-							if (a.name == "Move")
-							{
-								var moveVal = ctx.ReadValue<Vector2>();
-								if (moveVal == Vector2.zero) return;
-							}
-
-							OnStruggleInput(ctx);
-						};
+						a.performed += OnStruggleInput;
 
 						_subscribedActions.Add(a);
 					}
@@ -228,6 +219,12 @@ namespace Kobold
 		private void OnStruggleInput(InputAction.CallbackContext context)
 		{
 			if (_isComplete) return;
+			
+			if (context.action.name == "Move")
+			{
+				var moveVal = context.ReadValue<Vector2>();
+				if (moveVal == Vector2.zero) return;
+			}
 
 			// Advance progress
 			_struggleTimer += Time.deltaTime * 3f; // Input triggers can happen fast

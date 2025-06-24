@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8790999548718344489}
   - component: {fileID: 11593196691544781}
   - component: {fileID: 8383847505266178017}
+  - component: {fileID: 105591691564909497}
   m_Layer: 0
   m_Name: InGameUIOverlay
   m_TagString: Untagged
@@ -104,6 +105,23 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!114 &105591691564909497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5132547013708035890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1001 &2930253706829051150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -115,6 +133,18 @@ PrefabInstance:
     - target: {fileID: 580653324229482867, guid: 996daedec4f2e5f40b57b7eda09c4748, type: 3}
       propertyPath: m_Name
       value: PlayerHudCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4462089980922372215, guid: 996daedec4f2e5f40b57b7eda09c4748, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4462089980922372215, guid: 996daedec4f2e5f40b57b7eda09c4748, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4462089980922372215, guid: 996daedec4f2e5f40b57b7eda09c4748, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -720
       objectReference: {fileID: 0}
     - target: {fileID: 8151320506955572694, guid: 996daedec4f2e5f40b57b7eda09c4748, type: 3}
       propertyPath: m_Pivot.x

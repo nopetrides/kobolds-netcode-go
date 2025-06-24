@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: KoboldPreview Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: KoboldPreview
+  m_TableCollectionNameGuidString: 3ddd5f788f8fa1448b6dc3fae41e7a86
+  m_Entries:
+  - m_Id: 587994079232
+    m_Key: 00_LanguageCode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10079917940736
+    m_Key: Animation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9415804428288
+    m_Key: Boon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10579325329408
+    m_Key: Camera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10331651678208
+    m_Key: Emotion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12875979399168
+    m_Key: Kobold_G_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12370028896256
+    m_Key: Kobold_R_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12632269365248
+    m_Key: Kobold_Y_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12960939220992
+    m_Key: Kobold_B_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10984188911616
+    m_Key: TesterSceneDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47410725101568
+    m_Key: LanguageTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47783430955008
+    m_Key: '
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661985019404288
+    m_Key: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978407515004928
+    m_Key: r_EggsGone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978559990538240
+    m_Key: y_HowWhy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978670103601152
+    m_Key: g_ShiniesToo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978825984909312
+    m_Key: b_TimeToFight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3350680822456320
+    m_Key: r_EggsFound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3352328202461184
+    m_Key: CommandIntro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4750923250114560
+    m_Key: Return
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38609686306332672
+    m_Key: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38610954915520512
+    m_Key: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38611576872083456
+    m_Key: CharacterPreviews
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612092972802048
+    m_Key: QuickMission
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612487635836928
+    m_Key: SocialHub
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613356758540288
+    m_Key: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613596005834752
+    m_Key: Graphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613775886950400
+    m_Key: New Entry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614026286899200
+    m_Key: Master
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614223524044800
+    m_Key: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614420249485312
+    m_Key: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614659706494976
+    m_Key: Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614933397413888
+    m_Key: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38615174511173632
+    m_Key: Quality
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2373895306591338950
+  references:
+    version: 2
+    RefIds:
+    - rid: 2373895306591338950
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1741579679780

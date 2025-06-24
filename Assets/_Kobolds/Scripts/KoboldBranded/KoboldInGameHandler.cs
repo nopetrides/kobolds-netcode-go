@@ -1,4 +1,5 @@
 ﻿using Kobold.GameManagement;
+using P3T.Scripts.Managers;
 using UnityEngine;
 
 namespace Kobold
@@ -23,7 +24,7 @@ namespace Kobold
 
 		private void LoadMainMenuScene()
 		{
-			KoboldEventHandler.LoadMainMenuScene(nameof(SceneNames.KoboldMainMenu));
+			SceneMgr.Instance?.LoadScene(nameof(SceneNames.KoboldMainMenu), null);
 		}
 		
 		

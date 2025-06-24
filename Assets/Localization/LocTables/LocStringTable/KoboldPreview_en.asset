@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: KoboldPreview_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 3ddd5f788f8fa1448b6dc3fae41e7a86, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 587994079232
+    m_Localized: en
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9415804428288
+    m_Localized: Boon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10079917940736
+    m_Localized: Animation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10331651678208
+    m_Localized: Emotion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10579325329408
+    m_Localized: Camera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10984188911616
+    m_Localized: Use keyboard arrow keys (+ Ctrl/Opt for shape keys) or the GUI buttons
+      above to change the  kobold or animation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12370028896256
+    m_Localized: <b><kr>Queen's General:</kr></b>\nJack of all trades, master of
+      none. These kobolds are the mainstay of the forces. With no supernatural gift,
+      the average kobold must use wit and<kr> teamwork</kr> to overcome obstacles.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12632269365248
+    m_Localized: <b><ky>Queen's Gifted:</ky></b>\nBlessed with a fragment of draconic
+      magic, these sorcerers <ky>wield the arcane</ky> against their foes. Their
+      attunement to magic makes them eccentric and may disturb other kobolds.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12875979399168
+    m_Localized: <b><kg>Queen's Grace:</kg></b>\nA rare few kobolds may be blessed
+      with inheriting the <kg>wings</kg> of true dragons. Known as <i>"Urds"</i>
+      They are held in high esteem as a sign of favor with the Dragon Lords, but
+      the attention usually get's to their heads.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12960939220992
+    m_Localized: '<b><kb>Queen''s Guard:</kb></b>\nThe toughest kobolds are given
+      reponsibilities of protecting the most important things to the tribe: the hatchery,
+      and the treasurey. They''re still kobolds though, so they are pretty bad at
+      the job.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47410725101568
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47783430955008
+    m_Localized: Can also be changed from the settings menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661985019404288
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978407515004928
+    m_Localized: Eggs gone?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978559990538240
+    m_Localized: How? Why?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978670103601152
+    m_Localized: Shinies too...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978825984909312
+    m_Localized: Fighting time!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3350680822456320
+    m_Localized: Eggs!!!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3352328202461184
+    m_Localized: <shake>GO OUT THERE AND GET BACK THE <rainb>EGGS</rainb>!!!</shake>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4750923250114560
+    m_Localized: Return
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38609686306332672
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38610954915520512
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38611576872083456
+    m_Localized: Characters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612092972802048
+    m_Localized: Quick Mission
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612487635836928
+    m_Localized: Social Hub
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613356758540288
+    m_Localized: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613596005834752
+    m_Localized: Graphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613775886950400
+    m_Localized: Mute All
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614026286899200
+    m_Localized: Master
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614223524044800
+    m_Localized: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614420249485312
+    m_Localized: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614659706494976
+    m_Localized: Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614933397413888
+    m_Localized: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38615174511173632
+    m_Localized: Quality
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

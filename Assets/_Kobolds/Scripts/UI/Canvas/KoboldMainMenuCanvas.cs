@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Kobold.GameManagement;
+using Kobolds.Runtime;
+using P3T.Scripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +12,7 @@ namespace Kobold.UI
 	{
 		[SerializeField] private Button _socialHubButton;
 		[SerializeField] private Button _missionButton;
+		[SerializeField] private Button _charactersButton;
 		[SerializeField] private Button _settingsButton;
 		[SerializeField] private Button _quitButton;
 
@@ -23,14 +26,16 @@ namespace Kobold.UI
 		{
 			_socialHubButton.onClick.AddListener(OnSocialHubPressed);
 			_missionButton.onClick.AddListener(OnMissionPressed);
+			_charactersButton.onClick.AddListener(OnCharactersPressed);
 			_settingsButton.onClick.AddListener(OnSettingsPressed);
 			_quitButton.onClick.AddListener(OnQuitPressed);
 		}
-
+		
 		private void OnDestroy()
 		{
 			_socialHubButton.onClick.RemoveListener(OnSocialHubPressed);
 			_missionButton.onClick.RemoveListener(OnMissionPressed);
+			_charactersButton.onClick.RemoveListener(OnCharactersPressed);
 			_settingsButton.onClick.RemoveListener(OnSettingsPressed);
 			_quitButton.onClick.RemoveListener(OnQuitPressed);
 		}
@@ -72,6 +77,11 @@ namespace Kobold.UI
 			var playerName = PlayerPrefs.GetString("PlayerName", "Kobold");
 			KoboldEventHandler.StartKoboldMissionPressed(playerName, "QuickMatch");
 		}
+		
+		private void OnCharactersPressed()
+		{
+			SceneMgr.Instance.LoadScene(nameof(GameScenes.CharactersScene), null);
+		}
 
 		private void OnSettingsPressed()
 		{
@@ -87,6 +97,11 @@ namespace Kobold.UI
 #else
             Application.Quit();
 #endif
+		}
+
+		private void OnAnimationPressed()
+		{
+			
 		}
 		
 		private void OnSocialHubConnected(Task task, string sessionName)

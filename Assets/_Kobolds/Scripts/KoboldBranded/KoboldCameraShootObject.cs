@@ -9,6 +9,7 @@ namespace Kobold
 		[SerializeField] private Rigidbody _toShootPrefab;
 		[SerializeField] private float _velocity = 10f;
 		[SerializeField] private int _floor = -10;
+		[SerializeField] private AudioSource _shootingSound;
 		private Camera _cam;
 
 		private readonly List<Rigidbody> _created = new();
@@ -50,6 +51,8 @@ namespace Kobold
 					r.position = transform.position + dir;
 
 					r.AddForce(dir * _velocity, ForceMode.VelocityChange);
+					
+					_shootingSound.Play();
 				}
 			}
 		}

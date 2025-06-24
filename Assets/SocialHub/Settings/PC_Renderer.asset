@@ -1,5 +1,22 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4520141588434998872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f513a53c9ad43a3860c8a56ea7dd26b, type: 3}
+  m_Name: SurfaceFill
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: 08311ab6804f14c80b40fb08b149a6a7, type: 2}
+  shaders:
+    mask: {fileID: 4800000, guid: 7db39fa69b214149be63e199c01483e7, type: 3}
+    fill: {fileID: -6465566751694194690, guid: 37e37d4fece9f421f8a99286f525bf80, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26,17 +43,24 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
-  m_RendererFeatureMap: ad6b866f10d7b46c
+  - {fileID: 2876020511255199464}
+  - {fileID: 717345061836551536}
+  - {fileID: 7692127495399795137}
+  - {fileID: -4520141588434998872}
+  m_RendererFeatureMap: ad6b866f10d7b46ce87e1acc6aade92770f525788885f409c1e951d233edbf6aa8a9dc8e2c3b45c1
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
-  m_AssetVersion: 2
+  m_AssetVersion: 3
+  m_PrepassLayerMask:
+    serializedVersion: 2
+    m_Bits: 15871
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 15871
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 15869
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 1
@@ -52,6 +76,66 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &717345061836551536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521933c422ef94aa58e7d435b6f8921a, type: 3}
+  m_Name: WideOutline
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: 0a18db230c77a9c46989671a249b1022, type: 2}
+  shaders:
+    mask: {fileID: 4800000, guid: 1ed7bc804a124d559675facf61722b63, type: 3}
+    silhouette: {fileID: 4800000, guid: 2a1be836d8f24bbb91714e9a51f8fec1, type: 3}
+    silhouetteInstanced: {fileID: 4800000, guid: 85d004b6af6cd48209d21826b2f0a5a3, type: 3}
+    outline: {fileID: 4800000, guid: 90865e175cad4ccd80a2e1965c38f3e9, type: 3}
+--- !u!114 &2876020511255199464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9377bada70366419aa6301068e988aa4, type: 3}
+  m_Name: EdgeDetection
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: 1ef4b9ffebd9bc243bee2515ab0a0aaa, type: 2}
+  shaders:
+    section: {fileID: 4800000, guid: 555b69c4bab64af2aab316a4335ad6be, type: 3}
+    sectionMask: {fileID: 4800000, guid: 66bb1bcc44054ea3bf6082c4d4e9edf9, type: 3}
+    outline: {fileID: 4800000, guid: 0049e25744c864ee4916fc340cf7957f, type: 3}
+--- !u!114 &7692127495399795137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e598cd55476104d909f677d2b056f508, type: 3}
+  m_Name: SoftOutline
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: a1ad306f7a641470b91d3a20c90a234d, type: 2}
+  shaders:
+    mask: {fileID: 4800000, guid: 231df427ffff4fee9202f22ce6a5d357, type: 3}
+    silhouette: {fileID: 4800000, guid: b0e6032b7b104d8db7f40d7f6e743674, type: 3}
+    silhouetteInstanced: {fileID: 4800000, guid: b7b25b6fd39f14aeeba46013a510a40c, type: 3}
+    boxBlur: {fileID: 4800000, guid: d8d4df91388b465aa9a07d27ccc72b73, type: 3}
+    gaussianBlur: {fileID: 4800000, guid: cb6a37cd1abc46e180a83317d8fefb26, type: 3}
+    kawaseBlur: {fileID: 4800000, guid: ead7e4745cd94d22beaeeea69ae381a7, type: 3}
+    dilate: {fileID: 4800000, guid: a987f6629a694e19a74290edccde4040, type: 3}
+    outline: {fileID: 4800000, guid: b0cf66d628f541279229be85e2c31db3, type: 3}
 --- !u!114 &7833122117494664109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,12 +162,3 @@ MonoBehaviour:
     BlurQuality: 0
     Falloff: 100
     SampleCount: -1
-  m_BlueNoise256Textures:
-  - {fileID: 2800000, guid: 36f118343fc974119bee3d09e2111500, type: 3}
-  - {fileID: 2800000, guid: 4b7b083e6b6734e8bb2838b0b50a0bc8, type: 3}
-  - {fileID: 2800000, guid: c06cc21c692f94f5fb5206247191eeee, type: 3}
-  - {fileID: 2800000, guid: cb76dd40fa7654f9587f6a344f125c9a, type: 3}
-  - {fileID: 2800000, guid: e32226222ff144b24bf3a5a451de54bc, type: 3}
-  - {fileID: 2800000, guid: 3302065f671a8450b82c9ddf07426f3a, type: 3}
-  - {fileID: 2800000, guid: 56a77a3e8d64f47b6afe9e3c95cb57d5, type: 3}
-  m_Shader: {fileID: 4800000, guid: 0849e84e3d62649e8882e9d6f056a017, type: 3}

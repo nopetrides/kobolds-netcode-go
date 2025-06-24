@@ -147,6 +147,8 @@ namespace Kobold.Net
 
 			if (latchTarget.TryGet(out var target))
 				Debug.Log($"[{name}] Remote player latched to {target.name} at {worldAttachPos}");
+			
+			
 		}
 
 		/// <summary>

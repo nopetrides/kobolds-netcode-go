@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Kobold.Bosses;
 using Kobold.Net;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,7 +44,6 @@ namespace Kobold.UI
 
 		// Stores the elapsed time for the timer.
 		private float _elapsedTime;
-		private KoboldGameplayEvents _gameplayEvents;
 		private KoboldLatcher _latcher;
 
 		// Dictionary to map latch states to their corresponding UI Images for efficient access.
@@ -96,7 +94,6 @@ namespace Kobold.UI
     
 			_bossController = bossController;
 			_networkController = networkController;
-			_gameplayEvents = gameplayEvents;
 			_latcher = latcher;
 
 			if (_networkController != null)

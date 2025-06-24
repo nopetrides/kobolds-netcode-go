@@ -89,7 +89,6 @@ namespace Kobold
 		{
 			FlopInput(value.isPressed);
 		}
-		
 #endif
 		
 		private void MoveInput(Vector2 newMoveDirection)

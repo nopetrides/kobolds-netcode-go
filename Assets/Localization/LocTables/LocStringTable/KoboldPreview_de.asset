@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: KoboldPreview_de
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: de
+  m_SharedData: {fileID: 11400000, guid: 3ddd5f788f8fa1448b6dc3fae41e7a86, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 587994079232
+    m_Localized: de
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47410725101568
+    m_Localized: Sprache
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47783430955008
+    m_Localized: "Kann auch \xFCber das Einstellungsmen\xFC ge\xE4ndert werden"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661985019404288
+    m_Localized: weitermachen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10984188911616
+    m_Localized: "\rVerwenden Sie die Pfeiltasten der Tastatur (+ STRG f\xFCr Shapekeys)
+      oder die GUI-Schaltfl\xE4chen oben, um Kobold/Animation zu \xE4ndern"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10079917940736
+    m_Localized: Lebhaftigkeit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9415804428288
+    m_Localized: Segen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10331651678208
+    m_Localized: "Gef\xFChl"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10579325329408
+    m_Localized: Kamera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12875979399168
+    m_Localized: "<b><kg>Gnade der K\xF6nigin:</kg></b>\\nEinige wenige Kobolde sind
+      mit der Gabe gesegnet, die <kg>Fl\xFCgel</kg> echter Drachen zu erben. Bekannt
+      als <i>\"Urds\"</i> werden sie als Zeichen der Gunst der Drachenf\xFCrsten
+      hoch gesch\xE4tzt, doch die Aufmerksamkeit steigt ihnen meist zu Kopf."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12370028896256
+    m_Localized: "<b><kr>General der K\xF6nigin:</kr></b>\\nAllesk\xF6nner, Meister
+      in nichts. Diese Kobolde sind die St\xFCtze der Streitkr\xE4fte. Ohne \xFCbernat\xFCrliche
+      Gabe muss der durchschnittliche Kobold Verstand und<kr> Teamwork</kr> einsetzen,
+      um Hindernisse zu \xFCberwinden."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12632269365248
+    m_Localized: "\r<b><ky>Die Gabe der K\xF6nigin:</ky></b>\\nDiese Zauberer sind
+      mit einem Fragment drakonischer Magie gesegnet und <ky>wenden das Geheimnisvolle</ky>
+      gegen ihre Feinde an. Ihre Begabung f\xFCr Magie macht sie exzentrisch und
+      kann andere Kobolde st\xF6ren."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12960939220992
+    m_Localized: "\r<b><kb>Wache der K\xF6nigin:</kb></b>\\nDie <kb>h\xE4rtesten</kb>
+      Kobolde sind f\xFCr den Schutz der wichtigsten Dinge des Stammes verantwortlich:
+      der Brutst\xE4tte und des Schatzes. Sie sind aber immer noch Kobolde und daher
+      ziemlich schlecht in diesem Job."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978407515004928
+    m_Localized: Die eier sind weg?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978559990538240
+    m_Localized: Wie? Warum?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978670103601152
+    m_Localized: "Auch die gl\xE4nzenden Sachen..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978825984909312
+    m_Localized: Kampfzeit!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3350680822456320
+    m_Localized: "\rEier!!!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3352328202461184
+    m_Localized: "<shake>GEH RAUS UND HOL DIE <rainb>EIER</rainb> ZUR\xDCCK!!!</shake>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4750923250114560
+    m_Localized: "Zur\xFCckkehren"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38609686306332672
+    m_Localized: Beenden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38610954915520512
+    m_Localized: Einstellungen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38611576872083456
+    m_Localized: Charaktere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612092972802048
+    m_Localized: Schnelle Mission
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612487635836928
+    m_Localized: Social-Hub
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613356758540288
+    m_Localized: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613596005834752
+    m_Localized: Grafik
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613775886950400
+    m_Localized: Alles stummsch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614026286899200
+    m_Localized: "Gesamtlautst\xE4rke"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614223524044800
+    m_Localized: Musik
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614420249485312
+    m_Localized: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614659706494976
+    m_Localized: Vollbild
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614933397413888
+    m_Localized: "Aufl\xF6sung"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38615174511173632
+    m_Localized: "Qualit\xE4t"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

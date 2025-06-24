@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67fa42c8932c444987f987ea1e2f4fcb, type: 3}
+  m_Name: Edge Detection Settings
+  m_EditorClassIdentifier: 
+  injectionPoint: 450
+  showInSceneView: 1
+  debugView: 0
+  debugSectionsRaw: 0
+  discontinuityInput: 3
+  depthSensitivity: 1
+  depthDistanceModulation: 0.064
+  grazingAngleMaskPower: 0.076
+  grazingAngleMaskHardness: 8.2
+  normalSensitivity: 0.208
+  luminanceSensitivity: 0
+  objectId: 1
+  particles: 0
+  sectionsMask: 0
+  depthMask: 1
+  normalsMask: 1
+  luminanceMask: 1
+  sectionMapInput: 0
+  sectionTexture: {fileID: 0}
+  sectionTextureUvSet: 0
+  sectionTextureChannel: 0
+  vertexColorChannel: 0
+  kernel: 0
+  outlineThickness: 3
+  scaleWithResolution: 1
+  referenceResolution: 2
+  customResolution: 0
+  backgroundColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  overrideColorInShadow: 0
+  outlineColorShadow: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 1}
+  fillColor: {r: 0.5566038, g: 0, b: 0, a: 1}
+  fadeByDistance: 0
+  distanceFadeColor: {r: 0, g: 0, b: 0, a: 0}
+  distanceFadeStart: 115.2
+  distanceFadeDistance: 10
+  fadeByHeight: 0
+  heightFadeColor: {r: 0, g: 0, b: 0, a: 0}
+  heightFadeStart: 1
+  heightFadeDistance: 0.5
+  blendMode: 0
+  sectionMapPrecision: 1
+  sectionMapClearValue: 0
+  additionalSectionPasses: []
+  SectionRenderingLayer:
+    serializedVersion: 0
+    m_Bits: 1
+  showSectionMapSection: 1
+  showDiscontinuitySection: 1
+  showOutlineSection: 1

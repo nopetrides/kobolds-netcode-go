@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: KoboldPreview_es
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: 3ddd5f788f8fa1448b6dc3fae41e7a86, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 587994079232
+    m_Localized: es
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9415804428288
+    m_Localized: "Bendici\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10079917940736
+    m_Localized: "Animaci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10331651678208
+    m_Localized: "Emoci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10579325329408
+    m_Localized: "C\xE1mara"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10984188911616
+    m_Localized: "\rUtilice las teclas de flecha del teclado (+ CTRL para teclas
+      de forma) o los botones de la GUI de arriba para cambiar el kobold/animaci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12370028896256
+    m_Localized: "\r<b><kr>General de la Reina:</kr></b>\\n Aprendiz de todo, maestro
+      de nada. Estos kobolds son el pilar de las fuerzas. Sin ning\xFAn don sobrenatural,
+      el kobold promedio debe usar su ingenio y<kr> trabajo en equipo</kr> para superar
+      los obst\xE1culos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12632269365248
+    m_Localized: "<b><ky>Dotados de la Reina:</ky></b>\\nBendecidos con un fragmento
+      de magia drac\xF3nica, estos hechiceros <ky>ejercen lo arcano</ky> contra sus
+      enemigos. Su sinton\xEDa con la magia los vuelve exc\xE9ntricos y pueden perturbar
+      a otros k\xF3bolds."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12875979399168
+    m_Localized: "\r<b><kg>Gracia de la Reina:</kg></b>\\nAlgunos k\xF3bolds pueden
+      ser bendecidos con las alas de los verdaderos dragones. Conocidos como <i>\"Urds\"</i>,
+      son muy estimados como s\xEDmbolo de favor ante los Se\xF1ores Drag\xF3n, pero
+      la atenci\xF3n suele recaer sobre sus cabezas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12960939220992
+    m_Localized: "\r<b><kb>Guardia de la Reina:</kb></b>\\nLos k\xF3bolds <kb>m\xE1s
+      duros</kb> tienen la responsabilidad de proteger los objetos m\xE1s importantes
+      de la tribu: el criadero y el tesoro. Aun as\xED, siguen siendo k\xF3bolds,
+      as\xED que son bastante malos en su trabajo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47410725101568
+    m_Localized: Idioma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47783430955008
+    m_Localized: "Tambi\xE9n se puede cambiar desde el men\xFA de configuraci\xF3n."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661985019404288
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978407515004928
+    m_Localized: "\xBFSe acabaron los huevos?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978559990538240
+    m_Localized: "\r\xBFC\xF3mo? \xBFPor qu\xE9?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978670103601152
+    m_Localized: Los tesoros tambien...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978825984909312
+    m_Localized: "\xA1Es hora de luchar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3350680822456320
+    m_Localized: "\xA1\xA1\xA1Huevos!!!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3352328202461184
+    m_Localized: "<shake>\xA1SALGAN Y RECUPEREN <rainb>LOS HUEVOS!</shake>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4750923250114560
+    m_Localized: Devolver
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38609686306332672
+    m_Localized: Salir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38610954915520512
+    m_Localized: "Configuraci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38611576872083456
+    m_Localized: Personajes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612092972802048
+    m_Localized: "Misi\xF3n r\xE1pida"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612487635836928
+    m_Localized: Centro social
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613356758540288
+    m_Localized: Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613596005834752
+    m_Localized: "Gr\xE1ficos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613775886950400
+    m_Localized: Silenciar todo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614026286899200
+    m_Localized: Principal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614223524044800
+    m_Localized: "M\xFAsica"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614420249485312
+    m_Localized: Sonido
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614659706494976
+    m_Localized: Pantalla completa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614933397413888
+    m_Localized: "Resoluci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38615174511173632
+    m_Localized: Calidad
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

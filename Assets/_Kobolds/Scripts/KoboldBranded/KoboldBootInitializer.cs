@@ -4,6 +4,9 @@ using Kobold.Services;
 using Kobold.UI;
 using Kobold.UI.Theming;
 using Kobold.Vivox;
+using Kobolds.Runtime;
+using Kobolds.UI;
+using P3T.Scripts.Managers;
 using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -104,8 +107,7 @@ namespace Kobold.GameManagement
 			// Step 4: Wait for Services Helper to initialize
 			if (_requireServicesHelper) yield return WaitForServicesHelper();
 			
-			// The main menu is loaded by the services helper once it finishes.
-			LoadMainMenu();
+			SceneManager.LoadScene(nameof(GameScenes.Bootloader));
 		}
 
 		/// <summary>

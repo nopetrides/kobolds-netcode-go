@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: LanguageSelect
+  m_EditorClassIdentifier: 
+  m_GroupName: LanguageSelect
+  m_GUID: 9d99b48b74ee1904ebc922fb40ca3b57
+  m_SerializeEntries:
+  - m_GUID: 8e0f691f31c2a104a85d66668ec399b9
+    m_Address: LanguageSelectMenu
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LangSelect
+    - Menus
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc367bf7953ac394e87c4194cbd7eca3
+    m_Address: LanguageSelectScene
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - LangSelect
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 594177e892c4b3f43b4f2b22f9dae243, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 60b377082f363be4dbb4797ea9db41b3, type: 2}
+    - {fileID: 11400000, guid: a2b07de5598a95b4d8ccea7875140be1, type: 2}

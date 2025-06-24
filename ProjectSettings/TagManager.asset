@@ -6,6 +6,9 @@ TagManager:
   tags:
   - CinemachineTarget
   - PickUpItem
+  - CookingPot
+  - LightingBaked
+  - LightingRealtime
   layers:
   - Default
   - TransparentFX
@@ -37,7 +40,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Outline
   - 
   m_SortingLayers:
   - name: Default

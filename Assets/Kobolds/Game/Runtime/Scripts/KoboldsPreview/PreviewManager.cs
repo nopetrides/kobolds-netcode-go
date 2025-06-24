@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
 using Febucci.UI;
+using Kobold;
 using Kobolds.Runtime;
 using Kobolds.UI;
 using P3T.Scripts.Managers;
@@ -56,6 +57,8 @@ namespace P3T.Scripts.KoboldsPreview
 		[SerializeField] private TMPro.TMP_Dropdown DropdownShapeKey;
 		[SerializeField] private TypewriterByCharacter DescriptionText;
 
+		[SerializeField] private Transform CameraPivot;
+
 		private int _koboldIndex;
 		
 		private Sequence _slideInSequence;
@@ -90,38 +93,38 @@ namespace P3T.Scripts.KoboldsPreview
 			ChangeAnimation();
 			ChangeShapeKey();
 		}
-
-		void Update()
-		{
-			if (Input.GetKeyDown("left"))
-			{
-				PrevKobold();
-			}
-			else if (Input.GetKeyDown("right"))
-			{
-				NextKobold();
-			}
-			else if (Input.GetKeyDown("up")
-					&& (Input.GetKey(KeyCode.LeftControl)
-						|| Input.GetKey(KeyCode.RightControl)))
-			{
-				NextShapeKey();
-			}
-			else if (Input.GetKeyDown("down")
-					&& (Input.GetKey(KeyCode.LeftControl)
-						|| Input.GetKey(KeyCode.RightControl)))
-			{
-				PrevShapeKey();
-			}
-			else if (Input.GetKeyDown("up"))
-			{
-				NextAnimation();
-			}
-			else if (Input.GetKeyDown("down"))
-			{
-				PrevAnimation();
-			}
-		}
+		//
+		// void Update()
+		// {
+		// 	if (Input.GetKeyDown("left"))
+		// 	{
+		// 		PrevKobold();
+		// 	}
+		// 	else if (Input.GetKeyDown("right"))
+		// 	{
+		// 		NextKobold();
+		// 	}
+		// 	else if (Input.GetKeyDown("up")
+		// 			&& (Input.GetKey(KeyCode.LeftControl)
+		// 				|| Input.GetKey(KeyCode.RightControl)))
+		// 	{
+		// 		NextShapeKey();
+		// 	}
+		// 	else if (Input.GetKeyDown("down")
+		// 			&& (Input.GetKey(KeyCode.LeftControl)
+		// 				|| Input.GetKey(KeyCode.RightControl)))
+		// 	{
+		// 		PrevShapeKey();
+		// 	}
+		// 	else if (Input.GetKeyDown("up"))
+		// 	{
+		// 		NextAnimation();
+		// 	}
+		// 	else if (Input.GetKeyDown("down"))
+		// 	{
+		// 		PrevAnimation();
+		// 	}
+		// }
 
 
 		public void NextKobold()
@@ -203,23 +206,8 @@ namespace P3T.Scripts.KoboldsPreview
 			if (animator != null)
 			{
 				int index = DropdownAnimation.value;
-
-				// If Spin/Splash animation
-				if (index == 15)
-				{
-					if (animator.HasState(0, Animator.StringToHash("Spin")))
-					{
-						animator.Play("Spin");
-					}
-					else if (animator.HasState(0, Animator.StringToHash("Splash")))
-					{
-						animator.Play("Splash");
-					}
-				}
-				else
-				{
-					animator.Play(DropdownAnimation.options[index].text);
-				}
+				
+				animator.Play(DropdownAnimation.options[index].text);
 			}
 		}
 
@@ -252,9 +240,19 @@ namespace P3T.Scripts.KoboldsPreview
 			}
 		}
 
+		public void ButtonRotateLeft()
+		{
+			CameraPivot.Rotate(Vector3.up * -15);
+		}
+
+		public void ButtonRotateRight()
+		{
+			CameraPivot.Rotate(Vector3.up * 15);
+		}
+
 		public void ButtonReturn()
 		{
-			SceneMgr.Instance.LoadScene(GameScenes.LanguageSelectScene.ToString(), typeof(LanguageSelectMenu));
+			SceneMgr.Instance.LoadScene(nameof(SceneNames.KoboldMainMenu), null);
 		}
 	}
 }

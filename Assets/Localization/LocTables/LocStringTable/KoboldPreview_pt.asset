@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: KoboldPreview_pt
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: pt
+  m_SharedData: {fileID: 11400000, guid: 3ddd5f788f8fa1448b6dc3fae41e7a86, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 587994079232
+    m_Localized: pt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10579325329408
+    m_Localized: "C\xE2mera"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10984188911616
+    m_Localized: "Use as setas do teclado (+ CTRL para shapekeys) ou os bot\xF5es
+      da GUI acima para alterar o kobold/anima\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12370028896256
+    m_Localized: "\r<b><kr>General da Rainha:</kr></b>\\nFaze-tudo, mas n\xE3o \xE9
+      mestre de nada. Esses kobolds s\xE3o o esteio das for\xE7as. Sem nenhum dom
+      sobrenatural, o kobold comum deve usar intelig\xEAncia e<kr> trabalho em equipe</kr>
+      para superar obst\xE1culos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12632269365248
+    m_Localized: "\r<b><ky>Dotados da Rainha:</ky></b>\\nAben\xE7oados com um fragmento
+      de magia drac\xF4nica, esses feiticeiros <ky>empunham o arcano</ky> contra
+      seus inimigos. Sua sintonia com a magia os torna exc\xEAntricos e podem perturbar
+      outros kobolds."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12875979399168
+    m_Localized: "<b><kg>Gra\xE7a da Rainha:</kg></b>\\nAlguns kobolds raros podem
+      ser aben\xE7oados com a heran\xE7a das <kg>asas</kg> de drag\xF5es verdadeiros.
+      Conhecidos como <i>\"Urds\"</i> Eles s\xE3o tidos em alta estima como um sinal
+      de favor com os Lordes Drag\xF5es, mas a aten\xE7\xE3o geralmente vai para
+      suas cabe\xE7as."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12960939220992
+    m_Localized: "<b><kb>Guarda da Rainha:</kb></b>\\nOs kobolds <kb>mais dur\xF5es</kb>
+      recebem responsabilidades de proteger as coisas mais importantes para a tribo:
+      a incubadora e o tesouro. Eles ainda s\xE3o kobolds, ent\xE3o s\xE3o muito
+      ruins no trabalho."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47410725101568
+    m_Localized: Linguagem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47783430955008
+    m_Localized: "\rTamb\xE9m pode ser alterado no menu de configura\xE7\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 661985019404288
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10079917940736
+    m_Localized: "Anima\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9415804428288
+    m_Localized: "Benef\xEDcio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10331651678208
+    m_Localized: "Emo\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978407515004928
+    m_Localized: Os ovos acabaram?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978559990538240
+    m_Localized: Como? Por que?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978670103601152
+    m_Localized: "Os brilhantes tamb\xE9m..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2978825984909312
+    m_Localized: C'est l'heure du combat!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3350680822456320
+    m_Localized: "\rOvos!!!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3352328202461184
+    m_Localized: "\r<shake>V\xC1 L\xC1 E PEGUEM DE VOLTA OS <rainb>OVOS</rainb>!!!</shake>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4750923250114560
+    m_Localized: Retornar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38609686306332672
+    m_Localized: Sair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38610954915520512
+    m_Localized: "Configura\xE7\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38611576872083456
+    m_Localized: Personagens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612092972802048
+    m_Localized: "Miss\xE3o r\xE1pida"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38612487635836928
+    m_Localized: Hub Social
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613356758540288
+    m_Localized: "\xC1udio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613596005834752
+    m_Localized: "Gr\xE1ficos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38613775886950400
+    m_Localized: Silenciar tudo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614026286899200
+    m_Localized: Mestre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614223524044800
+    m_Localized: "M\xFAsica"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614420249485312
+    m_Localized: Som
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614659706494976
+    m_Localized: Tela cheia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38614933397413888
+    m_Localized: "Resolu\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38615174511173632
+    m_Localized: Qualidade
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

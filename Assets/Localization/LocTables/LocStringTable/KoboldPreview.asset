@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be51871efa6c3e4eae1703925c8f5ac, type: 3}
+  m_Name: KoboldPreview
+  m_EditorClassIdentifier: 
+  m_SharedTableData: {fileID: 11400000, guid: 3ddd5f788f8fa1448b6dc3fae41e7a86, type: 2}
+  m_Tables:
+  - {fileID: 11400000, guid: 669b0c4351fac334d8ccb9913710af87, type: 2}
+  - {fileID: 11400000, guid: 86403c6fb8ef6284daa4123bae803147, type: 2}
+  - {fileID: 11400000, guid: 4d137a854baa5f04fb895bad04e6e9de, type: 2}
+  - {fileID: 11400000, guid: 8e9e60f4fd2abcd4e9b33cd9203a58d5, type: 2}
+  - {fileID: 11400000, guid: 2c056612793fe3446b44ce469adb9762, type: 2}
+  - {fileID: 11400000, guid: 4f470de815b857b41988d66b418f3dd3, type: 2}
+  - {fileID: 11400000, guid: affe0c0fe5c1a4b679fdcf7497ad3be4, type: 2}
+  m_Extensions: []
+  m_Group: String Table
+  references:
+    version: 2
+    RefIds: []

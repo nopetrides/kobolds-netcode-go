@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: 
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: b091f7d05b100e04aaa871b73df64562
+  m_SerializeEntries:
+  - m_GUID: 27c310417904f2946a28de6aea077f43
+    m_Address: Assets/Kobolds/P3T/Runtime/Localization/LocTables/LocAssetTable/AssetLoc
+      Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ddd5f788f8fa1448b6dc3fae41e7a86
+    m_Address: Assets/Kobolds/P3T/Runtime/Localization/KoboldPreview Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 594177e892c4b3f43b4f2b22f9dae243, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 51255ddf2d01ed74aaf8911d9a0abed0, type: 2}
+    - {fileID: 11400000, guid: 419736fd436ba9243860ebfdf1bb7ff4, type: 2}

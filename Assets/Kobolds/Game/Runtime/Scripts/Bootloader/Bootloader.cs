@@ -1,9 +1,11 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Febucci.UI;
+using Kobold;
 using Kobolds.Runtime.Managers;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 namespace Kobolds.Runtime
@@ -17,8 +19,27 @@ namespace Kobolds.Runtime
 		[SerializeField] private float OutDelay = 0.1f;
 		
 		[SerializeField] private TypewriterByCharacter StartingTypewriter;
+		
+		[SerializeField] private List<string> AllowedSkipActions = new() {"Escape", "Submit", "Cancel", "Fire", "Click"};
 
-		Sequence _sequence;
+		private Sequence _sequence;
+		
+		private readonly List<InputAction> _subscribedActions = new();
+		
+		// Start is called once before the first execution of Update after the MonoBehaviour is created
+		private void Start()
+		{
+			foreach (var map in KoboldInputSystemManager.Instance.NewInputSystem.actions.actionMaps)
+			{
+				foreach (var action in map.actions)
+				{
+					if (!AllowedSkipActions.Contains(action.name)) continue;
+					var a = action; // Capture local copy for closure
+					a.performed += OnAnyInput;
+					_subscribedActions.Add(a);
+				}
+			}
+		}
 		
 		private void OnEnable()
 		{
@@ -57,14 +78,25 @@ namespace Kobolds.Runtime
 		{
 			Instantiate(GameLoader);
 		}
-
-		public void Update()
+		
+		
+		private void OnDestroy()
 		{
-			if (Input.anyKeyDown)
-			{
-				_sequence.Kill();
-				IntroComplete();
-			}
+			// Clean up input listeners
+			foreach (var action in _subscribedActions) action.performed -= OnAnyInput;
+
+			_subscribedActions.Clear();
+		}
+
+		private void OnAnyInput(InputAction.CallbackContext ctx)
+		{
+			Interrupt();
+		}
+
+		private void Interrupt()
+		{
+			_sequence.Kill();
+			IntroComplete();
 		}
 	}
 }

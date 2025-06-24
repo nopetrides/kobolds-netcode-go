@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: AssetLoc Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: AssetLoc
+  m_TableCollectionNameGuidString: 27c310417904f2946a28de6aea077f43
+  m_Entries:
+  - m_Id: 10207731712
+    m_Key: LanguageFlag
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items:
+    - rid: 2373895306591338952
+  m_KeyGenerator:
+    rid: 2373895306591338951
+  references:
+    version: 2
+    RefIds:
+    - rid: 2373895306591338951
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1741579941350
+    - rid: 2373895306591338952
+      type: {class: AssetTypeMetadata, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries:
+        - m_KeyId: 10207731712
+          m_TableCodes:
+          - pt
+          - en
+          - fr
+          - de
+          - zh
+          - es
+        m_TypeString: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null

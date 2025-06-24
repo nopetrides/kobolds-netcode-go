@@ -17,26 +17,34 @@ namespace Kobolds.Runtime.Managers
 		{
 			base.Awake();
 			if (Instance == this)
+			{
 				DontDestroyOnLoad(gameObject);
-			
-			_ = LoadDefaultAssets();
+				_ = LoadDefaultAssets();
+			}
 		}
 
 		private async Task LoadDefaultAssets()
 		{
-			var prefabs = await P3TAssetLoader.LoadAndReturnStoredAssetsByLabelAsync(DefaultLoadAssetLabels);
-
-			foreach (var go in prefabs)
+			try
 			{
-				Instantiate(go, transform);
-			}
+				var prefabs = await P3TAssetLoader.LoadAndReturnStoredAssetsByLabelAsync(DefaultLoadAssetLabels);
 
-			if (SceneMgr.Instance == null)
-			{
-				gameObject.AddComponent<SceneMgr>();
+				foreach (var go in prefabs)
+				{
+					Instantiate(go, transform);
+				}
+
+				if (SceneMgr.Instance == null)
+				{
+					gameObject.AddComponent<SceneMgr>();
+				}
+
+				SceneMgr.Instance.LoadScene(nameof(GameScenes.LanguageSelectScene), typeof(LanguageSelectMenu));
 			}
-			
-			SceneMgr.Instance.LoadScene(GameScenes.LanguageSelectScene.ToString(), typeof(LanguageSelectMenu));
+			catch (System.Exception e)
+			{
+				Debug.LogError($"Error loading default assets: {e.Message}");
+			}
 		}
 	}
 }

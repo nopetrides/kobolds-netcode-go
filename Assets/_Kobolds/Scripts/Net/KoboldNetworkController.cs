@@ -42,8 +42,6 @@ namespace Kobold.Net
 		[SerializeField] private Transform _cameraTrackingObject;
 		[SerializeField] private Transform _ragdollTrackingObject;
 
-		private bool _isPaused;
-
 		// Used to track self-authored state changes
 		private KoboldNetworkState _lastWrittenState;
 
@@ -83,20 +81,17 @@ namespace Kobold.Net
 
 			if (KoboldInputSystemManager.Instance.Inputs.Escape)
 			{
-				_isPaused = !_isPaused;
-				if (_isPaused)
+				if (KoboldInputSystemManager.Instance.IsInGameplayMode)
 				{
 					KoboldCanvasManager.Instance.OnPlayerPause();
 					KoboldInputSystemManager.Instance.EnableUIMode();
 				}
-				else
+				else if (KoboldInputSystemManager.Instance.IsInUIMode)
 				{
 					KoboldCanvasManager.Instance.OnPlayerUnpause();
-					KoboldInputSystemManager.Instance.EnableGameplayMode();
 				}
+				KoboldInputSystemManager.Instance.Inputs.Escape = false;
 			}
-
-			KoboldInputSystemManager.Instance.Inputs.Escape = false;
 		}
 
 		private void FixedUpdate()
@@ -370,6 +365,7 @@ namespace Kobold.Net
 			var spawnPoint = KoboldPlayerSpawnPoints.Instance.GetRandomSpawnPoint();
 
 			if (CurrentLatcher.IsLatched) CurrentLatcher.ToggleJawGrip();
+			transform.position = spawnPoint.position;
 			_ragdollAnimator.User_Teleport(spawnPoint.position);
 
 			SetHealth(_networkState.Value.MaxHealth);
