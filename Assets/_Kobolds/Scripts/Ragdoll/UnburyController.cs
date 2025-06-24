@@ -41,11 +41,8 @@ namespace Kobold
 		
 		[SerializeField] private KoboldNetworkController _networkController;
 
-		private PlayerInput Input { get; set; }
-
 		[SerializeField]
 		private List<string> AllowedStruggleActions = new() {"Move", "Jump", "Sprint", "Aim", "Fire"};
-
 
 		/// <summary>
 		///     Duration of the struggle phase before completion, measured in seconds.
@@ -143,9 +140,10 @@ namespace Kobold
 		/// </summary>
 		private void Start()
 		{
-			if (!Ragdoll) Ragdoll = GetComponent<RagdollAnimator2>();
-			if (!MainRigidbody) MainRigidbody = GetComponent<Rigidbody>();
-			if (!Input) Input = KoboldInputSystemManager.Instance.NewInputSystem;
+			if (Ragdoll == null)
+				Debug.LogError($"[{name}] No ragdoll animator found on {gameObject.name}");
+			if (MainRigidbody == null)
+				Debug.LogError($"[{name}] No main rigidbody found on {gameObject.name}");
 
 			// Only set state if we're in an uninitialized state
 			// This prevents overriding network-synced states
@@ -173,7 +171,7 @@ namespace Kobold
 				if (MovementController) MovementController.enabled = false;
 
 				// Bind all inputs to struggle
-				foreach (var map in Input.actions.actionMaps)
+				foreach (var map in KoboldInputSystemManager.Instance.NewInputSystem.actions.actionMaps)
 				{
 					foreach (var action in map.actions)
 					{

@@ -7,6 +7,8 @@ namespace Kobold.Audio
 	/// </summary>
 	public class KoboldLatchAudioManager : MonoBehaviour
 	{
+		[SerializeField] private KoboldLatcher _latcher;
+
 		[Header("Audio Sources")]
 		[SerializeField] private AudioSource _audioSource;
 		
@@ -22,19 +24,15 @@ namespace Kobold.Audio
 		[SerializeField] private float _latchStartVolume = 0.7f;
 		[SerializeField] private float _latchEndVolume = 0.5f;
 
-		private KoboldLatcher _latcher;
-
 		private void Start()
 		{
 			// Get or create audio source
 			if (_audioSource == null)
-				_audioSource = GetComponent<AudioSource>();
-			
-			if (_audioSource == null)
-				_audioSource = gameObject.AddComponent<AudioSource>();
+				Debug.LogError($"[{name}] No audio source found on {gameObject.name}");
 
 			// Find latcher component
-			_latcher = GetComponent<KoboldLatcher>();
+			if (_latcher == null)
+				Debug.LogError($"[{name}] No latcher found on {gameObject.name}");
 			
 			if (_latcher != null)
 				_latcher.OnLatchStateChanged += OnLatchStateChanged;

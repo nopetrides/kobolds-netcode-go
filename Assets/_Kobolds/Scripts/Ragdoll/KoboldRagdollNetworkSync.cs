@@ -31,16 +31,16 @@ namespace Kobold
 			base.OnNetworkSpawn();
 			
 			if (_networkController == null)
-				_networkController = GetComponent<KoboldNetworkController>();
+				Debug.LogError($"[{name}] No network controller found on {gameObject.name}");
 			
 			if (_stateManager == null)
-				_stateManager = GetComponent<KoboldStateManager>();
+				Debug.LogError($"[{name}] No state manager found on {gameObject.name}");
 			
 			if (_ragdollAnimator == null)
-				_ragdollAnimator = GetComponent<RagdollAnimator2>();
+				Debug.LogError($"[{name}] No ragdoll animator found on {gameObject.name}");
 			
 			if (_latcher == null)
-				_latcher = GetComponent<KoboldLatcher>();
+				Debug.LogError($"[{name}] No latcher found on {gameObject.name}");
 
 			// Subscribe to state changes
 			if (IsOwner)
