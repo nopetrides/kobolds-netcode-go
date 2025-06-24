@@ -15,6 +15,24 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "GripRight",
+                    "type": "Button",
+                    "id": "c12f4e22-cdc3-486c-a45c-55283ebbe9da",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GripLeft",
+                    "type": "Button",
+                    "id": "a8c6fe18-fc6c-467a-9384-d3a52ed9e0d1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Look",
                     "type": "Value",
                     "id": "2690c379-f54d-45be-a724-414123833eb4",
@@ -204,6 +222,50 @@
                     "processors": "StickDeadzone",
                     "groups": "Gamepad",
                     "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fafee918-b8b6-4ac1-81c9-4fa0ed37d69e",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardMouse",
+                    "action": "GripRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "061f3116-5c20-4344-be0b-92a870f03c56",
+                    "path": "<XInputController>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox Controller;Gamepad",
+                    "action": "GripRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7644e690-eb73-4115-af84-8b975872532b",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardMouse",
+                    "action": "GripLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f13c8376-b77f-4c9e-83d9-18fb4d33c671",
+                    "path": "<XInputController>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad;Xbox Controller",
+                    "action": "GripLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

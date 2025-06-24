@@ -24,9 +24,9 @@ namespace Kobold
 
 		private void LoadMainMenuScene()
 		{
+			KoboldInputSystemManager.Instance.EnableUIMode();
 			SceneMgr.Instance?.LoadScene(nameof(SceneNames.KoboldMainMenu), null);
 		}
-		
 		
 	}
 }
