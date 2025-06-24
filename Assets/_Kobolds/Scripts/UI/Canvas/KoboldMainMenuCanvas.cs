@@ -12,6 +12,7 @@ namespace Kobold.UI
 	{
 		[SerializeField] private Button _socialHubButton;
 		[SerializeField] private Button _missionButton;
+		[SerializeField] private Button _cinematicButton;
 		[SerializeField] private Button _charactersButton;
 		[SerializeField] private Button _settingsButton;
 		[SerializeField] private Button _quitButton;
@@ -26,6 +27,7 @@ namespace Kobold.UI
 		{
 			_socialHubButton.onClick.AddListener(OnSocialHubPressed);
 			_missionButton.onClick.AddListener(OnMissionPressed);
+			_cinematicButton.onClick.AddListener(OnAnimationPressed);
 			_charactersButton.onClick.AddListener(OnCharactersPressed);
 			_settingsButton.onClick.AddListener(OnSettingsPressed);
 			_quitButton.onClick.AddListener(OnQuitPressed);
@@ -35,6 +37,7 @@ namespace Kobold.UI
 		{
 			_socialHubButton.onClick.RemoveListener(OnSocialHubPressed);
 			_missionButton.onClick.RemoveListener(OnMissionPressed);
+			_cinematicButton.onClick.RemoveListener(OnAnimationPressed);
 			_charactersButton.onClick.RemoveListener(OnCharactersPressed);
 			_settingsButton.onClick.RemoveListener(OnSettingsPressed);
 			_quitButton.onClick.RemoveListener(OnQuitPressed);
@@ -80,12 +83,15 @@ namespace Kobold.UI
 		
 		private void OnCharactersPressed()
 		{
+			if (!_allowInteraction) return;
+			
 			SceneMgr.Instance.LoadScene(nameof(GameScenes.CharactersScene), null);
 		}
 
 		private void OnSettingsPressed()
 		{
 			if (!_allowInteraction) return;
+			
 			OnSettings?.Invoke();
 		}
 	
@@ -101,7 +107,9 @@ namespace Kobold.UI
 
 		private void OnAnimationPressed()
 		{
+			if (!_allowInteraction) return;
 			
+			SceneMgr.Instance.LoadScene(nameof(GameScenes.AnimatedScene), null);
 		}
 		
 		private void OnSocialHubConnected(Task task, string sessionName)

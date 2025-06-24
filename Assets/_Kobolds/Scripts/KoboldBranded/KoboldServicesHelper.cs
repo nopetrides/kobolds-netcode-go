@@ -440,6 +440,7 @@ namespace Kobold.Services
 			Debug.Log("[KoboldServicesHelper.CleanupSocialHubSession]");
 			if (CurrentSocialHubSession != null)
 			{
+				Debug.Log("[KoboldServicesHelper.CleanupSocialHubSession] Cleaning");
 				CurrentSocialHubSession.RemovedFromSession -= OnRemovedFromSocialHubSession;
 				CurrentSocialHubSession.StateChanged -= OnSocialHubSessionStateChanged;
 				CurrentSocialHubSession = null;
@@ -453,10 +454,12 @@ namespace Kobold.Services
 			Debug.Log("[KoboldServicesHelper.CleanupMissionSession]");
 			if (CurrentMissionSession != null)
 			{
+				Debug.Log("[KoboldServicesHelper.CleanupMissionSession] Cleaning");
 				CurrentMissionSession.RemovedFromSession -= OnRemovedFromMissionSession;
 				CurrentMissionSession.StateChanged -= OnMissionSessionStateChanged;
 				CurrentMissionSession = null;
 				KoboldEventHandler.ExitedMission();
+				KoboldEventHandler.ExitedSession();
 			}
 		}
 
