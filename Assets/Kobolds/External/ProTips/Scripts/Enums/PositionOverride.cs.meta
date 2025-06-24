@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ec108dc539e7b9e4c91f89d1b4ab17f7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 44361
+  packageName: ProTips - Tooltip System
+  packageVersion: 1.7.6a
+  assetPath: Assets/ProTips/Scripts/Enums/PositionOverride.cs
+  uploadId: 592825

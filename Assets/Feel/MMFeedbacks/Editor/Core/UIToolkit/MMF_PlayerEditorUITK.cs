@@ -262,7 +262,7 @@ namespace MoreMountains.Feedbacks
 
 		private void OnDisable()
 		{
-			Undo.undoRedoPerformed -= OnUndoRedo;
+			Undo.undoRedoPerformed += OnUndoRedo;
 			EditorApplication.update -= OnEditorUpdate;
 		}
 
@@ -1551,7 +1551,8 @@ namespace MoreMountains.Feedbacks
 		
 		protected virtual void BindListViewToData()
 		{
-			_feedbacksListView.itemsSource = TargetMmfPlayer.FeedbacksList;
+			if (_feedbacksListView != null)
+				_feedbacksListView.itemsSource = TargetMmfPlayer?.FeedbacksList;
 		}
 
 		protected virtual void DrawDebugControls(VisualElement root)

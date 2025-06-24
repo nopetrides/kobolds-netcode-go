@@ -41,12 +41,10 @@ namespace MoreMountains.Tools
 			float pitch = 1f, float panStereo = 0f, float spatialBlend = 0.0f,  
 			bool soloSingleTrack = false, bool soloAllTracks = false, bool autoUnSoloOnEnd = false,  
 			bool bypassEffects = false, bool bypassListenerEffects = false, bool bypassReverbZones = false, int priority = 128, float reverbZoneMix = 1f,
-			float dopplerLevel = 1f, int spread = 0, AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic, float minDistance = 1f, float maxDistance = 500f, 
-			AudioResource audioResourceToPlay = null)
+			float dopplerLevel = 1f, int spread = 0, AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic, float minDistance = 1f, float maxDistance = 500f)
 		{
 			MMSoundManagerPlayOptions options = MMSoundManagerPlayOptions.Default;
 			options.MmSoundManagerTrack = mmSoundManagerTrack;
-			options.AudioResourceToPlay = audioResourceToPlay;
 			options.Location = location;
 			options.Loop = loop;
 			options.Volume = volume;

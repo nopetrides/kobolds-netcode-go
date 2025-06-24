@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5aadfd41133907340b56d6dfae0291ae
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 265779
+  packageName: WAV Easy Volume Editor
+  packageVersion: 1.0
+  assetPath: Assets/Bonnate/WAV Easy Volume Editor/WAVEasyVolumeEditor.cs
+  uploadId: 614359

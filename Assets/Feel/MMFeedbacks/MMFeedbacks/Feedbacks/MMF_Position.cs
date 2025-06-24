@@ -33,9 +33,7 @@ namespace MoreMountains.Feedbacks
 		
 		public enum Spaces { World, Local, RectTransform, Self }
 		public enum Modes { AtoB, AlongCurve, ToDestination }
-		
-		/// whether to animate the scale over time or at a fixed speed
-		public enum MovementModes { Duration, Speed }
+		public enum TimeScales { Scaled, Unscaled }
 
 		[MMFInspectorGroup("Position Target", true, 61, true)]
 		/// the object this feedback will animate the position for
@@ -54,20 +52,9 @@ namespace MoreMountains.Feedbacks
 		[Tooltip("whether or not to randomize remap values between their base and alt values on play, useful to add some variety every time you play this feedback")]
 		[MMFEnumCondition("Mode", (int)Modes.AlongCurve)]
 		public bool RandomizeRemap = false;
-
-		/// whether movement should occur over a fixed duration, or at a certain speed. Note that speed mode will only apply in AtoB and ToDestination modes
-		[Tooltip("whether movement should occur over a fixed duration, or at a certain speed. Note that speed mode will only apply in AtoB and ToDestination modes")]
-		[MMFEnumCondition("Mode", (int)Modes.AtoB, (int)Modes.ToDestination)]
-		public MovementModes MovementMode = MovementModes.Duration;
-			
-		/// the duration of the animation on play 
+		/// the duration of the animation on play
 		[Tooltip("the duration of the animation on play")]
-		[MMFEnumCondition("MovementMode", (int)MovementModes.Duration)]
 		public float AnimatePositionDuration = 0.2f;
-		/// in speed mode, the speed at which we should animate the position
-		[Tooltip("in speed mode, the speed at which we should animate the position")]
-		[MMFEnumCondition("MovementMode", (int)MovementModes.Speed)]
-		public float AnimatePositionSpeed = 1f;
 		
 		/// the MMTween curve definition to use instead of the animation curve to define the acceleration of the movement
 		[Tooltip("the MMTween curve definition to use instead of the animation curve to define the acceleration of the movement")]
@@ -219,22 +206,6 @@ namespace MoreMountains.Feedbacks
 		}
 
 		/// <summary>
-		/// In speed mode, computes the duration the feedback should last based on the distance between the two points and the speed
-		/// </summary>
-		/// <param name="pointA"></param>
-		/// <param name="pointB"></param>
-		/// <param name="duration"></param>
-		/// <returns></returns>
-		protected virtual float HandleSpeedMode(Vector3 pointA, Vector3 pointB, float duration)
-		{
-			if (MovementMode != MovementModes.Speed)
-			{
-				return duration;
-			}
-			return Vector3.Distance(pointA, pointB) / AnimatePositionSpeed;
-		}
-
-		/// <summary>
 		/// On Play, we move our object from A to B
 		/// </summary>
 		/// <param name="position"></param>
@@ -365,8 +336,6 @@ namespace MoreMountains.Feedbacks
 		/// <param name="duration">Time.</param>
 		protected virtual IEnumerator MoveFromTo(GameObject movingObject, Vector3 pointA, Vector3 pointB, float duration, MMTweenType tweenType)
 		{
-			duration = HandleSpeedMode(pointA, pointB, duration);
-			
 			IsPlaying = true;
 			float journey = NormalPlayDirection ? 0f : duration;
 			while ((journey >= 0) && (journey <= duration) && (duration > 0))

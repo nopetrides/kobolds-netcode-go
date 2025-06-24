@@ -1,0 +1,1716 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &382808234827270316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6658229443766719700}
+  - component: {fileID: 8756740648604121741}
+  - component: {fileID: 7203057179846211643}
+  m_Layer: 0
+  m_Name: KoboldYellow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6658229443766719700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382808234827270316}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8019284699030522965}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8756740648604121741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382808234827270316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e2d2bc36931e748864ce538c9b0d54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Ac: {fileID: 4155155762245359151}
+  AnimationName: kobold_Run_1
+  AnimationLayer: -1
+--- !u!114 &7203057179846211643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382808234827270316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e2d2bc36931e748864ce538c9b0d54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Ac: {fileID: 4155155762245359151}
+  AnimationName: Eyes_Trauma
+  AnimationLayer: 1
+--- !u!1001 &7548175428277365694
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6658229443766719700}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_Name
+      value: KoboldRigYellow
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502291272280919419, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00030575247
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502291272280919419, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0034795392
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502291272280919419, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.008166003
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502291272280919419, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.01955755
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502291272280919419, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.013311726
+      objectReference: {fileID: 0}
+    - target: {fileID: 3502291272280919419, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.004588903
+      objectReference: {fileID: 0}
+    - target: {fileID: 5000824800652674112, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_Name
+      value: EyesMesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: c726bf1cb6e34de4d94990574194103d, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -3413719657785069072, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1402005012144774836}
+    - targetCorrespondingSourceObject: {fileID: 3491954900408078806, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8002840239825862177}
+    - targetCorrespondingSourceObject: {fileID: 3010706865664265687, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2831916101423212530}
+    - targetCorrespondingSourceObject: {fileID: 1018520768383841138, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 972813267156211614}
+    - targetCorrespondingSourceObject: {fileID: 3436832224843355937, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 673702092294269692}
+    - targetCorrespondingSourceObject: {fileID: -4429356459644215608, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 784313368056200488}
+  m_SourcePrefab: {fileID: 100100000, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+--- !u!4 &3009642550618147337 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4538251306028817993, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3046476566715364726 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4429356459644215608, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &784313368056200488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046476566715364726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17d77db75be5b64e891e6cd25906ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StimulatorAmount: 1
+  Bones:
+  - transform: {fileID: 7255277769505107500}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  - transform: {fileID: 8842189550435042277}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  CompensationTransform: {fileID: 0}
+  AnimatePhysics: 0
+  UnscaledDelta: 0
+  HideWith: {fileID: 0}
+  FadeOutDistance: 0
+  DistanceFrom: {fileID: 0}
+  AutoHelperOffset: 1
+  HelperOffset: {x: -4.911272e-11, y: 0.0017004979, z: 7.275956e-12}
+  GravityEffectForce: {x: 0, y: 0, z: 0}
+  GravityHeavyness: 2
+  _editor_Title: ' Bones Stimulator'
+  _editor_DrawSetup: 1
+  _editor_DrawTweaking: 1
+  _editor_DisplayedPreset: 0
+  _editor_DrawGizmos: 1
+  DrawGizmos: 1
+  _editor_SelCategory: 0
+  UpdateRate: 0
+  MovementMuscles: 0.75
+  MusclesRapidity: 0.6
+  Damping: 0.4
+  Smoothing: 0.6
+  MildRotation: 0
+  MotionInfluence: 1
+  RotationSpaceMuscles: 1
+  UseEulerRotation: 0
+  EnsureRotation: 0
+  RotationsRapidity: 0.7
+  RotationsDamping: 0.25
+  RotationsSwinginess: 0.6
+  MusclesBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MusclesSimulationSpeed: 1
+  VibrateAmount: 0
+  VibrateSpeed: 6
+  VibrateRange: 2.5
+  VibrateAxis: {x: 1, y: 1, z: 1}
+  VibrateRotation: 1
+  UniRotation: 0
+  VibratePosition: 0
+  VibrateScale: 0
+  DetailedVibrate: 1
+  VibratePosBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateRotBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateScaleBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SqueezingAmount: 0
+  SqueezingSpeed: 15
+  SqueezingMultiply: 0.5
+  SqueezingAxis: {x: 0.2, y: 0.15, z: 0.2}
+  UseCollisions: 0
+  MovementMusclesCollision: 1
+  CollidersScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CollidersScaleMul: 0.1
+  OffsetAllColliders: {x: 0, y: 0, z: 0}
+  DetailedCollision: 1
+  IncludedColliders: []
+  BlendXAxis: 1
+  BlendYAxis: 1
+  BlendZAxis: 1
+  LimitXAxisRotation: {x: -180, y: 180}
+  LimitYAxisRotation: {x: -180, y: 180}
+  LimitZAxisRotation: {x: -180, y: 180}
+  ElasticLimits: 0
+  ElasticLimitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DampenOnLimits: 0
+  InfluenceAxes: {x: 1, y: 1, z: 1}
+--- !u!1 &4062398054022388302 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -3413719657785069072, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1773428102 &1402005012144774836
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4062398054022388302}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_TranslationAtRest: {x: -0.00030575244, y: -0.0034795385, z: 0.008166004}
+  m_RotationAtRest: {x: -2.2480607, y: -1.5160083, z: -0.4962418}
+  m_TranslationOffsets:
+  - {x: 0, y: 0.099999905, z: -0.060000658}
+  m_RotationOffsets:
+  - {x: -32.00001, y: -180, z: -180}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_Active: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 4974742079919303863}
+    weight: 1
+--- !u!95 &4155155762245359151 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4686185069485909609 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3010706865664265687, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2831916101423212530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4686185069485909609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17d77db75be5b64e891e6cd25906ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StimulatorAmount: 1
+  Bones:
+  - transform: {fileID: 6847817332148458754}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  - transform: {fileID: 8621945967012166742}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  CompensationTransform: {fileID: 0}
+  AnimatePhysics: 0
+  UnscaledDelta: 0
+  HideWith: {fileID: 0}
+  FadeOutDistance: 0
+  DistanceFrom: {fileID: 0}
+  AutoHelperOffset: 1
+  HelperOffset: {x: -7.2759585e-12, y: 0.001684511, z: -2.6921038e-10}
+  GravityEffectForce: {x: 0, y: 0, z: 0}
+  GravityHeavyness: 2
+  _editor_Title: ' Bones Stimulator'
+  _editor_DrawSetup: 1
+  _editor_DrawTweaking: 0
+  _editor_DisplayedPreset: 0
+  _editor_DrawGizmos: 1
+  DrawGizmos: 1
+  _editor_SelCategory: 0
+  UpdateRate: 0
+  MovementMuscles: 0.75
+  MusclesRapidity: 0.6
+  Damping: 0.4
+  Smoothing: 0.6
+  MildRotation: 0
+  MotionInfluence: 1
+  RotationSpaceMuscles: 1
+  UseEulerRotation: 0
+  EnsureRotation: 0
+  RotationsRapidity: 0.7
+  RotationsDamping: 0.25
+  RotationsSwinginess: 0.6
+  MusclesBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MusclesSimulationSpeed: 1
+  VibrateAmount: 0
+  VibrateSpeed: 6
+  VibrateRange: 2.5
+  VibrateAxis: {x: 1, y: 1, z: 1}
+  VibrateRotation: 1
+  UniRotation: 0
+  VibratePosition: 0
+  VibrateScale: 0
+  DetailedVibrate: 1
+  VibratePosBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateRotBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateScaleBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SqueezingAmount: 0
+  SqueezingSpeed: 15
+  SqueezingMultiply: 0.5
+  SqueezingAxis: {x: 0.2, y: 0.15, z: 0.2}
+  UseCollisions: 0
+  MovementMusclesCollision: 1
+  CollidersScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CollidersScaleMul: 0.1
+  OffsetAllColliders: {x: 0, y: 0, z: 0}
+  DetailedCollision: 1
+  IncludedColliders: []
+  BlendXAxis: 1
+  BlendYAxis: 1
+  BlendZAxis: 1
+  LimitXAxisRotation: {x: -180, y: 180}
+  LimitYAxisRotation: {x: -180, y: 180}
+  LimitZAxisRotation: {x: -180, y: 180}
+  ElasticLimits: 0
+  ElasticLimitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DampenOnLimits: 0
+  InfluenceAxes: {x: 1, y: 1, z: 1}
+--- !u!4 &4809610042167320963 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -6161017376289256899, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4974742079919303863 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3299260694583232265, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5098992567121643454 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3315708387427707904, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5148341410758048927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3436832224843355937, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &673702092294269692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5148341410758048927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17d77db75be5b64e891e6cd25906ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StimulatorAmount: 1
+  Bones:
+  - transform: {fileID: 5810322075846206930}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  - transform: {fileID: 7182478353134732881}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  CompensationTransform: {fileID: 0}
+  AnimatePhysics: 0
+  UnscaledDelta: 0
+  HideWith: {fileID: 0}
+  FadeOutDistance: 0
+  DistanceFrom: {fileID: 0}
+  AutoHelperOffset: 1
+  HelperOffset: {x: 3.5731768e-10, y: 0.0016757319, z: -2.8342123e-10}
+  GravityEffectForce: {x: 0, y: 0, z: 0}
+  GravityHeavyness: 2
+  _editor_Title: ' Bones Stimulator'
+  _editor_DrawSetup: 1
+  _editor_DrawTweaking: 0
+  _editor_DisplayedPreset: 0
+  _editor_DrawGizmos: 1
+  DrawGizmos: 1
+  _editor_SelCategory: 0
+  UpdateRate: 0
+  MovementMuscles: 0.75
+  MusclesRapidity: 0.6
+  Damping: 0.4
+  Smoothing: 0.6
+  MildRotation: 0
+  MotionInfluence: 1
+  RotationSpaceMuscles: 1
+  UseEulerRotation: 0
+  EnsureRotation: 0
+  RotationsRapidity: 0.7
+  RotationsDamping: 0.25
+  RotationsSwinginess: 0.6
+  MusclesBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MusclesSimulationSpeed: 1
+  VibrateAmount: 0
+  VibrateSpeed: 6
+  VibrateRange: 2.5
+  VibrateAxis: {x: 1, y: 1, z: 1}
+  VibrateRotation: 1
+  UniRotation: 0
+  VibratePosition: 0
+  VibrateScale: 0
+  DetailedVibrate: 1
+  VibratePosBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateRotBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateScaleBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SqueezingAmount: 0
+  SqueezingSpeed: 15
+  SqueezingMultiply: 0.5
+  SqueezingAxis: {x: 0.2, y: 0.15, z: 0.2}
+  UseCollisions: 0
+  MovementMusclesCollision: 1
+  CollidersScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CollidersScaleMul: 0.1
+  OffsetAllColliders: {x: 0, y: 0, z: 0}
+  DetailedCollision: 1
+  IncludedColliders: []
+  BlendXAxis: 1
+  BlendYAxis: 1
+  BlendZAxis: 1
+  LimitXAxisRotation: {x: -180, y: 180}
+  LimitYAxisRotation: {x: -180, y: 180}
+  LimitZAxisRotation: {x: -180, y: 180}
+  ElasticLimits: 0
+  ElasticLimitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DampenOnLimits: 0
+  InfluenceAxes: {x: 1, y: 1, z: 1}
+--- !u!4 &5688795264844281294 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2752307025373978224, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5689063577600825490 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -6470796757770996948, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5810322075846206930 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5160306399164395924, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6384440169498640600 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3484263345567984486, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6392133943756323432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3491954900408078806, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8002840239825862177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6392133943756323432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17d77db75be5b64e891e6cd25906ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StimulatorAmount: 1
+  Bones:
+  - transform: {fileID: 9184453684430858933}
+    Evaluation: 0
+    initLocalPos: {x: -0, y: 0, z: 0}
+    initLocalRot: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+    initLocalScale: {x: 1, y: 1, z: 1}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: -5.3373957, y: 0.7486098, z: 0.96846324}
+    srcAnimatorLocRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+    srcAnimatorRotation: {x: -0.06721411, y: -0.699739, z: -0.024192212, w: 0.7108182}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: -0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0.5040069, y: -0.06812566, z: 0.07229864, w: 0.85796785}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats:
+    - 1.0930876
+    - 1.6152688
+    - 0.74575955
+    - 1.6376469
+    - 1.1780157
+    - 1.1881958
+    randomInts: 020000000000000000000000010000000200000002000000
+  - transform: {fileID: 5098992567121643454}
+    Evaluation: 0.16666667
+    initLocalPos: {x: -0, y: 0.0015729406, z: 0}
+    initLocalRot: {x: 0, y: -0, z: -0, w: 1}
+    initLocalScale: {x: 1, y: 1, z: 1}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: -5.31719, y: 0.9042985, z: 0.9587586}
+    srcAnimatorLocRotation: {x: 0, y: -0, z: -0, w: 1}
+    srcAnimatorRotation: {x: -0.06721411, y: -0.699739, z: -0.024192212, w: 0.7108182}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: -0, y: 0.0015729406, z: 0}
+    lastFinalLocRotation: {x: -0.30176646, y: -0.00027164072, z: -0.0950898, w: 0.94862795}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats:
+    - 1.2811584
+    - 1.6414977
+    - 0.7128841
+    - 1.3156352
+    - 1.0106263
+    - 1.5895399
+    randomInts: 020000000100000002000000020000000100000001000000
+  - transform: {fileID: 4809610042167320963}
+    Evaluation: 0.33333334
+    initLocalPos: {x: -0, y: 0.0012791455, z: 0}
+    initLocalRot: {x: 0, y: -0.000000119209275, z: -0, w: 1}
+    initLocalScale: {x: 1, y: 0.99999994, z: 1}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: -5.3007584, y: 1.0309075, z: 0.9508666}
+    srcAnimatorLocRotation: {x: 0, y: -0.000000119209275, z: -0, w: 1}
+    srcAnimatorRotation: {x: -0.06721412, y: -0.6997391, z: -0.024192207, w: 0.71081805}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: -0, y: 0.0012791455, z: 0}
+    lastFinalLocRotation: {x: 0.009474187, y: -0.004739489, z: -0.05533896, w: -0.9984115}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats:
+    - 1.2356458
+    - 1.1618118
+    - 1.4910655
+    - 0.9235477
+    - 0.96947837
+    - 0.9543861
+    randomInts: 010000000100000000000000000000000200000001000000
+  - transform: {fileID: 5688795264844281294}
+    Evaluation: 0.5
+    initLocalPos: {x: -0, y: 0.0015671878, z: 0}
+    initLocalRot: {x: 0, y: 0.000000119209275, z: -0, w: 1}
+    initLocalScale: {x: 1, y: 1, z: 1}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: -5.280627, y: 1.186027, z: 0.9411974}
+    srcAnimatorLocRotation: {x: 0, y: 0.000000119209275, z: -0, w: 1}
+    srcAnimatorRotation: {x: -0.06721411, y: -0.699739, z: -0.024192212, w: 0.7108182}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: -0, y: 0.0015671878, z: 0}
+    lastFinalLocRotation: {x: -0.28916875, y: -0.0019556892, z: 0.12332661, w: 0.94929874}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats:
+    - 1.3757671
+    - 1.2218715
+    - 1.4633033
+    - 0.7777197
+    - 0.7780328
+    - 1.5900497
+    randomInts: 000000000100000002000000020000000100000000000000
+  - transform: {fileID: 6384440169498640600}
+    Evaluation: 0.6666667
+    initLocalPos: {x: -0, y: 0.0015714094, z: 0}
+    initLocalRot: {x: 0, y: -0, z: -0, w: 1}
+    initLocalScale: {x: 1, y: 1, z: 1}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: -5.2604413, y: 1.341564, z: 0.9315022}
+    srcAnimatorLocRotation: {x: 0, y: -0, z: -0, w: 1}
+    srcAnimatorRotation: {x: -0.06721411, y: -0.699739, z: -0.024192212, w: 0.7108182}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: -0, y: 0.0015714094, z: 0}
+    lastFinalLocRotation: {x: 0.15087183, y: 0.044887815, z: -0.12374965, w: -0.9797494}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats:
+    - 1.2872043
+    - 0.9575802
+    - 0.97036946
+    - 1.1286104
+    - 1.1302816
+    - 1.4402416
+    randomInts: 010000000100000000000000020000000100000001000000
+  - transform: {fileID: 7897290272987483396}
+    Evaluation: 0.8333333
+    initLocalPos: {x: -0, y: 0.0015114892, z: 0}
+    initLocalRot: {x: 0, y: -0, z: -0, w: 1}
+    initLocalScale: {x: 1, y: 1, z: 1}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: -5.241025, y: 1.4911704, z: 0.92217666}
+    srcAnimatorLocRotation: {x: 0, y: -0, z: -0, w: 1}
+    srcAnimatorRotation: {x: -0.06721411, y: -0.699739, z: -0.024192212, w: 0.7108182}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: -0, y: 0.0015114892, z: 0}
+    lastFinalLocRotation: {x: -0.68817604, y: 0.033889513, z: 0.23236433, w: -0.68649256}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats:
+    - 1.6406908
+    - 0.9915719
+    - 0.8381174
+    - 0.7679723
+    - 0.8315831
+    - 1.1410503
+    randomInts: 000000000100000000000000020000000100000000000000
+  CompensationTransform: {fileID: 0}
+  AnimatePhysics: 0
+  UnscaledDelta: 0
+  HideWith: {fileID: 0}
+  FadeOutDistance: 0
+  DistanceFrom: {fileID: 0}
+  AutoHelperOffset: 1
+  HelperOffset: {x: -3.2014216e-10, y: 0.0037510851, z: -4.656613e-10}
+  GravityEffectForce: {x: 0.5, y: -3.5, z: 0}
+  GravityHeavyness: 2
+  _editor_Title: ' Bones Stimulator'
+  _editor_DrawSetup: 1
+  _editor_DrawTweaking: 1
+  _editor_DisplayedPreset: 0
+  _editor_DrawGizmos: 1
+  DrawGizmos: 1
+  _editor_SelCategory: 0
+  UpdateRate: 0
+  MovementMuscles: 0.48784152
+  MusclesRapidity: 0.532
+  Damping: 0.666
+  Smoothing: 0.866
+  MildRotation: 0.417
+  MotionInfluence: 1
+  RotationSpaceMuscles: 1
+  UseEulerRotation: 1
+  EnsureRotation: 0
+  RotationsRapidity: 0.7
+  RotationsDamping: 0.581
+  RotationsSwinginess: 0.676
+  MusclesBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MusclesSimulationSpeed: 1
+  VibrateAmount: 0
+  VibrateSpeed: 6
+  VibrateRange: 2.5
+  VibrateAxis: {x: 1, y: 1, z: 1}
+  VibrateRotation: 1
+  UniRotation: 0
+  VibratePosition: 0
+  VibrateScale: 0
+  DetailedVibrate: 1
+  VibratePosBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateRotBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateScaleBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SqueezingAmount: 0
+  SqueezingSpeed: 15
+  SqueezingMultiply: 0.5
+  SqueezingAxis: {x: 0.2, y: 0.15, z: 0.2}
+  UseCollisions: 0
+  MovementMusclesCollision: 1
+  CollidersScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CollidersScaleMul: 0.1
+  OffsetAllColliders: {x: 0, y: 0, z: 0}
+  DetailedCollision: 1
+  IncludedColliders: []
+  BlendXAxis: 1
+  BlendYAxis: 1
+  BlendZAxis: 1
+  LimitXAxisRotation: {x: -180, y: 180}
+  LimitYAxisRotation: {x: -180, y: 180}
+  LimitZAxisRotation: {x: -180, y: 180}
+  ElasticLimits: 0
+  ElasticLimitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DampenOnLimits: 0
+  InfluenceAxes: {x: 1, y: 1, z: 1}
+--- !u!4 &6847817332148458754 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4019695877470109372, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7182478353134732881 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 823538120263380463, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7255277769505107500 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 896054970752566674, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7413490897770092748 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1018520768383841138, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &972813267156211614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7413490897770092748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17d77db75be5b64e891e6cd25906ee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StimulatorAmount: 1
+  Bones:
+  - transform: {fileID: 3009642550618147337}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  - transform: {fileID: 5689063577600825490}
+    Evaluation: 0
+    initLocalPos: {x: 0, y: 0, z: 0}
+    initLocalRot: {x: 0, y: 0, z: 0, w: 0}
+    initLocalScale: {x: 0, y: 0, z: 0}
+    srcAnimatorLocPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorPosition: {x: 0, y: 0, z: 0}
+    srcAnimatorLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    srcAnimatorRotation: {x: 0, y: 0, z: 0, w: 0}
+    EnableCollisions: 1
+    CollisionRadius: 0.1
+    CollisionHelperVector: {x: 0, y: 0, z: 0}
+    lastFinalLocPosition: {x: 0, y: 0, z: 0}
+    lastFinalLocRotation: {x: 0, y: 0, z: 0, w: 0}
+    MomentDampen: 0
+    PosMul: 1
+    RotMul: 1
+    ScaleMul: 1
+    randomFloats: []
+    randomInts: 
+  CompensationTransform: {fileID: 0}
+  AnimatePhysics: 0
+  UnscaledDelta: 0
+  HideWith: {fileID: 0}
+  FadeOutDistance: 0
+  DistanceFrom: {fileID: 0}
+  AutoHelperOffset: 1
+  HelperOffset: {x: 5.9458244e-11, y: 0.0016548869, z: -6.817798e-10}
+  GravityEffectForce: {x: 0, y: 0, z: 0}
+  GravityHeavyness: 2
+  _editor_Title: ' Bones Stimulator'
+  _editor_DrawSetup: 1
+  _editor_DrawTweaking: 0
+  _editor_DisplayedPreset: 0
+  _editor_DrawGizmos: 1
+  DrawGizmos: 1
+  _editor_SelCategory: 0
+  UpdateRate: 0
+  MovementMuscles: 0.75
+  MusclesRapidity: 0.6
+  Damping: 0.4
+  Smoothing: 0.6
+  MildRotation: 0
+  MotionInfluence: 1
+  RotationSpaceMuscles: 1
+  UseEulerRotation: 0
+  EnsureRotation: 0
+  RotationsRapidity: 0.7
+  RotationsDamping: 0.25
+  RotationsSwinginess: 0.6
+  MusclesBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MusclesSimulationSpeed: 1
+  VibrateAmount: 0
+  VibrateSpeed: 6
+  VibrateRange: 2.5
+  VibrateAxis: {x: 1, y: 1, z: 1}
+  VibrateRotation: 1
+  UniRotation: 0
+  VibratePosition: 0
+  VibrateScale: 0
+  DetailedVibrate: 1
+  VibratePosBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateRotBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  VibrateScaleBlend:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SqueezingAmount: 0
+  SqueezingSpeed: 15
+  SqueezingMultiply: 0.5
+  SqueezingAxis: {x: 0.2, y: 0.15, z: 0.2}
+  UseCollisions: 0
+  MovementMusclesCollision: 1
+  CollidersScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CollidersScaleMul: 0.1
+  OffsetAllColliders: {x: 0, y: 0, z: 0}
+  DetailedCollision: 1
+  IncludedColliders: []
+  BlendXAxis: 1
+  BlendYAxis: 1
+  BlendZAxis: 1
+  LimitXAxisRotation: {x: -180, y: 180}
+  LimitYAxisRotation: {x: -180, y: 180}
+  LimitZAxisRotation: {x: -180, y: 180}
+  ElasticLimits: 0
+  ElasticLimitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DampenOnLimits: 0
+  InfluenceAxes: {x: 1, y: 1, z: 1}
+--- !u!4 &7897290272987483396 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8838228343576009030, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8019284699030522965 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8621945967012166742 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2263005634290178024, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8842189550435042277 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7893326891793782693, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9184453684430858933 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7515036109344440053, guid: d8771decc5a49324e8df81aa47149f21, type: 3}
+  m_PrefabInstance: {fileID: 7548175428277365694}
+  m_PrefabAsset: {fileID: 0}

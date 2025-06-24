@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: f3acf582e2f0fde46851a9c78b91dad2
+labels:
+- Tooltip
+- Tooltips
+- UGUI
+- GUI
+- Interface
+- Tool
+- Tip
+- Script
+timeCreated: 1439443091
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 44361
+  packageName: ProTips - Tooltip System
+  packageVersion: 1.7.6a
+  assetPath: Assets/ProTips/Scripts/ObjectModels/DynamicSectionField.cs
+  uploadId: 592825

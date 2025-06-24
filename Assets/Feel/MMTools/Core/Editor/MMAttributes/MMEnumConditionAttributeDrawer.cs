@@ -50,7 +50,7 @@ namespace MoreMountains.Tools
 			}
 			else
 			{
-				Debug.LogWarning("No matching enum prop found for ConditionAttribute in object: " + enumConditionAttribute.ConditionEnum);
+				Debug.LogWarning("No matching boolean found for ConditionAttribute in object: " + enumConditionAttribute.ConditionEnum);
 			}
 
 			return enabled;

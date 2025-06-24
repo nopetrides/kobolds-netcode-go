@@ -23,7 +23,7 @@ namespace MoreMountains.Feedbacks
 
 		/// the duration of this feedback is the duration of the pause
 		public override float FeedbackDuration { get { return ApplyTimeMultiplier(PauseDuration); } set { PauseDuration = value; } }
-		
+        
 		/// <summary>
 		/// On custom play we just play our pause
 		/// </summary>
@@ -34,25 +34,7 @@ namespace MoreMountains.Feedbacks
 			if (Active)
 			{
 				ProcessNewPauseDuration();
-				_pauseCoroutine = Owner.StartCoroutine(PlayPause());
-			}
-		}
-
-		/// <summary>
-		/// On Stop, we stop our pause
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="feedbacksIntensity"></param>
-		protected override void CustomStopFeedback(Vector3 position, float feedbacksIntensity = 1)
-		{
-			if (!Active || !FeedbackTypeAuthorized)
-			{
-				return;
-			}
-            
-			if (_pauseCoroutine != null)
-			{
-				Owner.StopCoroutine(_pauseCoroutine);
+				Owner.StartCoroutine(PlayPause());
 			}
 		}
 	}

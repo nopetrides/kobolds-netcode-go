@@ -696,14 +696,6 @@ namespace MoreMountains.Tools
 						CurrentValue = (CurrentValueNormalized * 2.0f - 1.0f) * _randomAmplitude;
 					}
 					break;
-				case ControlModes.AudioAnalyzer:
-					CurrentValue = Mathf.Lerp(CurrentValue, AudioAnalyzer.Beats[BeatID].CurrentValue * AudioAnalyzerMultiplier + AudioAnalyzerOffset, AudioAnalyzerLerp * GetDeltaTime());
-					CurrentValueNormalized = Mathf.Clamp(AudioAnalyzer.Beats[BeatID].CurrentValue, 0f, 1f);
-					break;
-				case ControlModes.Driven:
-					CurrentValue = DrivenLevel;
-					CurrentValueNormalized = Mathf.Clamp(CurrentValue, 0f, 1f);
-					break;
 				case ControlModes.OneTime:
 					if (!_shaking)
 					{
@@ -713,6 +705,14 @@ namespace MoreMountains.Tools
 					CurrentValueNormalized = OneTimeCurve.Evaluate(_remappedTimeSinceStart);
 					CurrentValue = MMMaths.Remap(CurrentValueNormalized, 0f, 1f, OneTimeRemapMin, OneTimeRemapMax);
 					CurrentValue *= OneTimeAmplitude;
+					break;
+				case ControlModes.AudioAnalyzer:
+					CurrentValue = Mathf.Lerp(CurrentValue, AudioAnalyzer.Beats[BeatID].CurrentValue * AudioAnalyzerMultiplier + AudioAnalyzerOffset, AudioAnalyzerLerp * GetDeltaTime());
+					CurrentValueNormalized = Mathf.Clamp(AudioAnalyzer.Beats[BeatID].CurrentValue, 0f, 1f);
+					break;
+				case ControlModes.Driven:
+					CurrentValue = DrivenLevel;
+					CurrentValueNormalized = Mathf.Clamp(CurrentValue, 0f, 1f);
 					break;
 				case ControlModes.ToDestination:
 					if (!_shaking)
@@ -745,94 +745,62 @@ namespace MoreMountains.Tools
 
 			if ((ControlMode == ControlModes.OneTime) && _shaking && (GetTime() - _startedTimestamp > OneTimeDuration))
 			{
-				SetOneTimeFinalValue();
+				_shaking = false;
+				if (RevertToInitialValueAfterEnd)
+				{
+					CurrentValue = InitialValue;
+					if (PropertyType == PropertyTypes.Color)
+					{
+						_currentColor = InitialColor;
+					}
+				}
+				else
+				{
+					CurrentValue = OneTimeCurve.Evaluate(1f);
+					CurrentValue = MMMaths.Remap(CurrentValue, 0f, 1f, OneTimeRemapMin, OneTimeRemapMax);
+					CurrentValue *= OneTimeAmplitude;
+					if (AddToInitialValue)
+					{
+						CurrentValue += InitialValue;
+					}
+				}
+				SetValue(CurrentValue);
+				if (DisableAfterOneTime)
+				{
+					this.enabled = false;
+				}     
+				if (DisableGameObjectAfterOneTime)
+				{
+					this.gameObject.SetActive(false);
+				}
 				return;
 			}
 
 			if ((ControlMode == ControlModes.ToDestination) && _shaking && (GetTime() - _startedTimestamp > ToDestinationDuration))
 			{
-				SetToDestinationFinalValue();
+				_shaking = false;
+				FromColor = _fromColorStorage;
+				if (RevertToInitialValueAfterEnd)
+				{
+					CurrentValue = InitialValue;
+					if (PropertyType == PropertyTypes.Color)
+					{
+						_currentColor = InitialColor;
+					}
+				}
+				else
+				{
+					CurrentValue = ToDestinationValue;
+				}
+				SetValue(CurrentValue);
+				if (DisableAfterToDestination)
+				{
+					this.enabled = false;
+				}
 				return;
 			}
 
 			SetValue(CurrentValue);
-		}
-
-		/// <summary>
-		/// Sets the final value for this shader controller, only in OneTime or ToDestination modes
-		/// </summary>
-		public virtual void SetFinalValue()
-		{
-			switch (ControlMode)
-			{
-				case ControlModes.OneTime:
-					SetOneTimeFinalValue();
-					break;
-				case ControlModes.ToDestination:
-					SetToDestinationFinalValue();
-					break;
-			}
-		}
-
-		/// <summary>
-		/// Sets the final value, when in ToDestination control mode
-		/// </summary>
-		protected virtual void SetToDestinationFinalValue()
-		{
-			_shaking = false;
-			FromColor = _fromColorStorage;
-			if (RevertToInitialValueAfterEnd)
-			{
-				CurrentValue = InitialValue;
-				if (PropertyType == PropertyTypes.Color)
-				{
-					_currentColor = InitialColor;
-				}
-			}
-			else
-			{
-				CurrentValue = ToDestinationValue;
-			}
-			SetValue(CurrentValue);
-			if (DisableAfterToDestination)
-			{
-				this.enabled = false;
-			}
-		}
-
-		/// <summary>
-		/// Sets the final value, when in One Time control mode
-		/// </summary>
-		protected virtual void SetOneTimeFinalValue()
-		{
-			_shaking = false;
-			if (RevertToInitialValueAfterEnd)
-			{
-				CurrentValue = InitialValue;
-				if (PropertyType == PropertyTypes.Color)
-				{
-					_currentColor = InitialColor;
-				}
-			}
-			else
-			{
-				CurrentValue = OneTimeCurve.Evaluate(1f);
-				CurrentValue = MMMaths.Remap(CurrentValue, 0f, 1f, OneTimeRemapMin, OneTimeRemapMax);
-				CurrentValue *= OneTimeAmplitude;
-				if (AddToInitialValue)
-				{
-					CurrentValue += InitialValue;
-				}
-			}
-			SetValue(CurrentValue);
-			if (DisableAfterOneTime)
-			{
-				this.enabled = false;
-			}     
-			if (DisableGameObjectAfterOneTime)
-			{
-				this.gameObject.SetActive(false);
-			}
 		}
 
 		/// <summary>
@@ -858,11 +826,8 @@ namespace MoreMountains.Tools
 					return TargetMaterial.GetFloat(PropertyID);
 
 				case PropertyTypes.Vector:
-					if (X) { return TargetMaterial.GetVector(PropertyID).x; }
-					if (Y) { return TargetMaterial.GetVector(PropertyID).y; }
-					if (Z) { return TargetMaterial.GetVector(PropertyID).z; }
-					if (W) { return TargetMaterial.GetVector(PropertyID).w; }
-					return TargetMaterial.GetVector(PropertyID).x;
+					return TargetMaterial.GetVector(PropertyID).x;                    
+
 				case PropertyTypes.Keyword:
 					return TargetMaterial.IsKeywordEnabled(TargetPropertyName) ? 1f : 0f;
 

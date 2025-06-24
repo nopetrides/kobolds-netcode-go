@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4dec734783e1edb4383205629a00ab12
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 122233
+  packageName: Bones Stimulator
+  packageVersion: 2.0.0
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Bones Stimulator/Core/BonesStimulator.ExtraProcessing.cs
+  uploadId: 720864

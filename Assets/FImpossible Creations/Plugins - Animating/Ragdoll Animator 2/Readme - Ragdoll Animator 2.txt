@@ -1,7 +1,7 @@
 ﻿__________________________________________________________________________________________
 
 Package "Ragdoll Animator 2"
-Version 1.0.3.7.1
+Version 1.0.3.7.2
 
 Made by FImpossible Creations - Filip Moeglich
 http://www.fimpossiblecreations.pl
@@ -30,6 +30,9 @@ If you encounter something like spine jittery, try lowering muscles spring power
 
 __________________________________________________________________________________________
 Changelog:
+
+version 1.0.3.7.2
+- Removed unneccesary GC alloc caused by procedural ()=> action call
 
 version 1.0.3.7.1
 - Added protection for using no-collider on BlendOnCollisions extra feature.

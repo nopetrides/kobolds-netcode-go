@@ -15,7 +15,7 @@ namespace IngameDebugConsole
 		private string completeLog;
 
 		// Sprite to show with this entry
-		public LogType logType;
+		public Sprite logTypeSpriteRepresentation;
 
 		// Collapsed count
 		public int count;

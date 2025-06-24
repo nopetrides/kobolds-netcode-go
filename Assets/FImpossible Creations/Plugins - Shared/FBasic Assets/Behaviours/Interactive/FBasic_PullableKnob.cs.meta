@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 65b14c38eeba56d4f995c2e8712cd6f4
+timeCreated: 1529267307
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Interactive/FBasic_PullableKnob.cs
+  uploadId: 697898

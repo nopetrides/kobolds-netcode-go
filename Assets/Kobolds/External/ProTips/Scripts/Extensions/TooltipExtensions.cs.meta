@@ -1,0 +1,28 @@
+fileFormatVersion: 2
+guid: d34fb74c0e4c6294ca0810ae9f7b2fd3
+labels:
+- Tooltip
+- Tooltips
+- UGUI
+- GUI
+- Interface
+- Tool
+- Tip
+- Script
+timeCreated: 1451768225
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 44361
+  packageName: ProTips - Tooltip System
+  packageVersion: 1.7.6a
+  assetPath: Assets/ProTips/Scripts/Extensions/TooltipExtensions.cs
+  uploadId: 592825

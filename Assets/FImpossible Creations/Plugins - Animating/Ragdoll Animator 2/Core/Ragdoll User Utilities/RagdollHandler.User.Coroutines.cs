@@ -394,6 +394,17 @@ namespace FIMSpace.FProceduralAnimation
             yield break;
         }
 
+        internal IEnumerator _IE_FreezeRigidbodyVelocityFor(Rigidbody rig, Vector3 velo, int framesToCall = 0)
+        {
+            for (int i = 0; i < framesToCall; i++)
+            {
+                rig.linearVelocity = velo;
+                yield return new WaitForFixedUpdate();
+            }
+
+            yield break;
+        }
+
         internal IEnumerator _IE_RefreshBonesAfterTeleport(int frames)
         {
             int c = 0;

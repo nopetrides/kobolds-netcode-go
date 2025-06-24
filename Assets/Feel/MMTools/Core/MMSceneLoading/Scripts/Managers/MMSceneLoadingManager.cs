@@ -154,7 +154,7 @@ namespace MoreMountains.Tools
 
 			// we wait for the bar to be visually filled to continue
 			#if MM_UI
-			while (!Mathf.Approximately(_progressBarImage.fillAmount, _fillTarget))
+			while (_progressBarImage.fillAmount != _fillTarget)
 			{
 				yield return null;
 			}

@@ -10,9 +10,9 @@ using System.Reflection;
 [InitializeOnLoad]
 public class ReadmeEditor : UnityEditor.Editor {
 	
-	static string kShowedReadmeSessionStateName = "ReadmeEditor.showedReadme";
+	static string _kShowedReadmeSessionStateName = "ReadmeEditor.showedReadme";
 	
-	static float kSpace = 16f;
+	static float _kSpace = 16f;
 	
 	static ReadmeEditor()
 	{
@@ -21,10 +21,10 @@ public class ReadmeEditor : UnityEditor.Editor {
 	
 	static void SelectReadmeAutomatically()
 	{
-		if (!SessionState.GetBool(kShowedReadmeSessionStateName, false ))
+		if (!SessionState.GetBool(_kShowedReadmeSessionStateName, false ))
 		{
 			var readme = SelectReadme();
-			SessionState.SetBool(kShowedReadmeSessionStateName, true);
+			SessionState.SetBool(_kShowedReadmeSessionStateName, true);
 			
 			if (readme && !readme.loadedLayout)
 			{
@@ -98,12 +98,12 @@ public class ReadmeEditor : UnityEditor.Editor {
 					Application.OpenURL(section.url);
 				}
 			}
-			GUILayout.Space(kSpace);
+			GUILayout.Space(_kSpace);
 		}
 	}
 	
 	
-	bool m_Initialized;
+	bool _mInitialized;
 	
 	GUIStyle LinkStyle { get { return m_LinkStyle; } }
 	[SerializeField] GUIStyle m_LinkStyle;
@@ -119,7 +119,7 @@ public class ReadmeEditor : UnityEditor.Editor {
 	
 	void Init()
 	{
-		if (m_Initialized)
+		if (_mInitialized)
 			return;
 		m_BodyStyle = new GUIStyle(EditorStyles.label);
 		m_BodyStyle.wordWrap = true;
@@ -138,7 +138,7 @@ public class ReadmeEditor : UnityEditor.Editor {
 		m_LinkStyle.normal.textColor = new Color (0x00/255f, 0x78/255f, 0xDA/255f, 1f);
 		m_LinkStyle.stretchWidth = false;
 		
-		m_Initialized = true;
+		_mInitialized = true;
 	}
 	
 	bool LinkLabel (GUIContent label, params GUILayoutOption[] options)

@@ -8,12 +8,12 @@ using UnityEngine.Scripting.APIUpdating;
 namespace MoreMountains.Feedbacks
 {
 	/// <summary>
-	/// This feedback will move the current "head" of an MMF_Player sequence back to another feedback above in the list.
+	/// This feedback will move the current "head" of an MMFeedbacks sequence back to another feedback above in the list.
 	/// What feedback the head lands on depends on your settings : you can decide to have it loop at last pause, or at the last LoopStart feedback in the list (or both).
 	/// Furthermore, you can decide to have it loop multiple times and cause a pause when met.
 	/// </summary>
 	[AddComponentMenu("")]
-	[FeedbackHelp("This feedback will move the current 'head' of an MMF_Player sequence back to another feedback above in the list. " +
+	[FeedbackHelp("This feedback will move the current 'head' of an MMFeedbacks sequence back to another feedback above in the list. " +
 	              "What feedback the head lands on depends on your settings : you can decide to have it loop at last pause, " +
 	              "or at the last LoopStart feedback in the list (or both). Furthermore, you can decide to have it loop multiple times and cause a pause when met.")]
 	[MovedFrom(false, null, "MoreMountains.Feedbacks")]
@@ -23,11 +23,11 @@ namespace MoreMountains.Feedbacks
 		[MMFInspectorGroup("Loop", true, 34)]
         
 		[Header("Loop conditions")]
-		/// if this is true, this feedback, when met, will cause the MMF_Player to reposition its 'head' to the first pause found above it (going from this feedback to the top), or to the start if none is found
-		[Tooltip("if this is true, this feedback, when met, will cause the MMF_Player to reposition its 'head' to the first pause found above it (going from this feedback to the top), or to the start if none is found")]
+		/// if this is true, this feedback, when met, will cause the MMFeedbacks to reposition its 'head' to the first pause found above it (going from this feedback to the top), or to the start if none is found
+		[Tooltip("if this is true, this feedback, when met, will cause the MMFeedbacks to reposition its 'head' to the first pause found above it (going from this feedback to the top), or to the start if none is found")]
 		public bool LoopAtLastPause = true;
-		/// if this is true, this feedback, when met, will cause the MMF_Player to reposition its 'head' to the first LoopStart feedback found above it (going from this feedback to the top), or to the start if none is found
-		[Tooltip("if this is true, this feedback, when met, will cause the MMF_Player to reposition its 'head' to the first LoopStart feedback found above it (going from this feedback to the top), or to the start if none is found")]
+		/// if this is true, this feedback, when met, will cause the MMFeedbacks to reposition its 'head' to the first LoopStart feedback found above it (going from this feedback to the top), or to the start if none is found
+		[Tooltip("if this is true, this feedback, when met, will cause the MMFeedbacks to reposition its 'head' to the first LoopStart feedback found above it (going from this feedback to the top), or to the start if none is found")]
 		public bool LoopAtLastLoopStart = true;
 
 		[Header("Loop")]

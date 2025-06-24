@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 55c7a4ae649c8407f8d95bf3403945ef
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254677
+  packageName: Text Animator for Unity
+  packageVersion: 2.2.1
+  assetPath: Assets/Plugins/Febucci/Text Animator/Scripts/Runtime/Parsing/_Core/TagParserBase.cs
+  uploadId: 710156

@@ -96,15 +96,6 @@ namespace MoreMountains.Tools
         
 		protected GameObject _confinerGameObject;
 		protected Vector3 _gizmoSize;
-		
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-		protected static void InitializeStatics()
-		{
-			foreach (var zone in FindObjectsByType<MMCinemachineZone>(FindObjectsSortMode.None))
-			{
-				zone.Awake();
-			}
-		}
         
 		/// <summary>
 		/// On Awake we proceed to init if app is playing

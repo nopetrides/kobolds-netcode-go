@@ -45,7 +45,6 @@ namespace MoreMountains.Feedbacks
 		protected Type _t;
 		protected float _cachedTotalDuration;
 		protected bool _initialized = false;
-		protected Coroutine _pausedFeedbacksCo;
         
 		#endregion
         
@@ -491,7 +490,7 @@ namespace MoreMountains.Feedbacks
 			else
 			{
 				// if at least one pause was found
-				_pausedFeedbacksCo = StartCoroutine(PausedFeedbacksCo(position, feedbacksIntensity));
+				StartCoroutine(PausedFeedbacksCo(position, feedbacksIntensity));
 			}
 		}
 		
@@ -802,10 +801,6 @@ namespace MoreMountains.Feedbacks
 					FeedbacksList[i].Stop(position, feedbacksIntensity);
 				}    
 			}
-			if (_pausedFeedbacksCo != null)
-			{
-				StopCoroutine(_pausedFeedbacksCo);
-			}
 			IsPlaying = false;
 		}
         
@@ -982,16 +977,13 @@ namespace MoreMountains.Feedbacks
 		/// Adds the specified MMF_Feedback to the player
 		/// </summary>
 		/// <param name="newFeedback"></param>
-		public virtual void AddFeedback(MMF_Feedback newFeedback, bool copy = false)
+		public virtual void AddFeedback(MMF_Feedback newFeedback)
 		{
 			InitializeFeedbackList();
 			newFeedback.Owner = this;
 			newFeedback.UniqueID = Guid.NewGuid().GetHashCode();
 			FeedbacksList.Add(newFeedback);
-			if (!copy)
-			{
-				newFeedback.OnAddFeedback();
-			}
+			newFeedback.OnAddFeedback();
 			newFeedback.CacheRequiresSetup();
 			newFeedback.InitializeCustomAttributes();
 		}

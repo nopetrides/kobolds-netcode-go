@@ -177,7 +177,8 @@ namespace FIMSpace.FProceduralAnimation
                     // Maintaining kinematic rigidbody velocity
                     Vector3 velo = anchor.BoneProcessor.AverageTranslationDataRequestRaw() / Time.fixedDeltaTime;
                     anchor.GameRigidbody.linearVelocity = velo;
-                    if (Caller) Caller.StartCoroutine(_IE_CallForFixedFrames(() => { anchor.GameRigidbody.linearVelocity = velo; }, 3));
+                    //if (Caller) Caller.StartCoroutine(_IE_CallForFixedFrames(() => { anchor.GameRigidbody.velocity = velo; }, 3)); // Was generatic GC alloc even if line was not called?
+                    if (Caller) Caller.StartCoroutine(_IE_FreezeRigidbodyVelocityFor(anchor.GameRigidbody, velo, 3));
                 }
             }
         }

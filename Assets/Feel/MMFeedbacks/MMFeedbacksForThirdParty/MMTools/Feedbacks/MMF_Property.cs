@@ -26,7 +26,6 @@ namespace MoreMountains.Feedbacks
 		#if UNITY_EDITOR
 		public override Color FeedbackColor { get { return MMFeedbacksInspectorColors.GameObjectColor; } }
 		public override bool EvaluateRequiresSetup() { return (Target == null); }
-		public override string RequiredTargetText { get { return Target != null ? Target.TargetObject.name+" - "+Target.TargetPropertyName : "";  } }
 		public override string RequiresSetupText { get { return "This feedback requires that a Target be set to be able to work properly. You can set one below."; } }
 		#endif
 		public override bool HasRandomness => true;

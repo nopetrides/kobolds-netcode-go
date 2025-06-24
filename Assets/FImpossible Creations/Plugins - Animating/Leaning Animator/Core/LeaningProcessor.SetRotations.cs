@@ -36,11 +36,7 @@ namespace FIMSpace
 
             sideRotation = smoothFade;
 
-            footOriginBone.RotateBy(
-                forwardRotation * RootForwardSway * RootBlend * GetFullBlend + _UserOriginBoneAddForwardAngle * GetFullBlend,
-                0f,
-                sideRotation * RootBlend * GetFullBlend + _UserOriginBoneAddSideAngle * GetFullBlend);
-
+            footOriginBone.RotateBy(forwardRotation * RootForwardSway * RootBlend * GetFullBlend, 0f, sideRotation * RootBlend * GetFullBlend);
             //FootsOrigin.localRotation = Quaternion.Euler(forwardRotation * RootForwardSway * RootBlend, 0f, sideRotation * RootBlend);
         }
 

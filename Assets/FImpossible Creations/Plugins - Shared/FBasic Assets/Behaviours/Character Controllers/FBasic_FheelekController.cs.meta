@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 5eb842b45d56b564b82643055366f7cb
+timeCreated: 1528662777
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Character Controllers/FBasic_FheelekController.cs
+  uploadId: 697898

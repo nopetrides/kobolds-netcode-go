@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: dc71bf79a039ae24894ef08c2171fb45
+timeCreated: 1508064370
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Animations/FBasic_ObjectVibrate.cs
+  uploadId: 697898

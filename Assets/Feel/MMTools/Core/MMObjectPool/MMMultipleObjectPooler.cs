@@ -519,8 +519,7 @@ namespace MoreMountains.Tools
 
 				if (GetPoolObject(FindObject(searchedName,_objectPool.PooledGameObjects)).PoolCanExpand)
 				{
-					GameObject addObject = GetPoolObject(Pool[_currentIndex].GameObjectToPool).GameObjectToPool;
-					return AddOneObjectToThePool(addObject);
+					return AddOneObjectToThePool(searchedObject);
 				}
 			}
 

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 0a0386537f6dc7c4682742e15f71ec07
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 244662
+  packageName: Procedural Walk Animation
+  packageVersion: 1.0.0
+  assetPath: Assets/Procedural Walk Animation/Scripts/DemoSceneScripts/walkDemonstrate.cs
+  uploadId: 567945

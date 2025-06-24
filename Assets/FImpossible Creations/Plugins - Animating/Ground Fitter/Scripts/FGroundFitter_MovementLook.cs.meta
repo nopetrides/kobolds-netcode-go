@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: e71533f9f39da1e479124ac188e7d523
+timeCreated: 1529752764
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121798
+  packageName: Ground Fitter
+  packageVersion: 1.2.2
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Ground Fitter/Scripts/FGroundFitter_MovementLook.cs
+  uploadId: 669810

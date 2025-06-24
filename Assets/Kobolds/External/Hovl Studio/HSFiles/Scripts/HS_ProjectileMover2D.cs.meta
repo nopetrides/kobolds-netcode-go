@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f5e49040cdee09a4fbfb8cd6d0cc243d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 133704
+  packageName: RPG VFX Bundle
+  packageVersion: 5.3.1
+  assetPath: Assets/Kobolds/External/Hovl Studio/HSFiles/Scripts/HS_ProjectileMover2D.cs
+  uploadId: 759582

@@ -53,7 +53,7 @@ namespace MoreMountains.Feedbacks
 		public float CountTo = 10f;
 		/// the curve on which to animate the count
 		[Tooltip("the curve on which to animate the count")]
-		public MMTweenType CountingCurve = new MMTweenType(new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1f)));
+		public MMTweenType CountingCurve = new MMTweenType(new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.3f, 1f), new Keyframe(1, 0)));
 		/// the duration of the count, in seconds
 		[Tooltip("the duration of the count, in seconds")]
 		public float Duration = 5f;

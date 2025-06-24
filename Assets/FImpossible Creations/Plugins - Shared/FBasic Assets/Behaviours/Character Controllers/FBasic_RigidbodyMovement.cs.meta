@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 3581c746a05bd554684c0c94b19a6427
+timeCreated: 1528466905
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Character Controllers/FBasic_RigidbodyMovement.cs
+  uploadId: 697898

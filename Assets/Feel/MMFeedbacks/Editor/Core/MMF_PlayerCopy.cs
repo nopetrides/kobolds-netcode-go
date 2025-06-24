@@ -129,7 +129,7 @@ namespace MoreMountains.Feedbacks
 			player.FeedbacksList.Clear();
 			foreach (MMF_Feedback feedback in MMF_PlayerCopy.RuntimeChanges[player])
 			{
-				player.AddFeedback(feedback, true);
+				player.AddFeedback(feedback);
 			}
 			playerSerialized.ApplyModifiedProperties();
 			PrefabUtility.RecordPrefabInstancePropertyModifications(player);

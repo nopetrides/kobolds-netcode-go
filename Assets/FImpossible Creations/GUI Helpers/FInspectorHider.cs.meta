@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8aa7dc81a2d85194db65a9666ba9ed1f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 9713260f256da6245bdaa4b427be813f, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Shared Tools/GUI Helpers/FInspectorHider.cs
+  uploadId: 697898

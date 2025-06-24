@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 34fbb56f0eb99f84787c2a2394937945
+timeCreated: 1530104669
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/DEMO FBasic Assets/Scripts/FBasic_Demo_Projectile.cs
+  uploadId: 697898

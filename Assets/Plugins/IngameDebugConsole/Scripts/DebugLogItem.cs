@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Text;
-using TMPro;
 #if UNITY_EDITOR
 using UnityEditor;
 using System.Text.RegularExpressions;
@@ -13,6 +12,44 @@ namespace IngameDebugConsole
 {
 	public class DebugLogItem : MonoBehaviour, IPointerClickHandler
 	{
+		#region Platform Specific Elements
+#if !UNITY_2018_1_OR_NEWER
+#if !UNITY_EDITOR && UNITY_ANDROID
+		private static AndroidJavaClass m_ajc = null;
+		private static AndroidJavaClass AJC
+		{
+			get
+			{
+				if( m_ajc == null )
+					m_ajc = new AndroidJavaClass( "com.yasirkula.unity.DebugConsole" );
+
+				return m_ajc;
+			}
+		}
+
+		private static AndroidJavaObject m_context = null;
+		private static AndroidJavaObject Context
+		{
+			get
+			{
+				if( m_context == null )
+				{
+					using( AndroidJavaObject unityClass = new AndroidJavaClass( "com.unity3d.player.UnityPlayer" ) )
+					{
+						m_context = unityClass.GetStatic<AndroidJavaObject>( "currentActivity" );
+					}
+				}
+
+				return m_context;
+			}
+		}
+#elif !UNITY_EDITOR && UNITY_IOS
+		[System.Runtime.InteropServices.DllImport( "__Internal" )]
+		private static extern void _DebugConsole_CopyText( string text );
+#endif
+#endif
+		#endregion
+
 #pragma warning disable 0649
 		// Cached components
 		[SerializeField]
@@ -28,7 +65,7 @@ namespace IngameDebugConsole
 		public CanvasGroup CanvasGroup { get { return canvasGroupComponent; } }
 
 		[SerializeField]
-		private TextMeshProUGUI logText;
+		private Text logText;
 		[SerializeField]
 		private Image logTypeImage;
 
@@ -36,10 +73,10 @@ namespace IngameDebugConsole
 		[SerializeField]
 		private GameObject logCountParent;
 		[SerializeField]
-		private TextMeshProUGUI logCountText;
+		private Text logCountText;
 
 		[SerializeField]
-		private Button copyLogButton;
+		private RectTransform copyLogButton;
 #pragma warning restore 0649
 
 		// Debug entry to show with this log item
@@ -67,11 +104,8 @@ namespace IngameDebugConsole
 
 			logTextOriginalPosition = logText.rectTransform.anchoredPosition;
 			logTextOriginalSize = logText.rectTransform.sizeDelta;
-			copyLogButtonHeight = ( copyLogButton.transform as RectTransform ).anchoredPosition.y + ( copyLogButton.transform as RectTransform ).sizeDelta.y + 2f; // 2f: space between text and button
+			copyLogButtonHeight = copyLogButton.anchoredPosition.y + copyLogButton.sizeDelta.y + 2f; // 2f: space between text and button
 
-			logText.maxVisibleCharacters = listView.manager.maxLogLength;
-
-			copyLogButton.onClick.AddListener( CopyLog );
 #if !UNITY_EDITOR && UNITY_WEBGL
 			copyLogButton.gameObject.AddComponent<DebugLogItemCopyWebGL>().Initialize( this );
 #endif
@@ -87,6 +121,7 @@ namespace IngameDebugConsole
 			Vector2 size = transformComponent.sizeDelta;
 			if( isExpanded )
 			{
+				logText.horizontalOverflow = HorizontalWrapMode.Wrap;
 				size.y = listView.SelectedItemHeight;
 
 				if( !copyLogButton.gameObject.activeSelf )
@@ -99,6 +134,7 @@ namespace IngameDebugConsole
 			}
 			else
 			{
+				logText.horizontalOverflow = HorizontalWrapMode.Overflow;
 				size.y = listView.ItemHeight;
 
 				if( copyLogButton.gameObject.activeSelf )
@@ -113,13 +149,13 @@ namespace IngameDebugConsole
 			transformComponent.sizeDelta = size;
 
 			SetText( logEntry, logEntryTimestamp, isExpanded );
-			logTypeImage.sprite = DebugLogManager.logSpriteRepresentations[(int) logEntry.logType];
+			logTypeImage.sprite = logEntry.logTypeSpriteRepresentation;
 		}
 
 		// Show the collapsed count of the debug entry
 		public void ShowCount()
 		{
-			logCountText.SetText( "{0}", logEntry.count );
+			logCountText.text = logEntry.count.ToString();
 
 			if( !logCountParent.activeSelf )
 				logCountParent.SetActive( true );
@@ -188,12 +224,20 @@ namespace IngameDebugConsole
 #endif
 		}
 
-		private void CopyLog()
+		public void CopyLog()
 		{
 #if UNITY_EDITOR || !UNITY_WEBGL
 			string log = GetCopyContent();
-			if( !string.IsNullOrEmpty( log ) )
-				GUIUtility.systemCopyBuffer = log;
+			if( string.IsNullOrEmpty( log ) )
+				return;
+
+#if UNITY_EDITOR || UNITY_2018_1_OR_NEWER || ( !UNITY_ANDROID && !UNITY_IOS )
+			GUIUtility.systemCopyBuffer = log;
+#elif UNITY_ANDROID
+			AJC.CallStatic( "CopyText", Context, log );
+#elif UNITY_IOS
+			_DebugConsole_CopyText( log );
+#endif
 #endif
 		}
 
@@ -213,21 +257,18 @@ namespace IngameDebugConsole
 			}
 		}
 
-		/// Here, we're using <see cref="TMP_Text.GetRenderedValues(bool)"/> instead of <see cref="TMP_Text.preferredHeight"/> because the latter doesn't take
-		/// <see cref="TMP_Text.maxVisibleCharacters"/> into account. However, for <see cref="TMP_Text.GetRenderedValues(bool)"/> to work, we need to give it
-		/// enough space (increase log item's height) and let it regenerate its mesh <see cref="TMP_Text.ForceMeshUpdate"/>.
 		public float CalculateExpandedHeight( DebugLogEntry logEntry, DebugLogEntryTimestamp? logEntryTimestamp )
 		{
 			string text = logText.text;
-			Vector2 size = ( transform as RectTransform ).sizeDelta;
+			HorizontalWrapMode wrapMode = logText.horizontalOverflow;
 
-			( transform as RectTransform ).sizeDelta = new Vector2( size.x, 10000f );
 			SetText( logEntry, logEntryTimestamp, true );
-			logText.ForceMeshUpdate();
-			float result = logText.GetRenderedValues( true ).y + copyLogButtonHeight;
+			logText.horizontalOverflow = HorizontalWrapMode.Wrap;
 
-			( transform as RectTransform ).sizeDelta = size;
+			float result = logText.preferredHeight + copyLogButtonHeight;
+
 			logText.text = text;
+			logText.horizontalOverflow = wrapMode;
 
 			return Mathf.Max( listView.ItemHeight, result );
 		}

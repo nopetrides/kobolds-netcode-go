@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: b9d768e52f92e534480823d691ac833e
+timeCreated: 1460138535
+licenseType: Store
+TrueTypeFontImporter:
+  serializedVersion: 3
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 1
+  characterPadding: 0
+  includeFontData: 1
+  fontNames: []
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 44361
+  packageName: ProTips - Tooltip System
+  packageVersion: 1.7.6a
+  assetPath: Assets/ProTips/Tooltip Prefabs/Fonts/Berkshire_Swash/BerkshireSwash-Regular.ttf
+  uploadId: 592825

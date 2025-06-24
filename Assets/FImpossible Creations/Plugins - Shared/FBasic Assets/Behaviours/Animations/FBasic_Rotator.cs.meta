@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: d9395db310ef22949a1ccf8e6f5443b9
+timeCreated: 1528734852
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121798
+  packageName: Ground Fitter
+  packageVersion: 1.2.2
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Animations/FBasic_Rotator.cs
+  uploadId: 669810

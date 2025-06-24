@@ -70,7 +70,7 @@ namespace MoreMountains.Tools
 			// bottom
 			Handles.DrawDottedLine(new Vector3(topLeft.x, center.y - size, 0f), new Vector3(topRight.x, center.y - size, 0f), spacing);
 
-			foreach (Ratio ratio in safeZones.Ratios)
+			foreach (Ratio ratio in safeZones?.Ratios)
 			{
 				if (ratio.DrawRatio)
 				{

@@ -9,17 +9,6 @@ namespace MoreMountains.Tools
 	public static class ListExtensions
 	{
 		/// <summary>
-		/// Returns a random element from the list
-		/// </summary>
-		/// <param name="list"></param>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public static T MMRandom<T>(this IList<T> list)
-		{
-			return list[Random.Range(0, list.Count)];
-		}
-		
-		/// <summary>
 		/// Swaps two items in a list
 		/// </summary>
 		/// <typeparam name="T"></typeparam>

@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: bbf1b9269b37d004ea57210efda58cb1
+timeCreated: 1579700846
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121798
+  packageName: Ground Fitter
+  packageVersion: 1.2.2
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Ground Fitter/Demo
+    Ground Fitter/Scripts/FGroundFitter_Demo_RMCharacterController.cs
+  uploadId: 669810

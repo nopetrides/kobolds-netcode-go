@@ -5,10 +5,9 @@ namespace FIMSpace.Basics
     /// <summary>
     /// FM: Simple component to controll behaviour of camera in TPP mode
     /// </summary>
+    [DefaultExecutionOrder(1000)]
     public class FBasic_TPPCameraBehaviour : MonoBehaviour
     {
-        public Vector3 DebugVelocity;
-
         [Header("Transform to be followed by camera")]
         public Transform ToFollow;
 
@@ -26,7 +25,7 @@ namespace FIMSpace.Basics
         private float animatedDistance;
 
         /// <summary> Variables to controll rotation of camera around followed object </summary>
-        public Vector2 RotationRanges = new Vector2(-60f, 60f);
+        public Vector2 RotationRanges = new Vector2(-5f, 60f);
 
         private Vector2 targetSphericRotation = new Vector2(0f, 0f);
         private Vector2 animatedSphericRotation = new Vector2(0f, 0f);
@@ -46,7 +45,7 @@ namespace FIMSpace.Basics
         public float HardFollowValue = 1f;
 
         [Header("If you want to hold cursor (cursor switch on TAB)")]
-        public bool LockCursor = false;
+        public bool LockCursor = true;
 
         /// <summary> Just to make turning off lock cursor less annoying </summary>
         private bool rotateCamera = true;
@@ -65,8 +64,6 @@ namespace FIMSpace.Basics
 
         public EFUpdateClock UpdateClock = EFUpdateClock.Update;
 
-        Vector3 movVelo = Vector3.zero;
-
         /// <summary>
         /// Setting some basic variables for initialization
         /// </summary>
@@ -75,7 +72,7 @@ namespace FIMSpace.Basics
             targetDistance = (DistanceRanges.x + DistanceRanges.y) / 2;
             animatedDistance = DistanceRanges.y;
 
-            targetSphericRotation = new Vector2(0f, 23f);
+            targetSphericRotation = new Vector2(transform.eulerAngles.y, transform.eulerAngles.x);
             animatedSphericRotation = targetSphericRotation;
 
             //if ( LockCursor )
@@ -84,7 +81,7 @@ namespace FIMSpace.Basics
             //}
         }
 
-        private Vector3 prePos = Vector3.zero;
+        //private Vector3 prePos = Vector3.zero;
 
         private void UpdateMethods()
         {
@@ -94,8 +91,7 @@ namespace FIMSpace.Basics
             RaycastCalculations();
             SwitchCalculations();
 
-            DebugVelocity = transform.position - prePos;
-            prePos = transform.position;
+            //prePos = transform.position;
         }
 
         /// <summary>
@@ -109,10 +105,10 @@ namespace FIMSpace.Basics
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) )
                 if (Cursor.lockState != CursorLockMode.Locked) HelperSwitchCursor();
 
-            if (Input.GetKey(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab))
+            if ((Input.GetKey(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)) )
                 if (Cursor.lockState == CursorLockMode.Locked) HelperSwitchCursor();
 
             if (UpdateClock != EFUpdateClock.Update) return;
@@ -166,7 +162,8 @@ namespace FIMSpace.Basics
 
             if (HardFollowValue < 1f)
             {
-                targetPosition = Vector3.SmoothDamp(this.targetPosition, targetPosition, ref movVelo, Mathf.Lerp(.5f, 0f, HardFollowValue), Mathf.Infinity, Time.deltaTime);
+                float lerpValue = Mathf.Lerp(0.5f, 40f, HardFollowValue);
+                targetPosition = Vector3.Lerp(this.targetPosition, targetPosition, Time.deltaTime * lerpValue);
             }
 
             this.targetPosition = targetPosition;

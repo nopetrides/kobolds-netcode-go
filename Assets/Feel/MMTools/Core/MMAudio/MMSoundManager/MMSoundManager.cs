@@ -136,8 +136,7 @@ namespace MoreMountains.Tools
 				options.DopplerLevel, options.Spread, options.RolloffMode, options.MinDistance, options.MaxDistance, 
 				options.DoNotAutoRecycleIfNotDonePlaying, options.PlaybackTime, options.PlaybackDuration, options.AttachToTransform,
 				options.UseSpreadCurve, options.SpreadCurve, options.UseCustomRolloffCurve, options.CustomRolloffCurve,
-				options.UseSpatialBlendCurve, options.SpatialBlendCurve, options.UseReverbZoneMixCurve, options.ReverbZoneMixCurve, 
-				options.AudioResourceToPlay
+				options.UseSpatialBlendCurve, options.SpatialBlendCurve, options.UseReverbZoneMixCurve, options.ReverbZoneMixCurve
 			);
 		}
 
@@ -185,12 +184,11 @@ namespace MoreMountains.Tools
 			float dopplerLevel = 1f, int spread = 0, AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic, float minDistance = 1f, float maxDistance = 500f,
 			bool doNotAutoRecycleIfNotDonePlaying = false, float playbackTime = 0f, float playbackDuration = 0f, Transform attachToTransform = null,
 			bool useSpreadCurve = false, AnimationCurve spreadCurve = null, bool useCustomRolloffCurve = false, AnimationCurve customRolloffCurve = null,
-			bool useSpatialBlendCurve = false, AnimationCurve spatialBlendCurve = null, bool useReverbZoneMixCurve = false, AnimationCurve reverbZoneMixCurve = null, 
-			AudioResource audioResourceToPlay = null
+			bool useSpatialBlendCurve = false, AnimationCurve spatialBlendCurve = null, bool useReverbZoneMixCurve = false, AnimationCurve reverbZoneMixCurve = null
 		)
 		{
 			if (this == null) { return null; }
-			if (!audioClip && !audioResourceToPlay) { return null; }
+			if (!audioClip) { return null; }
             
 			// audio source setup ---------------------------------------------------------------------------------
             
@@ -206,8 +204,7 @@ namespace MoreMountains.Tools
 				{
 					recycleAudioSource = audioSource;
 					// we destroy the host after the clip has played (if it is not tagged for reusability.
-					float duration = (audioClip != null) ? audioClip.length / Mathf.Abs(pitch) : 1f;
-					StartCoroutine(_pool.AutoDisableAudioSource(duration, audioSource, audioClip, doNotAutoRecycleIfNotDonePlaying, playbackTime, playbackDuration));
+					StartCoroutine(_pool.AutoDisableAudioSource(audioClip.length / Mathf.Abs(pitch), audioSource, audioClip, doNotAutoRecycleIfNotDonePlaying, playbackTime, playbackDuration));
 				}
 			}
 
@@ -222,14 +219,7 @@ namespace MoreMountains.Tools
 			// audio source settings ---------------------------------------------------------------------------------
             
 			audioSource.transform.position = location;
-			if (audioResourceToPlay == null)
-			{
-				audioSource.clip = audioClip;
-			}
-			else
-			{
-				audioSource.resource = audioResourceToPlay;
-			}
+			audioSource.clip = audioClip;
 			audioSource.pitch = pitch;
 			audioSource.spatialBlend = spatialBlend;
 			audioSource.panStereo = panStereo;
@@ -244,10 +234,7 @@ namespace MoreMountains.Tools
 			audioSource.rolloffMode = rolloffMode;
 			audioSource.minDistance = minDistance;
 			audioSource.maxDistance = maxDistance;
-			if (audioSource.clip != null)
-			{
-				audioSource.time = playbackTime;
-			} 
+			audioSource.time = playbackTime; 
 			
 			// curves
 			if (useSpreadCurve) { audioSource.SetCustomCurve(AudioSourceCurveType.Spread, spreadCurve); }

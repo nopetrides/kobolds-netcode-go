@@ -48,7 +48,9 @@ namespace IngameDebugConsole
 
 		private void OnSceneLoaded( Scene scene, LoadSceneMode mode )
 		{
+#if UNITY_2017_2_OR_NEWER
 			DeactivateEventSystem();
+#endif
 			ActivateEventSystemIfNeeded();
 		}
 

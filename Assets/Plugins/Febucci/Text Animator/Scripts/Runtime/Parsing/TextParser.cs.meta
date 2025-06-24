@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 62b50d2f8435a44d5abcc3b0aec4daed
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254677
+  packageName: Text Animator for Unity
+  packageVersion: 2.2.1
+  assetPath: Assets/Plugins/Febucci/Text Animator/Scripts/Runtime/Parsing/TextParser.cs
+  uploadId: 710156

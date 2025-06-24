@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: b2c603ce2ceec814fb64351074c610f3
+timeCreated: 1540416105
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Utilities/FBasic_SphericDuplicateOn.cs
+  uploadId: 697898

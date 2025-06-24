@@ -336,7 +336,7 @@ namespace MoreMountains.Feedbacks
 		}
 
 		/// <summary>
-		/// Changes the player's direction (inverting it - top to bottom becomes bottom to top, top to bottom becomes bottom to top) then plays all feedbacks using the MMFeedbacks' position as reference, and no attenuation
+		/// Plays all feedbacks using the MMFeedbacks' position as reference, and no attenuation, and in reverse (from bottom to top)
 		/// </summary>
 		public virtual void PlayFeedbacksInReverse()
 		{
@@ -344,7 +344,7 @@ namespace MoreMountains.Feedbacks
 		}
 
 		/// <summary>
-		/// Changes the player's direction (inverting it - top to bottom becomes bottom to top, top to bottom becomes bottom to top) then plays all feedbacks
+		/// Plays all feedbacks using the MMFeedbacks' position as reference, and no attenuation, and in reverse (from bottom to top)
 		/// </summary>
 		public virtual void PlayFeedbacksInReverse(Vector3 position, float feedbacksIntensity = 1.0f, bool forceChangeDirection = false)
 		{

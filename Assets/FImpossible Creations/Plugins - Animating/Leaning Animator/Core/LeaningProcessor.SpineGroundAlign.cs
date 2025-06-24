@@ -19,8 +19,6 @@ namespace FIMSpace
 
         internal Vector3 _UserStartBoneAddAngles = Vector3.zero;
         internal Vector3 _UserMidBoneAddAngles = Vector3.zero;
-        internal float _UserOriginBoneAddForwardAngle = 0f;
-        internal float _UserOriginBoneAddSideAngle = 0f;
 
         private Vector3 spineStartGroundAdjust = Vector3.zero;
         private Vector3 spineMidGroundAdjust = Vector3.zero;

@@ -18,8 +18,8 @@ namespace MoreMountains.Feedbacks
 		public static bool FeedbackTypeAuthorized = true;
 		/// the possible modes for this feedback (Absolute : always follow the curve from start to finish, Additive : add to the values found when this feedback gets played)
 		public enum Modes { Absolute, Additive, ToDestination }
-		/// whether to animate the scale over time or at a fixed speed
-		public enum MovementModes { Duration, Speed }
+		/// the timescale modes this feedback can operate on
+		public enum TimeScales { Scaled, Unscaled }
 
 		/// sets the inspector color for this feedback
 		#if UNITY_EDITOR
@@ -45,18 +45,9 @@ namespace MoreMountains.Feedbacks
 		/// whether this feedback should play on local or world rotation
 		[Tooltip("whether this feedback should play on local or world rotation")]
 		public Space RotationSpace = Space.World;
-		/// whether movement should occur over a fixed duration, or at a certain speed. Note that speed mode will only apply in AtoB and ToDestination modes
-		[Tooltip("whether movement should occur over a fixed duration, or at a certain speed. Note that speed mode will only apply in AtoB and ToDestination modes")]
-		[MMFEnumCondition("Mode", (int)Modes.ToDestination)]
-		public MovementModes MovementMode = MovementModes.Duration;
 		/// the duration of the transition
 		[Tooltip("the duration of the transition")]
-		[MMFEnumCondition("MovementMode", (int)MovementModes.Duration)]
 		public float AnimateRotationDuration = 0.2f;
-		/// in speed mode, the speed at which we should animate the position
-		[Tooltip("in speed mode, the speed at which we should animate the position")]
-		[MMFEnumCondition("MovementMode", (int)MovementModes.Speed)]
-		public float AnimatePositionSpeed = 1f;
 		/// the value to remap the curve's 0 value to
 		[Tooltip("the value to remap the curve's 0 value to")]
 		[MMFEnumCondition("Mode", (int)Modes.Absolute, (int)Modes.Additive)]
@@ -152,24 +143,6 @@ namespace MoreMountains.Feedbacks
 			_initialRotation = (RotationSpace == Space.World) ? AnimateRotationTarget.rotation : AnimateRotationTarget.localRotation;
 			_initialToDestinationAngles = _initialRotation.eulerAngles;
 		}
-		
-		/// <summary>
-		/// In speed mode, computes the duration the feedback should last based on the distance between the two points and the speed
-		/// </summary>
-		/// <param name="pointA"></param>
-		/// <param name="pointB"></param>
-		/// <param name="duration"></param>
-		/// <returns></returns>
-		protected virtual float HandleSpeedMode(Quaternion pointA, Quaternion pointB, float duration)
-		{
-			if (MovementMode != MovementModes.Speed)
-			{
-				return duration;
-			}
-
-			float distance = 2 * Mathf.Acos(Quaternion.Dot(pointA, pointB));
-			return distance / AnimatePositionSpeed;
-		}
 
 		/// <summary>
 		/// On play, we trigger our rotation animation
@@ -261,12 +234,10 @@ namespace MoreMountains.Feedbacks
 			_destinationRotation = AnimateRotationTarget.transform.rotation;
 			AnimateRotationTarget.transform.rotation = _initialRotation;
 			IsPlaying = true;
-			
-			float duration = HandleSpeedMode(_initialRotation, _destinationRotation, FeedbackDuration);
             
-			while ((journey >= 0) && (journey <= duration) && (duration > 0))
+			while ((journey >= 0) && (journey <= FeedbackDuration) && (FeedbackDuration > 0))
 			{
-				float percent = Mathf.Clamp01(journey / duration);
+				float percent = Mathf.Clamp01(journey / FeedbackDuration);
 				percent = ToDestinationTween.Evaluate(percent);
 
 				Quaternion newRotation = Quaternion.LerpUnclamped(_initialRotation, _destinationRotation, percent);

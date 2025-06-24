@@ -488,10 +488,6 @@ namespace MoreMountains.Feedbacks
 			float volume = Random.Range(MinVolume, MaxVolume);
 			float pitch = Random.Range(MinPitch, MaxPitch);
 			GameObject temporaryAudioHost = new GameObject("EditorTestAS_WillAutoDestroy");
-			if (!Application.isPlaying)
-			{
-				temporaryAudioHost.AddComponent<MMForceDestroyInPlayMode>();
-			}
 			SceneManager.MoveGameObjectToScene(temporaryAudioHost.gameObject, Owner.gameObject.scene);
 			temporaryAudioHost.transform.position = Owner.transform.position;
 			_editorAudioSource = temporaryAudioHost.AddComponent<AudioSource>() as AudioSource;

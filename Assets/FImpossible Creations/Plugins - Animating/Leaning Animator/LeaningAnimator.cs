@@ -98,31 +98,6 @@ namespace FIMSpace
             Leaning._UserMidBoneAddAngles = angles;
         }
 
-
-        public void User_RotateOriginForward(float forwardAngle)
-        {
-            Leaning._UserOriginBoneAddForwardAngle = forwardAngle;
-        }
-
-        float _sd_origF = 0f;
-        public void User_RotateOriginForward(float forwardAngle, float duration, float deltaTime)
-        {
-            float targetV = Mathf.SmoothDamp(Leaning._UserOriginBoneAddForwardAngle, forwardAngle, ref _sd_origF, duration, 1000000f, deltaTime);
-            User_RotateOriginForward(targetV);
-        }
-
-        public void User_RotateOriginSide(float forwardAngle)
-        {
-            Leaning._UserOriginBoneAddSideAngle = forwardAngle;
-        }
-
-        float _sd_origS = 0f;
-        public void User_RotateOriginSide(float sideAngle, float duration, float deltaTime)
-        {
-            float targetV = Mathf.SmoothDamp(Leaning._UserOriginBoneAddSideAngle, sideAngle, ref _sd_origS, duration, 1000000f, deltaTime);
-            User_RotateOriginSide(targetV);
-        }
-
         public void User_DeliverCustomRaycastHit(RaycastHit hit)
         {
             Leaning._UserUseCustomRaycast = true;

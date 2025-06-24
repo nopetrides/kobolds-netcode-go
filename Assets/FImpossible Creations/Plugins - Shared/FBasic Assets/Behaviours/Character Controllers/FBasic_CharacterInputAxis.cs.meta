@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 836ca4b751bc2ce4c89c62070bc505cc
+timeCreated: 1530095443
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Character Controllers/FBasic_CharacterInputAxis.cs
+  uploadId: 697898

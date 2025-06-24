@@ -56,15 +56,9 @@ namespace MoreMountains.Feedbacks
 		/// the name of the state towards which to transition. That's the name of the yellow or gray box in your Animator
 		[Tooltip("the name of the state towards which to transition. That's the name of the yellow or gray box in your Animator")]
 		public string StateName = "NewState";
-		/// an optional list of names of state towards which to transition. If left empty, StateName above will be used. If filled, a random state will be chosen from this list, ignoring the StateName specified above
-		[Tooltip("an optional list of names of state towards which to transition. If left empty, StateName above will be used. If filled, a random state will be chosen from this list, ignoring the StateName specified above")]
-		public List<string> RandomStateNames = new List<string>();
 		/// the ID of the Animator layer you want the crossfade to occur on
 		[Tooltip("the ID of the Animator layer you want the crossfade to occur on")]
 		public int Layer = -1;
-		/// the name of the Animator layer you want the crossfade to occur on. This is optional. If left empty, the layer ID above will be used, if not empty, the Layer id specified above will be ignored.
-		[Tooltip("the name of the Animator layer you want the crossfade to occur on. This is optional. If left empty, the layer ID above will be used, if not empty, the Layer id specified above will be ignored.")]
-		public string LayerName = "";
 		
 		/// whether to specify timing data for the crossfade in seconds or in normalized (0-1) values  
 		[Tooltip("whether to specify timing data for the crossfade in seconds or in normalized (0-1) values")] 
@@ -93,7 +87,6 @@ namespace MoreMountains.Feedbacks
 		public float NormalizedTransitionTime = 0f;
 
 		protected int _stateHashName;
-		protected int _layerID;
 
 		/// <summary>
 		/// Custom Init
@@ -103,11 +96,6 @@ namespace MoreMountains.Feedbacks
 		{
 			base.CustomInitialization(owner);
 			_stateHashName = Animator.StringToHash(StateName);
-			_layerID = Layer;
-			if ((LayerName != "") && (BoundAnimator != null))
-			{
-				_layerID = BoundAnimator.GetLayerIndex(LayerName);
-			}
 		}
 
 		/// <summary>
@@ -127,13 +115,6 @@ namespace MoreMountains.Feedbacks
 				Debug.LogWarning("[Animation Crossfade Feedback] The animation crossfade feedback on "+Owner.name+" doesn't have a BoundAnimator, it won't work. You need to specify one in its inspector.");
 				return;
 			}
-			
-			if (RandomStateNames.Count > 0)
-			{
-				int randomIndex = UnityEngine.Random.Range(0, RandomStateNames.Count);
-				StateName = RandomStateNames[randomIndex];
-				_stateHashName = Animator.StringToHash(StateName);
-			}
 
 			CrossFade(BoundAnimator);
 			foreach (Animator animator in ExtraBoundAnimators)
@@ -151,10 +132,10 @@ namespace MoreMountains.Feedbacks
 			switch (Mode)
 			{
 				case Modes.Seconds:
-					targetAnimator.CrossFadeInFixedTime(_stateHashName, TransitionDuration, _layerID, TimeOffset, NormalizedTransitionTime);
+					targetAnimator.CrossFadeInFixedTime(_stateHashName, TransitionDuration, Layer, TimeOffset, NormalizedTransitionTime);
 					break;
 				case Modes.Normalized:
-					targetAnimator.CrossFade(_stateHashName, NormalizedTransitionDuration, _layerID, NormalizedTimeOffset, NormalizedTransitionTime);
+					targetAnimator.CrossFade(_stateHashName, NormalizedTransitionDuration, Layer, NormalizedTimeOffset, NormalizedTransitionTime);
 					break;
 			}
 		}

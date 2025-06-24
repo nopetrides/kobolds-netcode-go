@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: a1a258be5b711544582ba58f28a047f9
+timeCreated: 1562834486
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/DEMO FBasic Assets/Scripts/FBasic_Demo_AddDialogueToConversation.cs
+  uploadId: 697898

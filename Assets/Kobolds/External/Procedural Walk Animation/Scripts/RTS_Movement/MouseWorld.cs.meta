@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 420cff8f6af8bc74d818d9d2f2f65ac9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 244662
+  packageName: Procedural Walk Animation
+  packageVersion: 1.0.0
+  assetPath: Assets/Procedural Walk Animation/Scripts/RTS_Movement/MouseWorld.cs
+  uploadId: 567945

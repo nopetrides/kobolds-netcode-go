@@ -100,8 +100,7 @@ namespace FIMSpace
         [FPD_Suffix( 0f, 1f )] public float AllEffectsBlend = 1f;
 
         /// <summary> Main blends excluding grounded blend </summary>
-        public float GetFullBlend { get { return calcFullBlend; } }
-        float calcFullBlend = 1f;
+        public float GetFullBlend { get { return AllEffectsBlend * effectsBlend * fadeOffBlend; } }
 
 
         [Tooltip( "Reading animator parameter bool/float value to define if character is accelerating / braking or stopping" )]
@@ -259,8 +258,6 @@ namespace FIMSpace
         internal void Update()
         {
             if( AllEffectsBlend <= 0f ) return;
-
-            calcFullBlend = AllEffectsBlend * effectsBlend * fadeOffBlend;
 
             CheckForForcingTransformBasedVelocity();
 

@@ -132,16 +132,9 @@ namespace MoreMountains.Tools
 			switch (PlayOrder)
 			{
 				case PlayOrders.Random:
-					if (Songs.Count > 1)
+					while (newIndex == currentSongIndex)
 					{
-						while (newIndex == currentSongIndex)
-						{
-							newIndex = Random.Range(0, Songs.Count);
-						}
-					}
-					else
-					{
-						newIndex = 0;
+						newIndex = Random.Range(0, Songs.Count);
 					}
 					return newIndex;
 				

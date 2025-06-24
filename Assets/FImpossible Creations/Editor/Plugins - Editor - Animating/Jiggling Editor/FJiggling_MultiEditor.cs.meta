@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 3bc6bfdcef3a94048989a402cbcd7197
+timeCreated: 1529528329
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121815
+  packageName: Jiggling
+  packageVersion: 1.1.4
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Editor/Plugins - Editor
+    - Animating/Jiggling Editor/FJiggling_MultiEditor.cs
+  uploadId: 618536

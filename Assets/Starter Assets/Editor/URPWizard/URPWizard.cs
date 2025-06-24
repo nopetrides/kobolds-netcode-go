@@ -7,15 +7,15 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 #endif
 
-public class URPWizard : EditorWindow
+public class UrpWizard : EditorWindow
 {
     [InitializeOnLoadMethod]
     static void OnInitialize()
     {
-        URPCheck();
+        UrpCheck();
     }
 
-    static void URPCheck()
+    static void UrpCheck()
     {
         if (GraphicsSettings.currentRenderPipeline != null) 
             return;

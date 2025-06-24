@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2f4ecd1c87cbb7b46bb899914b7f05cb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 122233
+  packageName: Bones Stimulator
+  packageVersion: 2.0.0
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Bones Stimulator/Core/BonesStimulator.Logics.Vibrate.cs
+  uploadId: 720864

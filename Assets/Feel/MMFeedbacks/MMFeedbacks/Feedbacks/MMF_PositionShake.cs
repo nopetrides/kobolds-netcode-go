@@ -123,7 +123,7 @@ namespace MoreMountains.Feedbacks
 
 			if (TargetShaker == null)
 			{
-				MMPositionShakeEvent.Trigger(FeedbackDuration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
+				MMPositionShakeEvent.Trigger(Duration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
 					RandomizeDirectionX, RandomizeDirectionY, RandomizeDirectionZ, AddDirectionalNoise, 
 					DirectionalNoiseStrengthMin,  DirectionalNoiseStrengthMax,  RandomnessSeed,  RandomizeSeedOnShake,  UseAttenuation,  AttenuationCurve,
 					UseRange, RangeDistance, UseRangeFalloff, RangeFalloff, RemapRangeFalloff, position,
@@ -131,7 +131,7 @@ namespace MoreMountains.Feedbacks
 			}
 			else
 			{
-				TargetShaker?.OnMMPositionShakeEvent(FeedbackDuration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
+				TargetShaker?.OnMMPositionShakeEvent(Duration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
 					RandomizeDirectionX, RandomizeDirectionY, RandomizeDirectionZ, AddDirectionalNoise, 
 					DirectionalNoiseStrengthMin,  DirectionalNoiseStrengthMax,  RandomnessSeed,  RandomizeSeedOnShake,  UseAttenuation,  AttenuationCurve,
 					UseRange, RangeDistance, UseRangeFalloff, RangeFalloff, RemapRangeFalloff, position,
@@ -154,13 +154,13 @@ namespace MoreMountains.Feedbacks
 
 			if (TargetShaker == null)
 			{
-				MMPositionShakeEvent.Trigger(FeedbackDuration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
+				MMPositionShakeEvent.Trigger(Duration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
 					RandomizeDirectionX, RandomizeDirectionY, RandomizeDirectionZ, AddDirectionalNoise, 
 					DirectionalNoiseStrengthMin,  DirectionalNoiseStrengthMax,  RandomnessSeed,  RandomizeSeedOnShake,  UseAttenuation,  AttenuationCurve, stop:true);	
 			}
 			else
 			{
-				TargetShaker?.OnMMPositionShakeEvent(FeedbackDuration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
+				TargetShaker?.OnMMPositionShakeEvent(Duration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
 					RandomizeDirectionX, RandomizeDirectionY, RandomizeDirectionZ, AddDirectionalNoise, 
 					DirectionalNoiseStrengthMin,  DirectionalNoiseStrengthMax,  RandomnessSeed,  RandomizeSeedOnShake,  UseAttenuation,  AttenuationCurve, channelData:TargetShaker.ChannelData, stop:true);	
 			}
@@ -178,13 +178,13 @@ namespace MoreMountains.Feedbacks
 
 			if (TargetShaker == null)
 			{
-				MMPositionShakeEvent.Trigger(FeedbackDuration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
+				MMPositionShakeEvent.Trigger(Duration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
 					RandomizeDirectionX, RandomizeDirectionY, RandomizeDirectionZ, AddDirectionalNoise, 
 					DirectionalNoiseStrengthMin,  DirectionalNoiseStrengthMax,  RandomnessSeed,  RandomizeSeedOnShake,  UseAttenuation,  AttenuationCurve, restore:true);	
 			}
 			else
 			{
-				TargetShaker?.OnMMPositionShakeEvent(FeedbackDuration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
+				TargetShaker?.OnMMPositionShakeEvent(Duration, ShakeSpeed,  ShakeRange,  ShakeMainDirection,  RandomizeDirection,  ShakeAltDirection,  RandomizeDirectionOnPlay,  
 					RandomizeDirectionX, RandomizeDirectionY, RandomizeDirectionZ, AddDirectionalNoise, 
 					DirectionalNoiseStrengthMin,  DirectionalNoiseStrengthMax,  RandomnessSeed,  RandomizeSeedOnShake,  UseAttenuation,  AttenuationCurve, channelData:TargetShaker.ChannelData, restore:true);	
 			}

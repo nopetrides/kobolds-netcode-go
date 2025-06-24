@@ -189,9 +189,9 @@ namespace Lofelt.NiceVibrations
 
             if ((_image != null) && (PressedChangeColor))
             {
-                if (Time.unscaledTime - _lastStateChangeAt < LerpColorDuration)
+                if (Time.time - _lastStateChangeAt < LerpColorDuration)
                 {
-                    float t = LerpColorCurve.Evaluate(Remap(Time.unscaledTime - _lastStateChangeAt, 0f, LerpColorDuration, 0f, 1f));
+                    float t = LerpColorCurve.Evaluate(Remap(Time.time - _lastStateChangeAt, 0f, LerpColorDuration, 0f, 1f));
                     _image.color = Color.Lerp(_fromColor, _toColor, t);
                 }
             }
@@ -206,14 +206,14 @@ namespace Lofelt.NiceVibrations
         {
             if (CurrentState == ButtonStates.ButtonUp)
             {
-                _lastStateChangeAt = Time.unscaledTime;
+                _lastStateChangeAt = Time.time;
                 _fromColor = PressedColor;
                 _toColor = _initialColor;
                 CurrentState = ButtonStates.Off;
             }
             if (CurrentState == ButtonStates.ButtonDown)
             {
-                _lastStateChangeAt = Time.unscaledTime;
+                _lastStateChangeAt = Time.time;
                 _fromColor = _initialColor;
                 _toColor = PressedColor;
                 CurrentState = ButtonStates.ButtonPressed;
@@ -225,7 +225,7 @@ namespace Lofelt.NiceVibrations
         /// </summary>
         public virtual void OnPointerDown(PointerEventData data)
         {
-            if (Time.unscaledTime - _lastClickTimestamp < BufferDuration)
+            if (Time.time - _lastClickTimestamp < BufferDuration)
             {
                 return;
             }
@@ -235,7 +235,7 @@ namespace Lofelt.NiceVibrations
                 return;
             }
             CurrentState = ButtonStates.ButtonDown;
-            _lastClickTimestamp = Time.unscaledTime;
+            _lastClickTimestamp = Time.time;
             if ((Time.timeScale != 0) && (PressedFirstTimeDelay > 0))
             {
                 Invoke("InvokePressedFirstTime", PressedFirstTimeDelay);

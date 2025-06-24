@@ -11,3 +11,11 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121798
+  packageName: Ground Fitter
+  packageVersion: 1.2.2
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Cameras/FBasic_TPPCameraBehaviour.cs
+  uploadId: 669810

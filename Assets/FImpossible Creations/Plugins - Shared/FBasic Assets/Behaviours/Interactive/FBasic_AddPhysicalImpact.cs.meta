@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: ad0fa567ffa7abc46829ddf4709df0f5
+timeCreated: 1540758178
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Interactive/FBasic_AddPhysicalImpact.cs
+  uploadId: 697898

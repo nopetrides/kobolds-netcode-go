@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: c4d31ff96a6383a4989f19c28b54cf81
+timeCreated: 1530094169
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/DEMO FBasic Assets/Scripts/FBasic_Demo_CharacterChoosePanel.cs
+  uploadId: 697898

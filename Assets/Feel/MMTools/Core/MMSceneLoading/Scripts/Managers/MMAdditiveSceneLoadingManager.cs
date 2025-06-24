@@ -111,7 +111,6 @@ namespace MoreMountains.Tools
 	{
 		/// The possible orders in which to play fades (depends on the fade you've set in your loading screen
 		public enum FadeModes { FadeInThenOut, FadeOutThenIn }
-		public enum HoldModes { AfterEntryFade, AfterUnloadOriginScene, BeforeSceneActivation, BeforeExitFade }
 		
 		[MMInspectorGroup("Audio Listener", true, 3)]
 		public AudioListener LoadingAudioListener;
@@ -201,14 +200,6 @@ namespace MoreMountains.Tools
 		protected const float _asyncProgressLimit = 0.9f;
 		protected MMSceneLoadingAntiSpill _antiSpill = new MMSceneLoadingAntiSpill();
 		protected static string _antiSpillSceneName = "";
-		
-		protected static Dictionary<HoldModes, bool> _holds = new Dictionary<HoldModes, bool>
-		{
-			{HoldModes.AfterEntryFade, false},
-			{HoldModes.AfterUnloadOriginScene, false},
-			{HoldModes.BeforeSceneActivation, false},
-			{HoldModes.BeforeExitFade, false}
-		};
 		
 		/// <summary>
 		/// Statics initialization to support enter play modes
@@ -325,22 +316,6 @@ namespace MoreMountains.Tools
 			_speedIntervals = speedIntervals;
 
 			SceneManager.LoadScene(_loadingScreenSceneName, LoadSceneMode.Additive);
-		}
-		
-		public static void SetHold(HoldModes holdMode, bool state)
-		{
-			if (_holds.ContainsKey(holdMode))
-			{
-				_holds[holdMode] = state;
-			}
-		}
-		
-		public static void ClearHolds()
-		{
-			foreach (KeyValuePair<HoldModes, bool> hold in _holds)
-			{
-				_holds[hold.Key] = false;
-			}
 		}
         
 		private static Scene[] GetScenesToUnload(MMAdditiveSceneLoadingManagerSettings.UnloadMethods unloaded)
@@ -532,15 +507,12 @@ namespace MoreMountains.Tools
 		/// <returns></returns>
 		protected virtual IEnumerator ProcessDelayAfterEntryFade()
 		{
-			while (_holds[HoldModes.AfterEntryFade])
-			{
-				yield return null;
-			}
 			if (_afterEntryFadeDelay > 0f)
 			{
 				MMLoadingSceneDebug("MMLoadingSceneManagerAdditive : delay after entry fade, duration : " + _afterEntryFadeDelay);
 				MMSceneLoadingManager.LoadingSceneEvent.Trigger(_sceneToLoadName, MMSceneLoadingManager.LoadingStatus.AfterEntryFade);
 				OnAfterEntryFade?.Invoke();
+				
 				yield return MMCoroutine.WaitForUnscaled(_afterEntryFadeDelay);
 			}
 		}
@@ -569,11 +541,6 @@ namespace MoreMountains.Tools
 				{
 					yield return null;
 				}
-			}
-			
-			while (_holds[HoldModes.AfterUnloadOriginScene])
-			{
-				yield return null;
 			}
 		}
 
@@ -633,11 +600,6 @@ namespace MoreMountains.Tools
 				
 				yield return MMCoroutine.WaitForUnscaled(_beforeSceneActivationDelay);
 			}
-			
-			while (_holds[HoldModes.BeforeSceneActivation])
-			{
-				yield return null;
-			}
 		}
 
 		/// <summary>
@@ -674,10 +636,6 @@ namespace MoreMountains.Tools
 		/// <returns></returns>
 		protected virtual IEnumerator ExitFade()
 		{
-			while (_holds[HoldModes.BeforeExitFade])
-			{
-				yield return null;
-			}
 			SetAudioListener(false);
 			if (_exitFadeDuration > 0f)
 			{

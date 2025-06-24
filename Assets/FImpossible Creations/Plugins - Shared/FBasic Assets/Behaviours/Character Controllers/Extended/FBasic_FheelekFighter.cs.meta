@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 9062c727ec5577d4a92c17c1122fd77d
+timeCreated: 1528995742
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Plugins - Shared/FBasic
+    Assets/Behaviours/Character Controllers/Extended/FBasic_FheelekFighter.cs
+  uploadId: 697898

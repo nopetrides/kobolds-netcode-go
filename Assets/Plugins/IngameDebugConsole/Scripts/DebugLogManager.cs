@@ -5,7 +5,6 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
 using UnityEngine.InputSystem;
 #endif
@@ -99,7 +98,7 @@ namespace IngameDebugConsole
 		[SerializeField]
 		[HideInInspector]
 		[Tooltip( "If enabled, console window will initially be invisible" )]
-		private bool startMinimized = true;
+		private bool startMinimized = false;
 
 		[SerializeField]
 		[HideInInspector]
@@ -181,12 +180,16 @@ namespace IngameDebugConsole
 		private bool receiveLogcatLogsInAndroid = false;
 
 #pragma warning disable 0414
+#if UNITY_2018_3_OR_NEWER // On older Unity versions, disabling CS0169 is problematic: "Cannot restore warning 'CS0169' because it was disabled globally"
 #pragma warning disable 0169
+#endif
 		[SerializeField]
 		[HideInInspector]
 		[Tooltip( "Native logs will be filtered using these arguments. If left blank, all native logs of the application will be logged to the console. But if you want to e.g. see Admob's logs only, you can enter \"-s Ads\" (without quotes) here" )]
 		private string logcatArguments;
+#if UNITY_2018_3_OR_NEWER
 #pragma warning restore 0169
+#endif
 #pragma warning restore 0414
 
 		[SerializeField]
@@ -201,7 +204,7 @@ namespace IngameDebugConsole
 
 		[SerializeField]
 		[Tooltip( "If a log is longer than this limit, it will be truncated. This helps avoid reaching Unity's 65000 vertex limit for UI canvases" )]
-		internal int maxLogLength = 10000;
+		private int maxLogLength = 10000;
 
 #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
 		[SerializeField]
@@ -215,7 +218,7 @@ namespace IngameDebugConsole
 		private DebugLogItem logItemPrefab;
 
 		[SerializeField]
-		private TextMeshProUGUI commandSuggestionPrefab;
+		private Text commandSuggestionPrefab;
 
 		// Visuals for different log types
 		[SerializeField]
@@ -225,7 +228,7 @@ namespace IngameDebugConsole
 		[SerializeField]
 		private Sprite errorLog;
 
-		internal static Sprite[] logSpriteRepresentations;
+		private Sprite[] logSpriteRepresentations;
 
 		// Visuals for resize button
 		[SerializeField]
@@ -261,7 +264,7 @@ namespace IngameDebugConsole
 		private RectTransform commandSuggestionsContainer;
 
 		[SerializeField]
-		private TMP_InputField commandInputField;
+		private InputField commandInputField;
 
 		[SerializeField]
 		private Button hideButton;
@@ -280,11 +283,11 @@ namespace IngameDebugConsole
 		private Image filterErrorButton;
 
 		[SerializeField]
-		private TextMeshProUGUI infoEntryCountText;
+		private Text infoEntryCountText;
 		[SerializeField]
-		private TextMeshProUGUI warningEntryCountText;
+		private Text warningEntryCountText;
 		[SerializeField]
-		private TextMeshProUGUI errorEntryCountText;
+		private Text errorEntryCountText;
 
 		[SerializeField]
 		private RectTransform searchbar;
@@ -377,7 +380,7 @@ namespace IngameDebugConsole
 		private int pendingLogToAutoExpand;
 
 		// Command suggestions that match the currently entered command
-		private List<TextMeshProUGUI> commandSuggestionInstances;
+		private List<Text> commandSuggestionInstances;
 		private int visibleCommandSuggestionInstances = 0;
 		private List<ConsoleMethodInfo> matchingCommandSuggestions;
 		private List<int> commandCaretIndexIncrements;
@@ -432,9 +435,11 @@ namespace IngameDebugConsole
 		// Callbacks for log window show/hide events
 		public System.Action OnLogWindowShown, OnLogWindowHidden;
 
+#if UNITY_EDITOR
 		private bool isQuittingApplication;
+#endif
 
-#if !UNITY_EDITOR && UNITY_ANDROID && UNITY_ANDROID_JNI
+#if !UNITY_EDITOR && UNITY_ANDROID
 		private DebugLogLogcatListener logcatListener;
 #endif
 
@@ -457,7 +462,7 @@ namespace IngameDebugConsole
 
 			pooledLogEntries = new Stack<DebugLogEntry>( 64 );
 			pooledLogItems = new Stack<DebugLogItem>( 16 );
-			commandSuggestionInstances = new List<TextMeshProUGUI>( 8 );
+			commandSuggestionInstances = new List<Text>( 8 );
 			matchingCommandSuggestions = new List<ConsoleMethodInfo>( 8 );
 			commandCaretIndexIncrements = new List<int>( 8 );
 			queuedLogEntries = new DynamicCircularBuffer<QueuedDebugLogEntry>( Mathf.Clamp( queuedLogLimit, 16, 4096 ) );
@@ -516,7 +521,7 @@ namespace IngameDebugConsole
 			}
 
 			if( enableSearchbar )
-				searchbar.GetComponent<TMP_InputField>().onValueChanged.AddListener( SearchTermChanged );
+				searchbar.GetComponent<InputField>().onValueChanged.AddListener( SearchTermChanged );
 			else
 			{
 				searchbar = null;
@@ -559,9 +564,12 @@ namespace IngameDebugConsole
 				Application.logMessageReceivedThreaded += ReceivedLog;
 			}
 
+#if UNITY_EDITOR && UNITY_2018_1_OR_NEWER
 			// OnApplicationQuit isn't reliable on some Unity versions when Application.wantsToQuit is used; Application.quitting is the only reliable solution on those versions
 			// https://issuetracker.unity3d.com/issues/onapplicationquit-method-is-called-before-application-dot-wantstoquit-event-is-raised
+			Application.quitting -= OnApplicationQuitting;
 			Application.quitting += OnApplicationQuitting;
+#endif
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
 			toggleBinding.performed += ( context ) =>
@@ -593,17 +601,11 @@ namespace IngameDebugConsole
 
 			if( receiveLogcatLogsInAndroid )
 			{
-#if UNITY_ANDROID
-#if UNITY_ANDROID_JNI
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR && UNITY_ANDROID
 				if( logcatListener == null )
 					logcatListener = new DebugLogLogcatListener();
 
 				logcatListener.Start( logcatArguments );
-#endif
-#else
-				Debug.LogWarning( "Android JNI module must be enabled in Package Manager for \"Receive Logcat Logs In Android\" to work." );
-#endif
 #endif
 			}
 
@@ -632,7 +634,7 @@ namespace IngameDebugConsole
 			if( !receiveLogsWhileInactive )
 				Application.logMessageReceivedThreaded -= ReceivedLog;
 
-#if !UNITY_EDITOR && UNITY_ANDROID && UNITY_ANDROID_JNI
+#if !UNITY_EDITOR && UNITY_ANDROID
 			if( logcatListener != null )
 				logcatListener.Stop();
 #endif
@@ -668,7 +670,9 @@ namespace IngameDebugConsole
 			if( receiveLogsWhileInactive )
 				Application.logMessageReceivedThreaded -= ReceivedLog;
 
+#if UNITY_EDITOR && UNITY_2018_1_OR_NEWER
 			Application.quitting -= OnApplicationQuitting;
+#endif
 		}
 
 #if UNITY_EDITOR
@@ -687,12 +691,16 @@ namespace IngameDebugConsole
 				filterErrorButton.gameObject.SetActive( receiveErrorLogs || receiveExceptionLogs );
 			}
 		}
-#endif
 
+#if UNITY_2018_1_OR_NEWER
 		private void OnApplicationQuitting()
+#else
+		private void OnApplicationQuit()
+#endif
 		{
 			isQuittingApplication = true;
 		}
+#endif
 
 		// Window is resized, update the list
 		private void OnRectTransformDimensionsChange()
@@ -709,7 +717,7 @@ namespace IngameDebugConsole
 			lastFrameCount = Time.frameCount;
 #endif
 
-#if !UNITY_EDITOR && UNITY_ANDROID && UNITY_ANDROID_JNI
+#if !UNITY_EDITOR && UNITY_ANDROID
 			if( logcatListener != null )
 			{
 				string log;
@@ -738,8 +746,10 @@ namespace IngameDebugConsole
 
 		private void LateUpdate()
 		{
+#if UNITY_EDITOR
 			if( isQuittingApplication )
 				return;
+#endif
 
 			int numberOfLogsToProcess = isLogWindowVisible ? queuedLogEntries.Count : ( queuedLogEntries.Count - queuedLogLimit );
 			ProcessQueuedLogs( numberOfLogsToProcess );
@@ -1008,7 +1018,6 @@ namespace IngameDebugConsole
 					{
 						commandInputFieldAutoCompletedNow = true;
 						commandInputField.text = autoCompletedCommand;
-						commandInputField.stringPosition = autoCompletedCommand.Length;
 					}
 				}
 
@@ -1044,8 +1053,10 @@ namespace IngameDebugConsole
 		// A debug entry is received
 		public void ReceivedLog( string logString, string stackTrace, LogType logType )
 		{
+#if UNITY_EDITOR
 			if( isQuittingApplication )
 				return;
+#endif
 
 			switch( logType )
 			{
@@ -1054,6 +1065,44 @@ namespace IngameDebugConsole
 				case LogType.Error: if( !receiveErrorLogs ) return; break;
 				case LogType.Assert:
 				case LogType.Exception: if( !receiveExceptionLogs ) return; break;
+			}
+
+			// Truncate the log if it is longer than maxLogLength
+			int logLength = logString.Length;
+			if( stackTrace == null )
+			{
+				if( logLength > maxLogLength )
+					logString = logString.Substring( 0, maxLogLength - 11 ) + "<truncated>";
+			}
+			else
+			{
+				logLength += stackTrace.Length;
+				if( logLength > maxLogLength )
+				{
+					// Decide which log component(s) to truncate
+					int halfMaxLogLength = maxLogLength / 2;
+					if( logString.Length >= halfMaxLogLength )
+					{
+						if( stackTrace.Length >= halfMaxLogLength )
+						{
+							// Truncate both logString and stackTrace
+							logString = logString.Substring( 0, halfMaxLogLength - 11 ) + "<truncated>";
+
+							// If stackTrace doesn't end with a blank line, its last line won't be visible in the console for some reason
+							stackTrace = stackTrace.Substring( 0, halfMaxLogLength - 12 ) + "<truncated>\n";
+						}
+						else
+						{
+							// Truncate logString
+							logString = logString.Substring( 0, maxLogLength - stackTrace.Length - 11 ) + "<truncated>";
+						}
+					}
+					else
+					{
+						// Truncate stackTrace
+						stackTrace = stackTrace.Substring( 0, maxLogLength - logString.Length - 12 ) + "<truncated>\n";
+					}
+				}
 			}
 
 			QueuedDebugLogEntry queuedLogEntry = new QueuedDebugLogEntry( logString, stackTrace, logType );
@@ -1143,7 +1192,7 @@ namespace IngameDebugConsole
 			{
 				// It is not a duplicate,
 				// add it to the list of unique debug entries
-				logEntry.logType = logType;
+				logEntry.logTypeSpriteRepresentation = logSpriteRepresentations[(int) logType];
 				logEntry.collapsedIndex = collapsedLogEntries.Count;
 
 				collapsedLogEntries.Add( logEntry );
@@ -1173,6 +1222,7 @@ namespace IngameDebugConsole
 			// If this debug entry matches the current filters,
 			// add it to the list of debug entries to show
 			int logEntryIndexInEntriesToShow = -1;
+			Sprite logTypeSpriteRepresentation = logEntry.logTypeSpriteRepresentation;
 			if( isCollapseOn && isEntryInCollapsedEntryList )
 			{
 				if( isLogWindowVisible || timestampsOfLogEntriesToShow != null )
@@ -1193,9 +1243,9 @@ namespace IngameDebugConsole
 				}
 			}
 			else if( ( !isInSearchMode || queuedLogEntry.MatchesSearchTerm( searchTerm ) ) && ( logFilter == DebugLogFilter.All ||
-			   ( logType == LogType.Log && ( ( logFilter & DebugLogFilter.Info ) == DebugLogFilter.Info ) ) ||
-			   ( logType == LogType.Warning && ( ( logFilter & DebugLogFilter.Warning ) == DebugLogFilter.Warning ) ) ||
-			   ( logType != LogType.Log && logType != LogType.Warning && ( ( logFilter & DebugLogFilter.Error ) == DebugLogFilter.Error ) ) ) )
+			   ( logTypeSpriteRepresentation == infoLog && ( ( logFilter & DebugLogFilter.Info ) == DebugLogFilter.Info ) ) ||
+			   ( logTypeSpriteRepresentation == warningLog && ( ( logFilter & DebugLogFilter.Warning ) == DebugLogFilter.Warning ) ) ||
+			   ( logTypeSpriteRepresentation == errorLog && ( ( logFilter & DebugLogFilter.Error ) == DebugLogFilter.Error ) ) ) )
 			{
 				logEntriesToShow.Add( logEntry );
 				logEntryIndexInEntriesToShow = logEntriesToShow.Count - 1;
@@ -1277,9 +1327,9 @@ namespace IngameDebugConsole
 			if( !isCollapseOn && logEntriesToShow[removedLogEntriesToShowCount] == logEntry )
 				removedLogEntriesToShowCount++;
 
-			if( logEntry.logType == LogType.Log )
+			if( logEntry.logTypeSpriteRepresentation == infoLog )
 				infoEntryCount--;
-			else if( logEntry.logType == LogType.Warning )
+			else if( logEntry.logTypeSpriteRepresentation == warningLog )
 				warningEntryCount--;
 			else
 				errorEntryCount--;
@@ -1393,6 +1443,7 @@ namespace IngameDebugConsole
 			// Swap the value of collapse mode
 			isCollapseOn = !isCollapseOn;
 
+			SnapToBottom = true;
 			collapseButton.color = isCollapseOn ? collapseButtonSelectedColor : collapseButtonNormalColor;
 			recycledListView.SetCollapseMode( isCollapseOn );
 
@@ -1513,7 +1564,7 @@ namespace IngameDebugConsole
 					if( i >= visibleCommandSuggestionInstances )
 					{
 						if( i >= suggestionInstancesCount )
-							commandSuggestionInstances.Add( Instantiate( commandSuggestionPrefab, commandSuggestionsContainer, false ) );
+							commandSuggestionInstances.Add( (Text) Instantiate( commandSuggestionPrefab, commandSuggestionsContainer, false ) );
 						else
 							commandSuggestionInstances[i].gameObject.SetActive( true );
 
@@ -1634,7 +1685,6 @@ namespace IngameDebugConsole
 		// Determine the filtered list of debug entries to show on screen
 		private void FilterLogs()
 		{
-			recycledListView.OnBeforeFilterLogs();
 			logEntriesToShow.Clear();
 
 			if( timestampsOfLogEntriesToShow != null )
@@ -1683,12 +1733,12 @@ namespace IngameDebugConsole
 							continue;
 
 						bool shouldShowLog = false;
-						if( logEntry.logType == LogType.Log )
+						if( logEntry.logTypeSpriteRepresentation == infoLog )
 						{
 							if( isInfoEnabled )
 								shouldShowLog = true;
 						}
-						else if( logEntry.logType == LogType.Warning )
+						else if( logEntry.logTypeSpriteRepresentation == warningLog )
 						{
 							if( isWarningEnabled )
 								shouldShowLog = true;
@@ -1708,7 +1758,7 @@ namespace IngameDebugConsole
 			}
 
 			// Update the recycled list view
-			recycledListView.OnAfterFilterLogs();
+			recycledListView.DeselectSelectedLogItem();
 			OnLogEntriesUpdated( true, true );
 		}
 
@@ -1727,9 +1777,9 @@ namespace IngameDebugConsole
 			}
 
 			if( uncollapsedLogEntriesTimestamps != null )
-				length += count * 30;
+				length += count * 12; // Timestamp: "[HH:mm:ss]: "
 
-			length += 200; // Just in case...
+			length += 100; // Just in case...
 
 			StringBuilder sb = new StringBuilder( length );
 			for( int i = 0; i < count; i++ )
@@ -1738,28 +1788,14 @@ namespace IngameDebugConsole
 
 				if( uncollapsedLogEntriesTimestamps != null )
 				{
-					uncollapsedLogEntriesTimestamps[i].AppendFullTimestamp( sb );
+					uncollapsedLogEntriesTimestamps[i].AppendTime( sb );
 					sb.Append( ": " );
 				}
 
 				sb.AppendLine( entry.logString ).AppendLine( entry.stackTrace ).AppendLine();
 			}
 
-			sb.Append( "Current time: " ).AppendLine( ( System.DateTime.UtcNow + localTimeUtcOffset ).ToString( "F" ) );
-			sb.Append( "Version: " ).AppendLine( Application.version );
-
 			return sb.ToString();
-		}
-
-		/// <param name="logTimestamps">Is <c>null</c> if <see cref="captureLogTimestamps"/> is <c>false</c>. Indices are in sync with <paramref name="logEntries"/>.</param>
-		/// <remarks>You mustn't modify the returned buffers in any way.</remarks>
-		public void GetAllLogs( out DynamicCircularBuffer<DebugLogEntry> logEntries, out DynamicCircularBuffer<DebugLogEntryTimestamp> logTimestamps )
-		{
-			// Process all pending logs since we want to return "all" logs
-			ProcessQueuedLogs( queuedLogEntries.Count );
-
-			logEntries = uncollapsedLogEntries;
-			logTimestamps = uncollapsedLogEntriesTimestamps;
 		}
 
 		public void SaveLogsToFile()
@@ -1779,7 +1815,7 @@ namespace IngameDebugConsole
 			if( !avoidScreenCutout )
 				return;
 
-#if UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS
+#if UNITY_2017_2_OR_NEWER && ( UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS )
 			// Check if there is a cutout at the top of the screen
 			int screenHeight = Screen.height;
 			float safeYMax = Screen.safeArea.yMax;

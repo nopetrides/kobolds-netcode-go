@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: bfe27f97866866a469e4714ffcf31a9c
+timeCreated: 1554395276
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121782
+  packageName: fBasic Assets
+  packageVersion: 1.2.6
+  assetPath: Assets/Kobolds/External/FImpossible Creations/Shared Tools/Editor Tools/Property
+    Attributes/FPD_DrawTextureAttribute.cs
+  uploadId: 697898

@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 58df8cb71afdf744cb695c381d4f0fb5
+timeCreated: 1529440444
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 121815
+  packageName: Jiggling
+  packageVersion: 1.1.4
+  assetPath: Assets/FImpossible Creations/Plugins - Animating/Jiggling/Behaviours/Bases/FJiggling_Base.cs
+  uploadId: 618536
