@@ -121,7 +121,7 @@ namespace Kobold
 			_currentLatchState = newState;
 			
 			// Update animator
-			AnimationController?.SetBool(GripJawAnimParam, newState != LatchState.None);
+			AnimationController?.SetBool(GripJawAnimParam, newState != LatchState.Open);
 			
 			// Fire state change event
 			OnLatchStateChanged?.Invoke(newState);

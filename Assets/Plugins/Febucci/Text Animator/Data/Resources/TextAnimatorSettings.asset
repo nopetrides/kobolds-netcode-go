@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9743a50feedea474dbef99517d3e30eb, type: 3}
+  m_Name: TextAnimatorSettings
+  m_EditorClassIdentifier: Febucci.TextAnimator.Runtime::Febucci.UI.TextAnimatorSettings
+  behaviors:
+    defaultDatabase: {fileID: 11400000, guid: 28e251fa76daa164aa6cda771e117507, type: 2}
+    enabled: 1
+    openingSymbol: 60
+    closingSymbol: 62
+  appearances:
+    defaultDatabase: {fileID: 11400000, guid: f13c602a252f34043b52bb832db0cd1f, type: 2}
+    enabled: 1
+    openingSymbol: 123
+    closingSymbol: 125
+  actions:
+    defaultDatabase: {fileID: 11400000, guid: 1555166d3bd435840aad13cd47cfdf9f, type: 2}
+    enabled: 1
+    openingSymbol: 60
+    closingSymbol: 62
+  disappearancesMiddleSymbol: 35
+  defaultStyleSheet: {fileID: 11400000, guid: d165b6312b42ead4596be3fbd5712911, type: 2}
+  controlTags:
+    disableTypewriter: notype

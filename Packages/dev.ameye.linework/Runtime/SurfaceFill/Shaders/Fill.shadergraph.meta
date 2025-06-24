@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 37e37d4fece9f421f8a99286f525bf80
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 294140
+  packageName: 'Linework: Outlines and Edge Detection'
+  packageVersion: 1.4.9
+  assetPath: Packages/dev.ameye.linework/Runtime/SurfaceFill/Shaders/Fill.shadergraph
+  uploadId: 742492
