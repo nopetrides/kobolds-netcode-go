@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1344707089973247288}
   - component: {fileID: 7423812076837899772}
   - component: {fileID: 8035387603723250310}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-tail.03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6518563810735979432}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-neck:InBetween
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 7577361452531840509}
   - component: {fileID: 8290547779066580883}
   - component: {fileID: 1404998979657346804}
+  - component: {fileID: 1591018150753800}
   m_Layer: 0
   m_Name: KoboldNetRagdoll
   m_TagString: Untagged
@@ -362,6 +363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kobolds.Net.KoboldNetworkController
   ShowTopMostFoldoutHeaderGroup: 1
   _stateManager: {fileID: 2510681358187479047}
+  _gameplayEvents: {fileID: 7087172249865850643}
   _initialHealth: 100
   _maxHealth: 100
   _playerNamePrefix: Kobold
@@ -393,9 +395,9 @@ MonoBehaviour:
   handler:
     _Editor_SelectedChain: 0
     _Editor_ChainCategory: 2
-    _EditorCategory: 4
-    _EditorMainCategory: 1
-    _EditorMotionCategory: 2
+    _EditorCategory: 3
+    _EditorMainCategory: 0
+    _EditorMotionCategory: 0
     m_hemi: {fileID: -2508796484986968503, guid: 44d994eaad14fdf49a2dd378b4d62094, type: 3}
     m_cyli: {fileID: 2534964839176971238, guid: 2ea99bbc50a9266448416f21d645a771, type: 3}
     m_sphere: {fileID: 4711208715938537054, guid: b43618aedd7473a4eb1aaa5e80012a1d, type: 3}
@@ -1143,9 +1145,9 @@ MonoBehaviour:
       initLocalRotation: {x: 0.055766538, y: -0.0020937398, z: -0.012996018, w: 0.99835706}
       animatorLocalRotation: {x: 0.055766538, y: -0.0020937398, z: -0.012996018, w: 0.99835706}
     MusclesPower: 1
-    SpringsValue: 1500
+    SpringsValue: 8000
     SpringsOnFall: 0
-    DampingValue: 40
+    DampingValue: 500
     DampingValueOnFall: 0
     HardMatching: 0.125
     HardMatchPositions: 0
@@ -1194,7 +1196,7 @@ MonoBehaviour:
     OptimizeOnZeroBlend: 0
     HideDummyInSceneView: 0
     IgnoreBoundedColliders: 1
-    RagdollDummyLayer: 11
+    RagdollDummyLayer: 13
     UnscaledTime: 0
     FadeInAnimation: 0.1
     IgnoreSourceSkeletonColliders: 1
@@ -3299,6 +3301,19 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TransitionStateInfoList: []
   m_Animator: {fileID: 6521160702986863658}
+--- !u!114 &1591018150753800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598266197054209020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33f73903652e1964791c3f849cbd4e8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LatchableColliderIndexer
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1103934108234204671
 GameObject:
   m_ObjectHideFlags: 0
@@ -3311,7 +3326,7 @@ GameObject:
   - component: {fileID: 8958882983148386771}
   - component: {fileID: 4355484967427766420}
   - component: {fileID: 4205205421966853620}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-thigh.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3496,7 +3511,7 @@ GameObject:
   - component: {fileID: 6207737497069314853}
   - component: {fileID: 6748039962187174106}
   - component: {fileID: 2922437818078159561}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-ankle.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3680,7 +3695,7 @@ GameObject:
   - component: {fileID: 3777485575950086091}
   - component: {fileID: 3876826883039527147}
   - component: {fileID: 6189009384361230014}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: JawGripPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3843,7 +3858,7 @@ GameObject:
   - component: {fileID: 6733801794037860017}
   - component: {fileID: 4524112095908676726}
   - component: {fileID: 518822443266789978}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4029,7 +4044,7 @@ GameObject:
   - component: {fileID: 494673344724474188}
   - component: {fileID: 1072687619482482110}
   - component: {fileID: 1112639895657152204}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-hand.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4214,7 +4229,7 @@ GameObject:
   - component: {fileID: 8340701033772115763}
   - component: {fileID: 4018941123347730991}
   - component: {fileID: 9012221467531982531}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-shin.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4398,7 +4413,7 @@ GameObject:
   - component: {fileID: 5757372256881617086}
   - component: {fileID: 7476208062667302900}
   - component: {fileID: 3419741648082225761}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: GripLPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4561,7 +4576,7 @@ GameObject:
   - component: {fileID: 6257847589608834595}
   - component: {fileID: 6780948495365845812}
   - component: {fileID: 6266140791158641530}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-ankle.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4746,7 +4761,7 @@ GameObject:
   - component: {fileID: 3601297119942928070}
   - component: {fileID: 7340616860120806215}
   - component: {fileID: 4117371733944821234}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-tail.04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4930,7 +4945,7 @@ GameObject:
   - component: {fileID: 3762390806650820835}
   - component: {fileID: 3613325296132697284}
   - component: {fileID: 7804519637786717480}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-spine.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5115,7 +5130,7 @@ GameObject:
   - component: {fileID: 433801307141802856}
   - component: {fileID: 1502931799452224055}
   - component: {fileID: 1479595715731214148}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-shin.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5300,7 +5315,7 @@ GameObject:
   - component: {fileID: 4817843797348440552}
   - component: {fileID: 8698927237489101171}
   - component: {fileID: 7828589310727987813}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-spine.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5488,7 +5503,7 @@ GameObject:
   - component: {fileID: 2552467873436123394}
   - component: {fileID: 5185706291785611797}
   - component: {fileID: 8452544844280786618}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-toe.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5672,7 +5687,7 @@ GameObject:
   - component: {fileID: 1315409695725113538}
   - component: {fileID: 6235276088097862220}
   - component: {fileID: 7775300300525862163}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-tail.02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5854,7 +5869,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9187659868124253519}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: KoboldNetRagdoll-Ragdoll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5889,7 +5904,7 @@ GameObject:
   - component: {fileID: 7469067959211362306}
   - component: {fileID: 5969642368801531628}
   - component: {fileID: 4674730178742067669}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-shoulder.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6071,7 +6086,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3431244954062466285}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-spine.003:InBetween
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6108,7 +6123,7 @@ GameObject:
   - component: {fileID: 6489955276533854005}
   - component: {fileID: 4734595481676192001}
   - component: {fileID: 3253968985103775834}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-spine.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6292,7 +6307,7 @@ GameObject:
   - component: {fileID: 4646197444889533544}
   - component: {fileID: 6866905542575248129}
   - component: {fileID: 8604771045077082037}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: GripRPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6455,7 +6470,7 @@ GameObject:
   - component: {fileID: 5511516052722021288}
   - component: {fileID: 7557239227253919893}
   - component: {fileID: 3277828016569606018}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-toe.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6639,7 +6654,7 @@ GameObject:
   - component: {fileID: 7802992954361992569}
   - component: {fileID: 6476796354744844598}
   - component: {fileID: 3860318661636072456}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-shoulder.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6824,7 +6839,7 @@ GameObject:
   - component: {fileID: 4186069081487610330}
   - component: {fileID: 9110859934702368834}
   - component: {fileID: 6046680613806639645}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-jaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7010,7 +7025,7 @@ GameObject:
   - component: {fileID: 1389138827256558832}
   - component: {fileID: 3325707205927883206}
   - component: {fileID: 8509305368839535072}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-spine.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7195,7 +7210,7 @@ GameObject:
   - component: {fileID: 7352516477750645991}
   - component: {fileID: 6340039023073976247}
   - component: {fileID: 2684720577596660935}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-tail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7380,7 +7395,7 @@ GameObject:
   - component: {fileID: 5202893805013355732}
   - component: {fileID: 3354050247916190592}
   - component: {fileID: 8802078002091045042}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-hand.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7565,7 +7580,7 @@ GameObject:
   - component: {fileID: 2337358031661757057}
   - component: {fileID: 1826755974067840239}
   - component: {fileID: 7072691985131784156}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-thigh.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7750,7 +7765,7 @@ GameObject:
   - component: {fileID: 1962859551584372919}
   - component: {fileID: 6261435267172954442}
   - component: {fileID: 246865591583216856}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-forearm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7935,7 +7950,7 @@ GameObject:
   - component: {fileID: 3265110269580056401}
   - component: {fileID: 8681191943018210403}
   - component: {fileID: 7740499344781189895}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-forearm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8120,7 +8135,7 @@ GameObject:
   - component: {fileID: 5478669909172937045}
   - component: {fileID: 2601309384089427482}
   - component: {fileID: 3469274501166849247}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-upper_arm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8305,7 +8320,7 @@ GameObject:
   - component: {fileID: 5522294591275417648}
   - component: {fileID: 7038781934445046054}
   - component: {fileID: 284654808958928260}
-  m_Layer: 11
+  m_Layer: 13
   m_Name: ORG-upper_arm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}

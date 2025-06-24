@@ -182,6 +182,18 @@ namespace Kobold.Bosses
 				rb.linearVelocity = Vector3.zero;
 				rb.angularVelocity = Vector3.zero;
 			}
+			
+			StartCoroutine(DespawnAfterDelay(5f));
+		}
+
+		private IEnumerator DespawnAfterDelay(float delay)
+		{
+			yield return new WaitForSeconds(delay);
+			if (HasAuthority && NetworkObject != null && NetworkObject.IsSpawned)
+			{
+				Debug.Log("[BossMover] Despawning boss object after delay.");
+				NetworkObject.Despawn();
+			}
 		}
 
 		/// <summary>

@@ -158,7 +158,7 @@ namespace Kobold
 				var col = _overlapBuffer[i];
 
 				// Optional: skip self or previous target if needed
-				if (col.attachedRigidbody == bone.rigidbody || col == _currentTarget) continue;
+				if (col.attachedRigidbody == bone.rigidbody || col == _currentTarget || col.transform.root == transform.root) continue;
 
 				Vector3 attachPos;
 
@@ -288,52 +288,128 @@ namespace Kobold
 				}
 			}
 
-			// Add a method to set latch info from networked data (for remotes)
 			public void SetNetworkedLatch(
 				NetworkObject targetObj, int colliderIndex, Vector3 localPos, Quaternion localRot,
 				bool isNetworked, Vector3 worldPos, Quaternion worldRot, KoboldLatcher latcher)
 			{
+				Debug.Log($"[LATCH-REMOTE] SetNetworkedLatch called - isNetworked: {isNetworked}, targetObj: {(targetObj != null ? targetObj.name : "NULL")}, colliderIndex: {colliderIndex}");
+				
+				if (latcher == null)
+				{
+					Debug.LogError("[LATCH-REMOTE] SetNetworkedLatch called with null latcher!");
+					return;
+				}
+
 				if (isNetworked)
 				{
 					if (targetObj == null)
 					{
-						if (latcher != null && latcher.enableLatchDebugLogging)
-						{
-							Debug.LogWarning($"[LATCH-REMOTE] SetNetworkedLatch: Expected networked object, but targetObj is null! Falling back to static geometry.");
-						}
+						Debug.LogError("[LATCH-REMOTE] SetNetworkedLatch: Expected networked object, but targetObj is null! Falling back to static geometry.");
 						GotoStaticFallback();
 						return;
 					}
+					
 					var indexer = targetObj.GetComponent<LatchableColliderIndexer>();
 					if (indexer == null)
 					{
-						if (latcher != null && latcher.enableLatchDebugLogging)
-						{
-							Debug.LogWarning($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId} has no LatchableColliderIndexer! Falling back to static geometry.");
-						}
+						Debug.LogError($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId} has no LatchableColliderIndexer! Falling back to static geometry.");
 						GotoStaticFallback();
 						return;
 					}
+					
 					Target = indexer.GetColliderByIndex(colliderIndex);
 					if (Target == null)
 					{
-						if (latcher != null && latcher.enableLatchDebugLogging)
-						{
-							Debug.LogWarning($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId}, idx={colliderIndex}, Target is null! Falling back to static geometry.");
-						}
+						Debug.LogError($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId}, idx={colliderIndex}, Target is null! Falling back to static geometry.");
 						GotoStaticFallback();
 						return;
 					}
+					
+					Debug.Log($"[LATCH-REMOTE] Successfully found target collider: {Target.name} (ID: {Target.GetInstanceID()})");
+					
 					_localPos = localPos;
 					_localRot = localRot;
 					IsLatched = true;
-					if (latcher != null && latcher.enableLatchDebugLogging)
+
+					// Get the rigidbody from the latcher's ragdoll animator for remote clients
+					if (_rb == null)
+					{
+						Debug.Log("[LATCH-REMOTE] _rb is null, attempting to get rigidbody from ragdoll animator");
+						
+						if (latcher.RagdollAnimator == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] latcher.RagdollAnimator is null!");
+							return;
+						}
+						
+						var ragdollHandler = latcher.RagdollAnimator.Handler;
+						if (ragdollHandler == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] ragdollHandler is null!");
+							return;
+						}
+						
+						if (latcher.JawMagnet == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] latcher.JawMagnet is null!");
+							return;
+						}
+						
+						if (latcher.JawMagnet.MagnetPoint == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] latcher.JawMagnet.MagnetPoint is null!");
+							return;
+						}
+						
+						var chainBone = ragdollHandler.User_GetBoneSetupBySourceAnimatorBone(latcher.JawMagnet.MagnetPoint.transform);
+						if (chainBone == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] chainBone is null!");
+							return;
+						}
+						
+						var boneProcessor = chainBone.BoneProcessor;
+						if (boneProcessor == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] boneProcessor is null!");
+							return;
+						}
+						
+						_rb = boneProcessor.rigidbody;
+						if (_rb == null)
+						{
+							Debug.LogError("[LATCH-REMOTE] boneProcessor.rigidbody is null!");
+							return;
+						}
+						
+						Debug.Log($"[LATCH-REMOTE] Successfully got rigidbody: {_rb.name}");
+					}
+
+					// Notify damage handler on remote clients too
+					var damageHandler = Target.GetComponentInParent<LatchDamageHandler>();
+					if (damageHandler == null)
+					{
+						Debug.LogError($"[LATCH-REMOTE] No LatchDamageHandler found in parent of target: {Target.name}");
+						return;
+					}
+					
+					if (_rb == null)
+					{
+						Debug.LogError("[LATCH-REMOTE] _rb is still null, cannot notify damage handler!");
+						return;
+					}
+					
+					Debug.Log($"[LATCH-REMOTE] Notifying damage handler for target: {Target.name}");
+					damageHandler.OnLatched(_rb.transform);
+
+					if (latcher.enableLatchDebugLogging)
 					{
 						Debug.Log($"[LATCH-REMOTE] SetNetworkedLatch: NetObj={targetObj.NetworkObjectId}, idx={colliderIndex}, Target={Target.name} (ID: {Target.GetInstanceID()}), localPos={localPos}, localRot={localRot}, worldPos={Target.transform.TransformPoint(localPos)}, worldRot={Target.transform.rotation * localRot}");
 					}
 					return;
 				}
 				// Static geometry fallback
+				Debug.Log("[LATCH-REMOTE] Using static geometry fallback");
 				GotoStaticFallback();
 				return;
 
@@ -345,10 +421,7 @@ namespace Kobold
 					_worldPos = worldPos;
 					_worldRot = worldRot;
 					IsLatched = true;
-					if (latcher != null && latcher.enableLatchDebugLogging)
-					{
-						Debug.Log($"[LATCH-REMOTE] SetNetworkedLatch: Static world, worldPos={worldPos}, worldRot={worldRot}");
-					}
+					Debug.Log($"[LATCH-REMOTE] SetNetworkedLatch: Static world, worldPos={worldPos}, worldRot={worldRot}");
 				}
 			}
 

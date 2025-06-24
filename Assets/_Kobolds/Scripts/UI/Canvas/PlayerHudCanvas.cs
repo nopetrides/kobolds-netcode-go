@@ -91,6 +91,8 @@ namespace Kobold.UI
 			MonsterBossController bossController, KoboldNetworkController networkController,
 			KoboldGameplayEvents gameplayEvents, KoboldLatcher latcher)
 		{
+			Debug.Log($"[PlayerHudCanvas] Initialize called with latcher: {(latcher != null ? latcher.name : "NULL")}");
+    
 			_bossController = bossController;
 			_networkController = networkController;
 			_gameplayEvents = gameplayEvents;
@@ -110,9 +112,15 @@ namespace Kobold.UI
 
 			if (_latcher != null)
 			{
+				Debug.Log($"[PlayerHudCanvas] Subscribing to OnLatchStateChanged event from latcher: {_latcher.name}");
+        
 				_latcher.OnLatchStateChanged += HandleLatchStateChange;
 				// Set initial state
 				SetLatchState(_latcher.CurrentLatchState);
+			}
+			else 
+			{
+				Debug.LogError("[PlayerHudCanvas] Initialize called with null latcher!");
 			}
 		}
 
@@ -162,6 +170,7 @@ namespace Kobold.UI
 		// Sets the visibility of latch state images based on the provided state.
 		public void SetLatchState(LatchState state)
 		{
+			Debug.Log($"[PlayerHudCanvas] HandleLatchStateChange called with state:{state}");
 			// Iterate over all latch state images in the dictionary.
 			foreach (var entry in _latchStateImages)
 				// Check if the image for the current state in the loop is assigned.

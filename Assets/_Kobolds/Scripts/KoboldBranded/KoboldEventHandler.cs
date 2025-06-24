@@ -256,9 +256,9 @@ namespace Kobold.GameManagement
 #region Events
 		
 		// Gameplay Events
-		public static event Action OnAllBossesDefeated; // 🆕 New event
+		public static event Action OnAllBossesDefeated; // New event
 
-		public static void AllBossesDefeated()           // 🆕 New method
+		public static void AllBossesDefeated()           // New method
 		{
 			Debug.Log("[KoboldEventHandler] AllBossesDefeated triggered");
 			OnAllBossesDefeated?.Invoke();

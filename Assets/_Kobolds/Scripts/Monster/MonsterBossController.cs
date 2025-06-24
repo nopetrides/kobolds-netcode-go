@@ -99,6 +99,12 @@ namespace Kobold.Bosses
             }
         }
 
+        [ServerRpc(RequireOwnership = false)]
+        public void ApplyDamageServerRpc(float amount, bool isWeakSpot = false, bool isCore = false)
+        {
+            ApplyDamage(amount, isWeakSpot, isCore);
+        }
+
         public void ApplyDamage(float amount, bool isWeakSpot = false, bool isCore = false)
         {
             // Use HasAuthority for distributed authority

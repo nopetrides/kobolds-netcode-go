@@ -19,6 +19,7 @@ namespace Kobold.Net
 	{
 		[Header("State Management")]
 		[SerializeField] private KoboldStateManager _stateManager;
+		[SerializeField] private KoboldGameplayEvents _gameplayEvents;
 
 		[Header("Initial Values")]
 		[SerializeField] private float _initialHealth = 100f;
@@ -62,6 +63,8 @@ namespace Kobold.Net
 		public KoboldNetworkState CurrentNetworkState => _networkState.Value;
 
 		public KoboldCameraController CurrentCameraController => _cameraController;
+
+		public KoboldLatcher CurrentLatcher => _koboldLatcher;
 
 		private void Awake()
 		{
@@ -286,8 +289,7 @@ namespace Kobold.Net
 					Debug.LogError($"[{name}] No KoboldCameraManager found in scene! Cameras will not work properly.");
 				}
 
-
-				KoboldCanvasManager.Instance?.OnPlayerSpawned(_unburyController);
+				KoboldCanvasManager.Instance?.OnPlayerSpawned(this, _gameplayEvents, _unburyController);
 			}
 
 			// Log for debugging

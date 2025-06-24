@@ -24,13 +24,14 @@ namespace Kobold.Bosses
 
 		private void Update()
 		{
-			if (!NetworkManager.Singleton) return;
-			if (NetworkManager.Singleton?.LocalClientId != NetworkManager.Singleton?.CurrentSessionOwner) return;
-
 			if (_latchedSources.Count == 0) return;
 
-			var damage = _damagePerSecond * Time.deltaTime;
-			foreach (var source in _latchedSources) ApplyDamage(damage);
+			// Only apply damage on the boss owner (HasAuthority)
+			if (_controller != null && _controller.HasAuthority)
+			{
+				var damage = _damagePerSecond * Time.deltaTime;
+				foreach (var source in _latchedSources) ApplyDamage(damage);
+			}
 		}
 
 		/// <summary>
@@ -38,11 +39,37 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void OnLatched(Transform source)
 		{
-			// This is the correct way to do something like IsOwner
-			if (NetworkManager.Singleton.LocalClientId != NetworkManager.Singleton.CurrentSessionOwner) return;
-			if (_latchedSources.Contains(source)) return;
+			Debug.Log($"[LatchDamageHandler] OnLatched called with source: {(source != null ? source.name : "NULL")}");
+			
+			if (source == null)
+			{
+				Debug.LogError("[LatchDamageHandler] OnLatched called with null source transform!");
+				return;
+			}
+
+			if (_latchedSources.Contains(source))
+			{
+				Debug.Log($"[LatchDamageHandler] Source {source.name} already in latched sources, ignoring duplicate");
+				return;
+			}
 
 			_latchedSources.Add(source);
+			Debug.Log($"[LatchDamageHandler] Added {source.name} to latched sources. Total sources: {_latchedSources.Count}");
+			
+			// Only apply initial damage on the boss owner (HasAuthority)
+			if (_controller == null)
+			{
+				Debug.LogError("[LatchDamageHandler] _controller is null! Cannot apply damage.");
+				return;
+			}
+
+			if (!_controller.HasAuthority)
+			{
+				Debug.Log($"[LatchDamageHandler] Not boss owner (HasAuthority: {_controller.HasAuthority}), skipping damage application");
+				return;
+			}
+
+			Debug.Log($"[LatchDamageHandler] Applying initial damage of {_damageOnLatch} to boss");
 			ApplyDamage(_damageOnLatch);
 		}
 
@@ -51,21 +78,48 @@ namespace Kobold.Bosses
 		/// </summary>
 		public void OnUnlatched(Transform source)
 		{
+			Debug.Log($"[LatchDamageHandler] OnUnlatched called with source: {(source != null ? source.name : "NULL")}");
+			
+			if (source == null)
+			{
+				Debug.LogError("[LatchDamageHandler] OnUnlatched called with null source transform!");
+				return;
+			}
+
 			_latchedSources.Remove(source);
+			Debug.Log($"[LatchDamageHandler] Removed {source.name} from latched sources. Total sources: {_latchedSources.Count}");
 		}
 
 		private void ApplyDamage(float amount)
 		{
-			if (_controller == null) return;
+			Debug.Log($"[LatchDamageHandler] ApplyDamage called with amount: {amount}");
+			
+			if (_controller == null)
+			{
+				Debug.LogError("[LatchDamageHandler] _controller is null in ApplyDamage!");
+				return;
+			}
 
 			if (_isCore)
-				_controller.ApplyDamage(amount, false, true);
+			{
+				Debug.Log($"[LatchDamageHandler] Applying core damage: {amount}");
+				_controller.ApplyDamageServerRpc(amount, false, true);
+			}
 			else if (_isWeakSpot)
-				_controller.ApplyDamage(amount, true);
+			{
+				Debug.Log($"[LatchDamageHandler] Applying weak spot damage: {amount}");
+				_controller.ApplyDamageServerRpc(amount, true);
+			}
 			else if (_limb != null)
+			{
+				Debug.Log($"[LatchDamageHandler] Applying limb damage: {amount}");
 				_limb.ApplyDamage(amount);
+			}
 			else
-				_controller.ApplyDamage(amount);
+			{
+				Debug.Log($"[LatchDamageHandler] Applying default damage: {amount}");
+				_controller.ApplyDamageServerRpc(amount);
+			}
 		}
 	}
 }

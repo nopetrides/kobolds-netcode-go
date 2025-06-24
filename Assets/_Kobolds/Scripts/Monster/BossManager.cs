@@ -53,7 +53,9 @@ namespace Kobold.Bosses
 		public void RegisterBoss(MonsterBossController boss)
 		{
 			if (!_activeBosses.Contains(boss))
+			{
 				_activeBosses.Add(boss);
+			}
 		}
 
 		public void UnregisterBoss(MonsterBossController boss)
@@ -65,11 +67,21 @@ namespace Kobold.Bosses
 		private void CheckBossVictoryCondition()
 		{
 			foreach (var boss in _activeBosses)
+			{
 				if (boss.State != MonsterBossController.BossState.Dead)
+				{
 					return;
+				}
+			}
 
 			// All bosses are dead!
-			KoboldEventHandler.AllBossesDefeated(); // 🆕
+			AllBossesDefeatedClientRpc();
+		}
+
+		[ClientRpc]
+		private void AllBossesDefeatedClientRpc()
+		{
+			KoboldEventHandler.AllBossesDefeated();
 		}
 
 
