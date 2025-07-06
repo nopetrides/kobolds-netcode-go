@@ -1,7 +1,7 @@
 ﻿__________________________________________________________________________________________
 
 Package "Ragdoll Animator 2"
-Version 1.0.3.7.2
+Version 1.0.3.7.4
 
 Made by FImpossible Creations - Filip Moeglich
 http://www.fimpossiblecreations.pl
@@ -30,6 +30,12 @@ If you encounter something like spine jittery, try lowering muscles spring power
 
 __________________________________________________________________________________________
 Changelog:
+
+version 1.0.3.7.4
+- Fixed muscles power value refresh on instant calls on muscle power multipliers
+
+version 1.0.3.7.3
+- Fixed duplicated Bone Indicator components on the ragdoll dummy bones
 
 version 1.0.3.7.2
 - Removed unneccesary GC alloc caused by procedural ()=> action call

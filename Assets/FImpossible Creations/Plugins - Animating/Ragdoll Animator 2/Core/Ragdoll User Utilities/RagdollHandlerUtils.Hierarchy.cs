@@ -95,5 +95,16 @@ namespace FIMSpace.FProceduralAnimation
 
             //Caller.StartCoroutine( _IE_CallAfter( 0f, () => { CallOnAllRagdollBones( ( RagdollChainBone b ) => { b.GameRigidbody.isKinematic = false; } ); }, 1 ) );
         }
+
+        /// <summary>
+        /// Forcing physical bones to be hardly rotated like current animator pose.
+        /// It requires two fixed frames to occur.
+        /// </summary>
+        public static void User_ForceMatchPhysicalBonesWithAnimatorKinematic(this IRagdollAnimator2HandlerOwner iHandler, int fixedFrames = 2)
+        {
+            var handler = iHandler.GetRagdollHandler;
+            handler.User_SetAllKinematic(true);
+            handler.Caller.StartCoroutine(handler._IE_CallAfter(0f, () => { handler.User_SetAllKinematic(false); }, fixedFrames));
+        }
     }
 }

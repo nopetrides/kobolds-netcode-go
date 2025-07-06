@@ -100,7 +100,11 @@ namespace FIMSpace.FProceduralAnimation
         private void CalculateRagdollBlend()
         {
             finalBlend = GetTotalBlend();
+            RefreshTargetMusclesPower();
+        }
 
+        public void RefreshTargetMusclesPower()
+        {
             if (User_OverrideMusclesPower != null) targetMusclesPower = User_OverrideMusclesPower.Value;
             else targetMusclesPower = MusclesPower * musclesPowerMultiplier;
         }
@@ -478,6 +482,7 @@ namespace FIMSpace.FProceduralAnimation
                 spring = OverrideSpringsValueOnFall == null ? GetCurrentMainSpringsValue : OverrideSpringsValueOnFall.Value;
             }
 
+            RefreshTargetMusclesPower();
             float power = targetMusclesPower * targetMusclesPower;
 
             foreach (var chain in chains)

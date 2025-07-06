@@ -70,6 +70,8 @@ namespace Kobold
 		/// </summary>
 		private UnburyController _unbury;
 
+		[SerializeField] private bool TestLocally;
+
 		/// <summary>
 		/// Initializes the component when the script instance is being loaded.
 		/// If a CanvasGroup is assigned, sets its alpha value to fully visible (1f).
@@ -79,6 +81,8 @@ namespace Kobold
 		{
 			if (CanvasGroup) CanvasGroup.alpha = 1f;
 			_baseTextPosition = TextShakeTransform.anchoredPosition;
+			if (TestLocally)
+				Initialize(FindFirstObjectByType<UnburyController>());
 		}
 
 		/// <summary>

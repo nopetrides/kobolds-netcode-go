@@ -64,7 +64,7 @@ namespace Kobold.Net
 
 		public KoboldLatcher CurrentLatcher => _koboldLatcher;
 
-		private void Awake()
+		private void Start()
 		{
 			ValidateComponents();
 

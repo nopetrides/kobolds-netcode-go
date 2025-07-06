@@ -190,7 +190,7 @@ namespace FIMSpace.FProceduralAnimation
             if( delay > 0f ) yield return new WaitForSeconds( delay );
 
             float startMusclesForce = musclesPowerMultiplier;
-            float elapsed = -0.0001f;
+            float elapsed = 0f;
 
             while( elapsed < duration )
             {
@@ -202,6 +202,7 @@ namespace FIMSpace.FProceduralAnimation
             }
 
             musclesPowerMultiplier = targetMusclesForce;
+            User_UpdateJointsPlayParameters(false);
 
             yield break;
         }
